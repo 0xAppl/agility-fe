@@ -35,36 +35,36 @@ export const tokenConfigs: TokenConfigs = {
   statusList: [
     {
       typeText: 'TVL',
-      countText: '5000 ETH',
-      valueText: '$9,000,000',
+      countText: '??? ETH',
+      valueText: '$???',
     },
     {
       typeText: 'AGI',
-      countText: 'Price $0.5',
-      valueText: 'MC $300,000,000',
+      countText: 'Price $???',
+      valueText: 'MC $???',
     },
   ],
   esAGIVestingConfig: {
     balance: {
       typeText: 'Vesting Days',
-      countText: '500',
+      countText: '???',
     },
     vestingDays: {
       typeText: 'Vesting Amount',
-      countText: '500',
+      countText: '???',
     },
     AGIList: [
       {
         typeText: 'AGI OUTPUT',
-        countText: '300',
+        countText: '???',
       },
       {
         typeText: 'ESAGI INPUT',
-        countText: '300',
+        countText: '???',
       },
       {
         typeText: 'TIMELEFT',
-        countText: '5 month 30 days',
+        countText: '? month ?? days',
       },
     ],
   },

@@ -34,11 +34,11 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       <div className={style.main_sec}>
         <div className={style.apr}>
           <div className={style.text}>APR</div>
-          <div className={style.number}>99%</div>
+          <div className={style.number}>???%</div>
         </div>
         <div className={style.tvl}>
           <div className={style.text}>TVL</div>
-          <div className={style.number}> 9134134</div>
+          <div className={style.number}> ???</div>
         </div>
       </div>
 
@@ -46,7 +46,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       <div className={style.claim_sec}>
         <div className={style.left}>
           <div className={style.text}> esAGI Earned</div>
-          <div className={style.number}>0.000 $esAGI</div>
+          <div className={style.number}>??? $esAGI</div>
         </div>
         <ClaimBtn onClick={onClaimClick} />
       </div>
@@ -57,7 +57,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       <div className={style.stake_sec}>
         <div className={style.left}>
           <div className={style.text}> ETH Staked</div>
-          <div className={style.number}>500</div>
+          <div className={style.number}>???</div>
         </div>
 
         <StakeBtn onClick={onStakeClick} />
