@@ -21,7 +21,7 @@ export const routeConfigs = {
       component: <XUSDTrading />,
     },
     {
-      path: 'Farm',
+      path: 'farm',
       label: 'Farm',
       disabled: false,
       component: <Farm />,
