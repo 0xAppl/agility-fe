@@ -1,0 +1,90 @@
+.logo_wrapper {
+  width: 85%;
+  margin: auto;
+  text-align: center;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 100% 0px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin-top: 80px;
+  margin-bottom: 50px;
+
+  > div > img {
+    width: 240px;
+  }
+  > div:last-child {
+    position: relative;
+    left: -128px;
+  }
+  @media screen and (max-width: 768px) {
+    grid-auto-flow: row;
+    grid-template-columns: 100%;
+    justify-content: center;
+    > div:last-child {
+      left: 0px;
+      justify-self: center;
+    }
+  }
+}
+
+.content {
+  box-sizing: border-box;
+
+  text-align: center;
+  padding: 32px 80px;
+  border: 2px solid #000000;
+  border-radius: 10px;
+  width: 85%;
+  margin: auto;
+  @media screen and (max-width: 768px) {
+    padding: 32px 32px;
+  }
+  :global {
+    .title {
+      font-family: 'Asap', sans-serif;
+      font-size: 48px;
+      font-style: italic;
+      font-weight: 600;
+      line-height: 1.2em;
+      letter-spacing: 0em;
+      margin-bottom: 24px;
+      @media screen and (max-width: 768px) {
+        font-size: 36px;
+      }
+    }
+    .subtitle {
+      font-family: 'Asap', sans-serif;
+      font-size: 36px;
+      font-style: italic;
+      font-weight: 500;
+      line-height: 1.5em;
+      letter-spacing: 0em;
+      text-align: center;
+      color: rgba(0, 0, 0, 0.45);
+      margin-bottom: 48px;
+      @media screen and (max-width: 768px) {
+        font-size: 24px;
+      }
+    }
+    .diagram {
+      width: clamp(100%, 100vw, 100%);
+      margin-bottom: 48px;
+      > img {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.icon_href {
+  padding: 0 8px;
+  height: 25px;
+  cursor: pointer;
+}
+
+.footerLinks {
+  text-align: center;
+  padding: 36px 0px;
+}

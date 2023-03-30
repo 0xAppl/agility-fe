@@ -1,0 +1,46 @@
+{
+  "name": "s9-lsd",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "deploy-draft": "yarn build &&  NETLIFY_AUTH_TOKEN=-Q299bEHBpZuF73FvPnRnqZGsCIeTebrD4JSGXGtJXU netlify deploy --site y9-lsd --dir ./dist",
+    "deploy-prod": "yarn build &&  NETLIFY_AUTH_TOKEN=-Q299bEHBpZuF73FvPnRnqZGsCIeTebrD4JSGXGtJXU netlify deploy --site y9-lsd --dir ./dist --prod"
+  },
+  "dependencies": {
+    "antd": "^5.3.2",
+    "classnames": "^2.3.2",
+    "ethers": "5.7.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.9.0",
+    "wagmi": "^0.12.7"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "@typescript-eslint/eslint-plugin": "^5.43.0",
+    "@typescript-eslint/parser": "^5.56.0",
+    "@vitejs/plugin-react": "^3.1.0",
+    "eslint": "^8.0.1",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-config-standard-with-typescript": "^34.0.1",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "less": "^4.1.3",
+    "netlify-cli": "^13.2.2",
+    "prettier": "^2.8.5",
+    "typescript": "*",
+    "vite": "^4.1.0",
+    "vite-plugin-eslint": "^1.8.1",
+    "vite-plugin-svgr": "^2.4.0"
+  }
+}

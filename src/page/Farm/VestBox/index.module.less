@@ -1,0 +1,33 @@
+.vest_box {
+  height: 95px;
+  padding: 20px;
+  background: #fff;
+  border: 2px solid #000000;
+  box-sizing: border-box;
+  border-radius: 24px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  &.small {
+    width: 21%;
+    margin-right: 24px;
+  }
+  &.big {
+    flex-grow: 1;
+  }
+}
+
+.vest_inner_box {
+  text-align: left;
+  color: #000000;
+  .type {
+    font-size: 14px;
+    line-height: 17px;
+  }
+  .count {
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 32px;
+  }
+}
