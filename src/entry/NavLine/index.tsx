@@ -14,7 +14,7 @@ import { shortenWalletAddress } from '../../utils/string';
 import style from './index.module.less';
 import Hamburger from '../../components/hamburger';
 import classNames from 'classnames';
-const { twitterHref, inviteHref, docsHref } = globalConfig;
+const { twitterHref, discordHref, docsHref } = globalConfig;
 
 const { list } = routeConfigs;
 
@@ -85,10 +85,18 @@ export const NavLine = () => {
               </Button>
             )}
           </div>
-          <a href={inviteHref} className={style.icon_href} target="_blank" rel="noreferrer">
+          <a href={twitterHref} className={style.icon_href} target="_blank" rel="noreferrer">
             <img src={twitterSvg} alt="twitter" />
           </a>
-          <a href={twitterHref} className={style.icon_href} target="_blank" rel="noreferrer">
+          <a
+            href={discordHref}
+            className={style.icon_href}
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: 'none',
+            }}
+          >
             <img src={inviteSvg} alt="invite" />
           </a>
           <Hamburger activated={activated} setActivated={setActivated} />

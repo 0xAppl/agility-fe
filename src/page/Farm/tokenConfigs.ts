@@ -46,7 +46,11 @@ export const tokenConfigs: TokenConfigs = {
   ],
   esAGIVestingConfig: {
     balance: {
-      typeText: 'Balance',
+      typeText: 'Vesting Days',
+      countText: '500',
+    },
+    vestingDays: {
+      typeText: 'Vesting Amount',
       countText: '500',
     },
     AGIList: [

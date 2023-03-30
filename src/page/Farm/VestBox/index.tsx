@@ -11,11 +11,12 @@ interface IVest {
 
 export interface VestData {
   balance: IVest;
+  vestingDays: IVest;
   AGIList: IVest[];
 }
 
 export const VestBox = ({ data }: { data: VestData }) => {
-  const { balance, AGIList } = data;
+  const { balance, AGIList, vestingDays } = data;
 
   const onWithDrawClick = useCallback(() => {
     API.withdraw();
@@ -29,8 +30,14 @@ export const VestBox = ({ data }: { data: VestData }) => {
       {/* balance  */}
       <div className={cs(style.vest_box, style.small)}>
         <div className={style.vest_inner_box}>
-          <div className={style.type}> {balance.typeText}</div>
-          <div className={style.count}>{balance.countText}</div>
+          <div>
+            <div className={style.type}> {balance.typeText}</div>
+            <div className={style.count}>{balance.countText}</div>
+          </div>
+          <div>
+            <div className={style.type}> {vestingDays.typeText}</div>
+            <div className={style.count}>{vestingDays.countText}</div>
+          </div>
         </div>
         <ClaimBtn onClick={onClaimClick} />
       </div>

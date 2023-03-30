@@ -8,8 +8,8 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  margin-top: 80px;
-  margin-bottom: 50px;
+  margin-top: 60px;
+  margin-bottom: 30px;
 
   > div > img {
     width: 240px;
@@ -42,21 +42,32 @@
     padding: 32px 32px;
   }
   :global {
+    .contents {
+      display: grid;
+      grid-template-columns: 40% 60%;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      @media screen and (max-width: 768px) {
+        grid-template-columns: 100%;
+        grid-auto-flow: row;
+      }
+    }
     .title {
       font-family: 'Asap', sans-serif;
-      font-size: 48px;
+      font-size: 36px;
       font-style: italic;
       font-weight: 600;
       line-height: 1.2em;
       letter-spacing: 0em;
       margin-bottom: 24px;
       @media screen and (max-width: 768px) {
-        font-size: 36px;
+        font-size: 24px;
       }
     }
     .subtitle {
       font-family: 'Asap', sans-serif;
-      font-size: 36px;
+      font-size: 24px;
       font-style: italic;
       font-weight: 500;
       line-height: 1.5em;
@@ -65,7 +76,7 @@
       color: rgba(0, 0, 0, 0.45);
       margin-bottom: 48px;
       @media screen and (max-width: 768px) {
-        font-size: 24px;
+        font-size: 18px;
       }
     }
     .diagram {

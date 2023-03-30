@@ -5,6 +5,7 @@ import cs from 'classnames';
 import { ReactComponent as ArrowIcon } from '../../assets/arrow.svg';
 import style from './index.module.less';
 import { Link } from 'react-router-dom';
+import { notification } from 'antd';
 
 export const ClaimBtn = ({ onClick }: { onClick: () => void }) => {
   return (
@@ -57,12 +58,22 @@ export const DocsButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
   );
 };
 
+const openNotification = () => {
+  notification.open({
+    message: 'Coming soon!',
+  });
+};
+
 export const LaunchAppButton: React.FC = () => {
   return (
     <Link
       to={'/farm'}
       style={{
         display: 'inline-flex',
+      }}
+      onClick={e => {
+        e.preventDefault();
+        openNotification();
       }}
     >
       <div
