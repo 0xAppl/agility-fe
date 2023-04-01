@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import React from 'react';
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { useAccount, useConnect, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { Link, useLocation } from 'react-router-dom';
-import { Button } from 'antd';
+import { Button, Modal } from 'antd';
 import logoSvg from '../../assets/logo.svg';
 import walletSvg from '../../assets/wallet.svg';
 import twitterSvg from '../../assets/twitter.svg';
@@ -14,6 +14,9 @@ import { shortenWalletAddress } from '../../utils/string';
 import style from './index.module.less';
 import Hamburger from '../../components/hamburger';
 import classNames from 'classnames';
+
+import { CommonButton } from '../../components/Btns';
+
 const { twitterHref, discordHref, docsHref } = globalConfig;
 
 const { list } = routeConfigs;
@@ -23,11 +26,17 @@ export const NavLine = () => {
 
   const [activated, setActivated] = React.useState(false);
 
+  const [connectModalOpen, setConnectModalOpen] = React.useState(false);
+
   const { address, isConnected } = useAccount();
-  const { connect } = useConnect({
-    connector: new InjectedConnector(),
-  });
+  // const { connect } = useConnect({
+  //   connector: new InjectedConnector(),
+  // });
   const { disconnect } = useDisconnect();
+  const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
+
+  // const { data: ensAvatar } = useEnsAvatar({ address });
+  // const { data: ensName } = useEnsName({ address });
 
   const lists: React.ReactElement[] = list.map(route => (
     <span
@@ -64,6 +73,7 @@ export const NavLine = () => {
         <div className={style.right_nav}>
           <div className={style.wallet_icon}>
             <img src={walletSvg} alt="wallet" className={style.icon_href} />
+            {/* {ensAvatar ? <img src={ensAvatar} alt="ENS Avatar" /> : null} */}
             {isConnected ? (
               <>
                 {shortenWalletAddress(address)}&nbsp;
@@ -78,10 +88,10 @@ export const NavLine = () => {
             ) : (
               <Button
                 onClick={() => {
-                  connect();
+                  setConnectModalOpen(true);
                 }}
               >
-                Connect Wallet.
+                Connect Wallet
               </Button>
             )}
           </div>
@@ -110,6 +120,34 @@ export const NavLine = () => {
           {lists}
         </div>
       </div>
+      <Modal
+        open={connectModalOpen && !isConnected}
+        onCancel={() => {
+          setConnectModalOpen(false);
+        }}
+        transitionName={''}
+        footer={null}
+        title="Select Wallet"
+      >
+        {connectors.map(connector => (
+          <CommonButton
+            disabled={!connector.ready}
+            key={connector.id}
+            onClick={() => {
+              connect({ connector });
+              setConnectModalOpen(false);
+            }}
+            style={{
+              width: 'auto',
+              marginBottom: 8,
+            }}
+          >
+            {connector.name}
+            {!connector.ready && ' (unsupported)'}
+            {isLoading && connector.id === pendingConnector?.id && ' (connecting)'}
+          </CommonButton>
+        ))}
+      </Modal>
     </>
   );
 };

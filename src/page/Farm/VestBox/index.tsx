@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import cs from 'classnames';
-import { ClaimBtn, WithdrawAGIBtn } from '../../../components/Btns';
+import { RedeemBtn, WithdrawAGIBtn } from '../../../components/Btns';
 import { API } from '../../../Api';
 import style from './index.module.less';
 
@@ -16,7 +16,7 @@ export interface VestData {
 }
 
 export const VestBox = ({ data }: { data: VestData }) => {
-  const { balance, AGIList, vestingDays } = data;
+  const { balance, AGIList } = data;
 
   const onWithDrawClick = useCallback(() => {
     API.withdraw();
@@ -34,12 +34,12 @@ export const VestBox = ({ data }: { data: VestData }) => {
             <div className={style.type}> {balance.typeText}</div>
             <div className={style.count}>{balance.countText}</div>
           </div>
-          <div>
+          {/* <div>
             <div className={style.type}> {vestingDays.typeText}</div>
             <div className={style.count}>{vestingDays.countText}</div>
-          </div>
+          </div> */}
         </div>
-        <ClaimBtn onClick={onClaimClick} />
+        <RedeemBtn onClick={onClaimClick} />
       </div>
 
       {/* input output */}

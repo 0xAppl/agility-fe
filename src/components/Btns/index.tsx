@@ -11,14 +11,24 @@ export const ClaimBtn = ({ onClick }: { onClick: () => void }) => {
   return (
     <div className={style.btn} onClick={onClick}>
       <ArrowIcon className={style.rotate280} />
-      Claim
+      Claim esAGI
     </div>
   );
 };
 
-export const StakeBtn = ({ onClick }: { onClick: () => void }) => {
+export const RedeemBtn = ({ onClick }: { onClick: () => void }) => {
   return (
     <div className={style.btn} onClick={onClick}>
+      <ArrowIcon className={style.rotate280} />
+      Redeem ( only available when theres available esAGI, when esAGI = 0 || esAGI is vesting, this button is
+      unavailable)
+    </div>
+  );
+};
+
+export const StakeBtn = ({ onClick, styles }: { onClick: () => void; styles?: React.CSSProperties }) => {
+  return (
+    <div className={style.btn} onClick={onClick} style={styles}>
       <ArrowIcon />
       Stake
     </div>
@@ -56,6 +66,12 @@ export const DocsButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
       Docs
     </div>
   );
+};
+
+export const CommonButton: React.FC<
+  React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
+> = props => {
+  return <button className={cs(style.btn, style.fs_lg)} {...props}></button>;
 };
 
 const openNotification = () => {

@@ -1,0 +1,26 @@
+/* Create a container for the shimmer effect */
+.shimmer_container {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+/* Create the shimmer effect */
+.shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(100, 100, 100, 0.6) 40%, rgba(0, 0, 0, 0) 80%);
+  transform: translateX(-100%);
+  animation: shimmer 1s infinite;
+}
+
+/* Define the animation for the shimmer effect */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
