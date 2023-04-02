@@ -27,7 +27,7 @@ export const getContracts = (
     },
     stETHPool: {
       address: '0x8E7A8962a16f21005E93B3C8FCD39a81608ee520',
-      abi: null,
+      abi: [],
     },
     AGI: {
       address: '0xa49573920bd91e61bd46669059E80288FB44FAa0',
@@ -35,11 +35,11 @@ export const getContracts = (
     },
     esAGI: {
       address: '0x6bCdeB6457982b26A244521CC3A129571BAB8D22',
-      abi: null,
+      abi: [],
     },
     poolFactory: {
       address: '0xa378671de217b5B69154CA14297e00086619b512',
-      abi: null,
+      abi: [],
     },
   };
 };

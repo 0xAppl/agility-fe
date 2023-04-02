@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
+import { type BigNumber } from 'ethers';
 import { formatEther, parseEther } from 'ethers/lib/utils.js';
 import React from 'react';
 
@@ -23,14 +24,18 @@ const OnChainNumberDisplay: React.FC<{
     watch: true,
   });
 
-  return isConnected ? (
-    isLoading ? (
-      <Shimmer>Loading...</Shimmer>
-    ) : (
-      Number(formatEther(data?.toString())).toFixed(3)
-    )
-  ) : (
-    '???'
+  return (
+    <>
+      {isConnected ? (
+        isLoading ? (
+          <Shimmer>Loading...</Shimmer>
+        ) : (
+          Number(formatEther((data as unknown as BigNumber)?.toString())).toFixed(3)
+        )
+      ) : (
+        '???'
+      )}
+    </>
   );
 };
 export default OnChainNumberDisplay;
