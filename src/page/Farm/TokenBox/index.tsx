@@ -30,7 +30,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
   const { isConnected, address } = useAccount();
 
   const {
-    data: contractBalanceData,
+    data: stakedBalanceData,
     isError,
     isLoading: loadingStakedBalance,
   } = useContractRead({
@@ -42,7 +42,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     enabled: isConnected,
   });
 
-  const hasStacked = contractBalanceData?.toString() !== '0';
+  const hasStacked = stakedBalanceData?.toString() !== '0';
 
   const { ethPrice } = useGlobalStatsContext();
 
