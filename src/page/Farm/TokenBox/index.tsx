@@ -86,7 +86,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
               valueName={'totalSupply'}
               watch
               transform={value => {
-                return `$${bigNumberToDecimal(value) * ethPrice}`;
+                return `$${(bigNumberToDecimal(value) * ethPrice).toFixed(3)}`;
               }}
             />
           </div>
