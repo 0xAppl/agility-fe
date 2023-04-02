@@ -16,6 +16,7 @@ const useTVL = () => {
       functionName: 'totalSupply',
     })),
     enabled: isConnected,
+    watch: true,
   });
 
   return isError || isLoading || !Array.isArray(data)
