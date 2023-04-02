@@ -12,21 +12,30 @@ import style from './index.module.less';
 import StackingModal from './StackingModal';
 
 export const TokenBox = ({ token }: { token: IToken }) => {
-  const onWithDrawClick = useCallback(() => {
-    API.withdraw();
-  }, []);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const { isConnected, address } = useAccount();
-
-  const { config, error: getRewardError } = usePrepareContractWrite({
+  const { config: prepareClaimConfig, error: prepareClaimError } = usePrepareContractWrite({
     address: token.stakingContract.address,
     abi: token.stakingContract.abi,
     functionName: 'getReward',
   });
 
-  const { write: claimReward, data, error: claimRewardError } = useContractWrite(config);
+  const { write: claimReward, data: claimData, error: claimError } = useContractWrite(prepareClaimConfig);
+
+  const { config: prepareExitConfig, error: prepareExitError } = usePrepareContractWrite({
+    address: token.stakingContract.address,
+    abi: token.stakingContract.abi,
+    functionName: 'exit',
+  });
+
+  const { write: exit, data: exitData, error: exitError } = useContractWrite(prepareExitConfig);
+
+  const onWithDrawClick = useCallback(() => {
+    console.log('sss');
+    exit?.();
+  }, [exit]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { isConnected, address } = useAccount();
 
   const onClaimClick = () => {
     claimReward?.();
