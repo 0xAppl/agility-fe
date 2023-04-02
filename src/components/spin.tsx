@@ -2,8 +2,8 @@ import React from 'react';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 
-const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+const antIcon = <LoadingOutlined style={{ fontSize: '1em' }} spin />;
 
-const CustomSpin: React.FC = () => <Spin indicator={antIcon} />;
+const CustomSpin: React.FC<any> = props => <Spin indicator={antIcon} {...props} />;
 
 export default CustomSpin;

@@ -139,7 +139,7 @@ export const NavLine = () => {
             }}
             style={{
               width: 'auto',
-              marginBottom: 8,
+              marginRight: 8,
             }}
           >
             {connector.name}

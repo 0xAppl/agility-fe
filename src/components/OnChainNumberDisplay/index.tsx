@@ -15,7 +15,7 @@ const OnChainNumberDisplay: React.FC<{
   args?: any[];
   watch?: boolean;
   transform?: (value: BigNumber) => React.ReactNode;
-}> = ({ contract, valueName: functionName, args, transform }) => {
+}> = ({ contract, valueName: functionName, args, transform, watch }) => {
   //   return 333;
   const { isConnected } = useAccount();
 
@@ -24,7 +24,7 @@ const OnChainNumberDisplay: React.FC<{
     abi: contract.abi,
     functionName,
     args,
-    watch: true,
+    watch,
     enabled: isConnected,
   });
 

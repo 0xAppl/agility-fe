@@ -1,13 +1,22 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { ethers } from 'ethers';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useAccount, useContractRead, useContractWrite, usePrepareContractWrite, useProvider } from 'wagmi';
+import { toast, ToastContainer } from 'react-toastify';
+import {
+  useAccount,
+  useContractRead,
+  useContractWrite,
+  usePrepareContractWrite,
+  useProvider,
+  useWaitForTransaction,
+} from 'wagmi';
 import { API } from '../../../Api';
 import { ClaimBtn, StakeBtn, WithdrawBtn } from '../../../components/Btns';
 import OnChainNumberDisplay from '../../../components/OnChainNumberDisplay';
 import Shimmer from '../../../components/Shimmer';
 import { useGlobalStatsContext } from '../../../contexts/globalStatsContext';
 import { bigNumberToDecimal } from '../../../utils/number';
+import { capitalize } from '../../../utils/string';
 import { getContracts, type IToken } from '../tokenConfigs';
 // import { useContractContext } from '../../../contexts/contractContext';
 import style from './index.module.less';
@@ -16,12 +25,14 @@ import StackingModal from './StakeModal';
 export const TokenBox = ({ token }: { token: IToken }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [modalMode, setModalMode] = useState<'stake' | 'withdraw'>('stake');
+
   const { isConnected, address } = useAccount();
 
   const {
     data: contractBalanceData,
     isError,
-    isLoading,
+    isLoading: loadingStakedBalance,
   } = useContractRead({
     address: token.stakingContract.address,
     abi: token.stakingContract.abi,
@@ -43,23 +54,47 @@ export const TokenBox = ({ token }: { token: IToken }) => {
 
   const { write: claimReward, data: claimData, error: claimError } = useContractWrite(prepareClaimConfig);
 
+  const { isLoading: isLoadingClaim } = useWaitForTransaction({
+    hash: claimData?.hash,
+    onSuccess(data) {
+      toast.success('Claim Success!');
+      setIsModalOpen(false);
+    },
+  });
+
   const { config: prepareExitConfig, error: prepareExitError } = usePrepareContractWrite({
     address: token.stakingContract.address,
     abi: token.stakingContract.abi,
     functionName: 'exit',
-    enabled: !isLoading && hasStacked,
+    enabled: !loadingStakedBalance && hasStacked,
   });
 
   const { write: exit, data: exitData, error: exitError } = useContractWrite(prepareExitConfig);
 
-  const onWithDrawClick = useCallback(() => {
+  const { isLoading: isLoadingExit } = useWaitForTransaction({
+    hash: exitData?.hash,
+    onSuccess(data) {
+      toast.success('Withdraw all Success!');
+    },
+  });
+
+  const onExit = useCallback(() => {
     if (hasStacked) {
       exit?.();
     }
   }, [exit, hasStacked]);
 
   const onClaimClick = () => {
-    claimReward?.();
+    if (hasStacked) {
+      claimReward?.();
+    } else {
+      toast.info('No reward to claim!');
+    }
+  };
+
+  const onWithdrawClick = () => {
+    setModalMode('withdraw');
+    setIsModalOpen(true);
   };
 
   return (
@@ -101,7 +136,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
             <OnChainNumberDisplay contract={token.stakingContract} valueName={'earned'} args={[address]} watch /> $esAGI
           </div>
         </div>
-        <ClaimBtn onClick={onClaimClick} />
+        <ClaimBtn onClick={onClaimClick} isLoading={isLoadingClaim} />
       </div>
 
       <div className={style.line}></div>
@@ -118,22 +153,27 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         <StakeBtn
           onClick={() => {
             if (isConnected) {
+              setModalMode('stake');
               setIsModalOpen(true);
             }
           }}
         />
       </div>
 
-      <WithdrawBtn onClick={onWithDrawClick} />
+      <div className={style.withdraw_btns}>
+        <WithdrawBtn onClick={onWithdrawClick}>Withdraw</WithdrawBtn>
+        <WithdrawBtn onClick={onExit} isLoading={isLoadingExit}>
+          {`${isLoadingExit ? 'Withdrawing' : 'Withdraw'}`} All
+        </WithdrawBtn>
+      </div>
+
       <StackingModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
-        onOK={(stakeAmount: number) => {
-          // const numberToGwei = ethers.utils.parseUnits((0.1).toString(), 'gwei');
-          // contracts.ETHContract.stake(numberToGwei);
-        }}
         contractAddress={getContracts().ETHPool.address}
         contractABI={getContracts().ETHPool.abi}
+        title={capitalize(modalMode)}
+        modalMode={modalMode}
       />
     </div>
   );

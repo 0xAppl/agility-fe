@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import React from 'react';
 import cs from 'classnames';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -6,12 +7,23 @@ import { ReactComponent as ArrowIcon } from '../../assets/arrow.svg';
 import style from './index.module.less';
 import { Link } from 'react-router-dom';
 import { notification } from 'antd';
+import CustomSpin from '../spin';
+import { pipe } from '../../utils/functional';
+import { addingOnGoingAffix, capitalize } from '../../utils/string';
 
-export const ClaimBtn = ({ onClick }: { onClick: () => void }) => {
+export const ClaimBtn = ({ onClick, isLoading }: { onClick: () => void; isLoading?: boolean }) => {
   return (
     <div className={style.btn} onClick={onClick}>
-      <ArrowIcon className={style.rotate280} />
-      Claim esAGI
+      {isLoading ? (
+        <CustomSpin
+          style={{
+            marginRight: 8,
+          }}
+        />
+      ) : (
+        <ArrowIcon className={style.rotate280} />
+      )}
+      {`${isLoading ? 'Claiming' : 'Claim'}`} esAGI
     </div>
   );
 };
@@ -26,20 +38,55 @@ export const RedeemBtn = ({ onClick }: { onClick: () => void }) => {
   );
 };
 
-export const StakeBtn = ({ onClick, styles }: { onClick: () => void; styles?: React.CSSProperties }) => {
+export const StakeBtn = ({
+  onClick,
+  styles,
+  isLoading,
+  children = 'stake',
+}: {
+  onClick: () => void;
+  styles?: React.CSSProperties;
+  isLoading?: boolean;
+  children?: string;
+}) => {
   return (
     <div className={style.btn} onClick={onClick} style={styles}>
-      <ArrowIcon />
-      Stake
+      {isLoading ? (
+        <CustomSpin
+          style={{
+            marginRight: 8,
+          }}
+        />
+      ) : (
+        <ArrowIcon />
+      )}
+      {isLoading ? addingOnGoingAffix(capitalize(children)) : capitalize(children)}
     </div>
   );
 };
 
-export const WithdrawBtn = ({ onClick }: { onClick: () => void }) => {
+export const WithdrawBtn = ({
+  onClick,
+  children = 'Withdraw',
+  isLoading,
+}: {
+  onClick: () => void;
+  children: React.ReactNode;
+  isLoading?: boolean;
+}) => {
   return (
     <div className={cs(style.btn, style.draw)} onClick={onClick}>
-      <ArrowIcon className={cs(style.arrow_white, style.rotate280)} />
-      Withdraw
+      {isLoading ? (
+        <CustomSpin
+          style={{
+            marginRight: 8,
+            color: '#fff',
+          }}
+        />
+      ) : (
+        <ArrowIcon className={cs(style.arrow_white, style.rotate280)} />
+      )}
+      {children}
     </div>
   );
 };

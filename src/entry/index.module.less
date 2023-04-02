@@ -4,22 +4,73 @@
   #root {
     width: 100%;
     height: 100%;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+      'Open Sans', 'Helvetica Neue', sans-serif;
     // min-width: 1000px;
   }
   body {
     padding: 0px;
     margin: 0px;
-    
   }
 
+  .ant-btn,
+  .ant-input {
+    justify-content: center;
+    align-items: center;
+    height: 34px;
+    background: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 5px;
+    padding: 5px 16px 5px 12px;
+    box-sizing: border-box;
+    display: flex;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-family: 'Asap', sans-serif;
+    font-style: italic;
+  }
+  .ant-btn-default:not(:disabled):hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 2px 2px 0px #d9d9d9;
+    color: unset;
+    border-color: unset;
+  }
+  .ant-input {
+    width: unset;
+    padding: 4px;
+  }
+  .ant-input:hover, .ant-input:focus {
+    border-color: unset;
+    border-inline-end-width: 2px;
+    box-shadow: 2px 2px 0px #d9d9d9;
+  }
+  .ant-spin {
+    color: #000;
+  }
+  .ant-slider .ant-slider-track,
+  .ant-slider:hover .ant-slider-track {
+    background-color: #333;
+  }
+  .ant-slider .ant-slider-handle::after,
+  .ant-slider:hover .ant-slider-handle::after {
+    // background-color: #333;
+    box-shadow: 0 0 0 2px #333;
+  }
 }
 
-  a {
-    text-decoration: none;
-    color: inherit;
-    align-items: center;
-  }
+:root {
+  --toastify-text-color-light: #000 !important;
+  --toastify-font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+    'Open Sans', 'Helvetica Neue', sans-serif !important;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  align-items: center;
+}
 
 .container_body {
   width: 100%;

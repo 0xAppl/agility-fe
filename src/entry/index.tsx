@@ -3,10 +3,12 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { WagmiConfig, createClient, goerli, mainnet, configureChains, useQuery, useContractRead } from 'wagmi';
+import 'react-toastify/dist/ReactToastify.css';
 import style from './index.module.less';
 import { routeConfigs } from './routeConfigs';
 import { NavLine } from './NavLine';
 import '../theme.less';
+
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
 
@@ -20,6 +22,7 @@ import { formatEther, parseEther } from 'ethers/lib/utils.js';
 import { getContracts } from '../page/Farm/tokenConfigs';
 import { type BigNumber } from 'ethers';
 import { bigNumberToDecimal } from '../utils/number';
+import { ToastContainer } from 'react-toastify';
 
 // Configure chains & providers with the Alchemy provider.
 // Two popular providers are Alchemy (alchemy.com) and Infura (infura.io)
@@ -59,7 +62,7 @@ const Layout = ({ children }: any) => {
       return await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
     },
     {
-      refetchInterval: 10000,
+      refetchInterval: 30000,
       keepPreviousData: true,
     },
   );
@@ -85,6 +88,7 @@ const Layout = ({ children }: any) => {
             ))}
             <Route path="*" element={home} />
           </Routes>
+          <ToastContainer hideProgressBar autoClose={5000} />
         </div>
       </div>
     </GlobalStatsContext.Provider>
