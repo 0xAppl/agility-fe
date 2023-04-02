@@ -85,11 +85,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
   }, [exit, hasStacked]);
 
   const onClaimClick = () => {
-    if (hasStacked) {
-      claimReward?.();
-    } else {
-      toast.info('No reward to claim!');
-    }
+    claimReward?.();
   };
 
   const onWithdrawClick = () => {
