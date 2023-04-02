@@ -16,7 +16,7 @@ const useTVL = () => {
       functionName: 'totalSupply',
       watch: true,
     });
-    TVL = TVL.add(isError ? BigNumber.from(0) : (data as unknown as BigNumber));
+    TVL = TVL.add(isError || !data ? BigNumber.from(0) : (data as unknown as BigNumber));
   }
   return TVL;
 };

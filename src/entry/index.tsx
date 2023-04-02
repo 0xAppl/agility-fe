@@ -81,7 +81,7 @@ const Layout = ({ children }: any) => {
         ethPrice: data?.data.ethereum.usd || 0,
         TVL: Number(formatEther(TVL.toString()).toString()),
         AGIPrice: 0,
-        AGITotalSupply: Number(formatEther(AGITotalSupplyData as unknown as BigNumber)),
+        AGITotalSupply: AGITotalSupplyData ? Number(formatEther(AGITotalSupplyData as unknown as BigNumber)) : 0,
       }}
     >
       <div className={style.container_body}>
