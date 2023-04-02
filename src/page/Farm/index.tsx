@@ -9,6 +9,7 @@ import { VestBox } from './VestBox';
 import CountDown from './CountDown';
 // import ContractContext from '../../contexts/contractContext';
 import { useAccount, useProvider } from 'wagmi';
+import { useGlobalStatsContext } from '../../contexts/globalStatsContext';
 
 // const s = fetchSigner();
 
@@ -21,6 +22,9 @@ export const Farm = () => {
   // connector?.getProvider();
   const { isConnected } = useAccount();
   const [signer, setSigner] = useState<any>(null);
+
+  const { TVL, ethPrice } = useGlobalStatsContext();
+
   return (
     // <ContractContext.Provider
     //   value={{
@@ -31,7 +35,9 @@ export const Farm = () => {
     // >
     <div className={style.farm_section}>
       {/* total  */}
-      <div className={style.total_container}>TVL ??? ETH $???</div>
+      <div className={style.total_container}>
+        TVL ${(TVL * ethPrice).toFixed(3)} ETH ${ethPrice || '???'}
+      </div>
 
       {/* farm tokens */}
       <div className={cs(style.farm_sec_container, style.token_container)}>

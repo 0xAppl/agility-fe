@@ -1,5 +1,6 @@
 import { fetchBalance } from '@wagmi/core';
 import { Input, Modal, Slider } from 'antd';
+import { parseEther } from 'ethers/lib/utils.js';
 import React, { useEffect, useState } from 'react';
 import {
   useAccount,
@@ -56,11 +57,10 @@ const StackingModal: React.FC<{
     address: contractAddress,
     abi: contractABI,
     functionName: 'stake',
-    args: [1000],
+    args: [parseEther(debouncedValue.toString())],
     enabled: debouncedValue !== 0 && isModalOpen,
   });
 
-  console.log(error);
   const { write } = useContractWrite(config);
 
   useEffect(() => {

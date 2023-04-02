@@ -1,40 +1,36 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { ethers } from 'ethers';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useAccount, useContractRead, useProvider } from 'wagmi';
+import { useAccount, useContractRead, useContractWrite, usePrepareContractWrite, useProvider } from 'wagmi';
 import { API } from '../../../Api';
 import { ClaimBtn, StakeBtn, WithdrawBtn } from '../../../components/Btns';
 import OnChainNumberDisplay from '../../../components/OnChainNumberDisplay';
 import Shimmer from '../../../components/Shimmer';
-import { getContracts } from '../tokenConfigs';
+import { getContracts, type IToken } from '../tokenConfigs';
 // import { useContractContext } from '../../../contexts/contractContext';
 import style from './index.module.less';
 import StackingModal from './StackingModal';
 
-export interface IToken {
-  icon: string;
-  name: string;
-  apr: string;
-  esAGIEarned: string;
-  ethStaked: string;
-}
-
 export const TokenBox = ({ token }: { token: IToken }) => {
-  // const onStakeClick = useCallback(() => {
-  //   API.stake();
-  // }, []);
-  const onClaimClick = useCallback(() => {
-    API.claim();
-  }, []);
   const onWithDrawClick = useCallback(() => {
     API.withdraw();
   }, []);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // const { contracts } = useContractContext();
+  const { isConnected, address } = useAccount();
 
-  const { isConnected } = useAccount();
+  const { config, error: getRewardError } = usePrepareContractWrite({
+    address: token.stakingContract.address,
+    abi: token.stakingContract.abi,
+    functionName: 'getReward',
+  });
+
+  const { write: claimReward, data, error: claimRewardError } = useContractWrite(config);
+
+  const onClaimClick = () => {
+    claimReward?.();
+  };
 
   return (
     <div className={style.token_box}>
@@ -54,7 +50,9 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         </div>
         <div className={style.tvl}>
           <div className={style.text}>TVL</div>
-          <div className={style.number}> ???</div>
+          <div className={style.number}>
+            <OnChainNumberDisplay contract={token.stakingContract} valueName={'totalSupply'} watch />
+          </div>
         </div>
       </div>
 
@@ -63,7 +61,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         <div className={style.left}>
           <div className={style.text}> esAGI Earned</div>
           <div className={style.number}>
-            <OnChainNumberDisplay contractAddress={getContracts().ETHPool.address} functionName={'earned'} /> $esAGI
+            <OnChainNumberDisplay contract={token.stakingContract} valueName={'earned'} args={[address]} watch /> $esAGI
           </div>
         </div>
         <ClaimBtn onClick={onClaimClick} />
@@ -76,7 +74,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         <div className={style.left}>
           <div className={style.text}> ETH Staked</div>
           <div className={style.number}>
-            <OnChainNumberDisplay contractAddress={getContracts().ETHPool.address} functionName={'balanceOf'} />
+            <OnChainNumberDisplay contract={token.stakingContract} valueName={'balanceOf'} args={[address]} watch />
           </div>
         </div>
 

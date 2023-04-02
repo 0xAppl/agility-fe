@@ -1,24 +1,36 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
+import { formatEther, parseEther } from 'ethers/lib/utils.js';
 import React from 'react';
 
-import { getContract } from '@wagmi/core';
 import { useAccount, useContractRead } from 'wagmi';
-import { getContracts } from '../../page/Farm/tokenConfigs';
+import useTVL from '../../hooks/useTVL';
+import { type IContract } from '../../page/Farm/tokenConfigs';
 import Shimmer from '../Shimmer';
 
 const OnChainNumberDisplay: React.FC<{
-  contractAddress: `0x${string}`;
-  functionName: string;
-}> = ({ contractAddress, functionName }) => {
+  contract: IContract;
+  valueName: string;
+  args?: any[];
+  watch?: boolean;
+}> = ({ contract, valueName: functionName, args }) => {
   const { isConnected, address } = useAccount();
 
   const { data, isError, isLoading } = useContractRead({
-    address: contractAddress,
-    abi: Object.values(getContracts()).filter(contract => contract.address === contractAddress)[0].abi,
+    address: contract.address,
+    abi: contract.abi,
     functionName,
-    args: [address],
+    args,
+    watch: true,
   });
 
-  return isConnected ? isLoading ? <Shimmer>Loading...</Shimmer> : data?.toNumber() : '???';
+  return isConnected ? (
+    isLoading ? (
+      <Shimmer>Loading...</Shimmer>
+    ) : (
+      Number(formatEther(data?.toString())).toFixed(3)
+    )
+  ) : (
+    '???'
+  );
 };
 export default OnChainNumberDisplay;
