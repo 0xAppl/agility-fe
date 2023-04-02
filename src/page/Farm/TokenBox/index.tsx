@@ -9,9 +9,27 @@ import Shimmer from '../../../components/Shimmer';
 import { getContracts, type IToken } from '../tokenConfigs';
 // import { useContractContext } from '../../../contexts/contractContext';
 import style from './index.module.less';
-import StackingModal from './StackingModal';
+import StackingModal from './StakeModal';
 
 export const TokenBox = ({ token }: { token: IToken }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { isConnected, address } = useAccount();
+
+  const {
+    data: contractBalanceData,
+    isError,
+    isLoading,
+  } = useContractRead({
+    address: token.stakingContract.address,
+    abi: token.stakingContract.abi,
+    functionName: 'balanceOf',
+    args: [address],
+    watch: true,
+  });
+
+  const hasStacked = contractBalanceData?.toString() !== '0';
+
   const { config: prepareClaimConfig, error: prepareClaimError } = usePrepareContractWrite({
     address: token.stakingContract.address,
     abi: token.stakingContract.abi,
@@ -24,18 +42,16 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     address: token.stakingContract.address,
     abi: token.stakingContract.abi,
     functionName: 'exit',
+    enabled: !isLoading && hasStacked,
   });
 
   const { write: exit, data: exitData, error: exitError } = useContractWrite(prepareExitConfig);
 
   const onWithDrawClick = useCallback(() => {
-    console.log('sss');
-    exit?.();
-  }, [exit]);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const { isConnected, address } = useAccount();
+    if (hasStacked) {
+      exit?.();
+    }
+  }, [exit, hasStacked]);
 
   const onClaimClick = () => {
     claimReward?.();
