@@ -108,8 +108,9 @@ const StackingModal: React.FC<{
             marginTop: '20px',
           }}
           onClick={() => {
-            console.log(contract?.stake);
-            contract?.stake(1000);
+            // console.log(contract?.stake);
+            // contract?.stake(1000);
+            write?.();
           }}
         />
       </div>

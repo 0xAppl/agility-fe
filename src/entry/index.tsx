@@ -19,6 +19,7 @@ import useTVL from '../hooks/useTVL';
 import { formatEther, parseEther } from 'ethers/lib/utils.js';
 import { getContracts } from '../page/Farm/tokenConfigs';
 import { type BigNumber } from 'ethers';
+import { bigNumberToDecimal } from '../utils/number';
 
 // Configure chains & providers with the Alchemy provider.
 // Two popular providers are Alchemy (alchemy.com) and Infura (infura.io)
@@ -65,23 +66,13 @@ const Layout = ({ children }: any) => {
 
   const TVL = useTVL();
 
-  const {
-    data: AGITotalSupplyData,
-    isError,
-    isLoading,
-  } = useContractRead({
-    address: getContracts().AGI.address,
-    abi: getContracts().AGI.abi,
-    functionName: 'totalSupply',
-  });
-
   return (
     <GlobalStatsContext.Provider
       value={{
         ethPrice: data?.data.ethereum.usd || 0,
-        TVL: Number(formatEther(TVL.toString()).toString()),
+        TVL: bigNumberToDecimal(TVL),
         AGIPrice: 0,
-        AGITotalSupply: AGITotalSupplyData ? Number(formatEther(AGITotalSupplyData as unknown as BigNumber)) : 0,
+        AGITotalSupply: 0,
       }}
     >
       <div className={style.container_body}>

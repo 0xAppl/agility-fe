@@ -6,6 +6,8 @@ import { API } from '../../../Api';
 import { ClaimBtn, StakeBtn, WithdrawBtn } from '../../../components/Btns';
 import OnChainNumberDisplay from '../../../components/OnChainNumberDisplay';
 import Shimmer from '../../../components/Shimmer';
+import { useGlobalStatsContext } from '../../../contexts/globalStatsContext';
+import { bigNumberToDecimal } from '../../../utils/number';
 import { getContracts, type IToken } from '../tokenConfigs';
 // import { useContractContext } from '../../../contexts/contractContext';
 import style from './index.module.less';
@@ -26,9 +28,12 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     functionName: 'balanceOf',
     args: [address],
     watch: true,
+    enabled: isConnected,
   });
 
   const hasStacked = contractBalanceData?.toString() !== '0';
+
+  const { ethPrice } = useGlobalStatsContext();
 
   const { config: prepareClaimConfig, error: prepareClaimError } = usePrepareContractWrite({
     address: token.stakingContract.address,
@@ -76,7 +81,14 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         <div className={style.tvl}>
           <div className={style.text}>TVL</div>
           <div className={style.number}>
-            <OnChainNumberDisplay contract={token.stakingContract} valueName={'totalSupply'} watch />
+            <OnChainNumberDisplay
+              contract={token.stakingContract}
+              valueName={'totalSupply'}
+              watch
+              transform={value => {
+                return `$${bigNumberToDecimal(value) * ethPrice}`;
+              }}
+            />
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ import React from 'react';
 import { useAccount, useContractRead } from 'wagmi';
 import useTVL from '../../hooks/useTVL';
 import { type IContract } from '../../page/Farm/tokenConfigs';
+import { bigNumberToDecimal } from '../../utils/number';
 import Shimmer from '../Shimmer';
 
 const OnChainNumberDisplay: React.FC<{
@@ -13,8 +14,10 @@ const OnChainNumberDisplay: React.FC<{
   valueName: string;
   args?: any[];
   watch?: boolean;
-}> = ({ contract, valueName: functionName, args }) => {
-  const { isConnected, address } = useAccount();
+  transform?: (value: BigNumber) => React.ReactNode;
+}> = ({ contract, valueName: functionName, args, transform }) => {
+  //   return 333;
+  const { isConnected } = useAccount();
 
   const { data, isError, isLoading } = useContractRead({
     address: contract.address,
@@ -22,6 +25,7 @@ const OnChainNumberDisplay: React.FC<{
     functionName,
     args,
     watch: true,
+    enabled: isConnected,
   });
 
   return (
@@ -29,8 +33,10 @@ const OnChainNumberDisplay: React.FC<{
       {isConnected ? (
         isLoading ? (
           <Shimmer>Loading...</Shimmer>
+        ) : transform ? (
+          transform(data as unknown as BigNumber)
         ) : (
-          Number(formatEther((data as unknown as BigNumber)?.toString())).toFixed(3)
+          bigNumberToDecimal(data as unknown as BigNumber).toFixed(3)
         )
       ) : (
         '???'

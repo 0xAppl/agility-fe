@@ -1,4 +1,6 @@
+import { type BigNumber } from 'ethers';
 import React, { useContext } from 'react';
+import { BigZero } from '../utils/number';
 
 export const GlobalStatsContext = React.createContext<{
   ethPrice: number;
