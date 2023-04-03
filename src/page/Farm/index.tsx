@@ -10,6 +10,7 @@ import CountDown from './CountDown';
 // import ContractContext from '../../contexts/contractContext';
 import { useAccount, useProvider } from 'wagmi';
 import { useGlobalStatsContext } from '../../contexts/globalStatsContext';
+import { numberToPrecision } from '@utils/number';
 
 // const s = fetchSigner();
 
@@ -36,7 +37,7 @@ export const Farm = () => {
     <div className={style.farm_section}>
       {/* total  */}
       <div className={style.total_container}>
-        TVL ${(TVL * ethPrice).toFixed(3)} ETH ${ethPrice || '???'}
+        TVL ${numberToPrecision(TVL * ethPrice, 0)} ETH ${ethPrice || '???'}
       </div>
 
       {/* farm tokens */}

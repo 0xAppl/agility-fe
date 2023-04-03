@@ -23,6 +23,10 @@ import { getContracts } from '../page/Farm/tokenConfigs';
 import { type BigNumber } from 'ethers';
 import { bigNumberToDecimal } from '../utils/number';
 import { ToastContainer } from 'react-toastify';
+// import useGetTokenPriceFromLP from '@hooks/useGetTokenPriceFromLP';
+import { UniLpAbi } from '../page/Farm/abis';
+import useGetTokenPriceFromLP from '@hooks/useGetTokenPriceFromLP';
+import useReadContractNumber from '@hooks/useReadContractNumber';
 
 // Configure chains & providers with the Alchemy provider.
 // Two popular providers are Alchemy (alchemy.com) and Infura (infura.io)
@@ -69,13 +73,27 @@ const Layout = ({ children }: any) => {
 
   const TVL = useTVL();
 
+  const tokenPrice = useGetTokenPriceFromLP(
+    data?.data.ethereum.usd || 0,
+    getContracts().uniV2Pool.address,
+    getContracts().uniV2Pool.abi,
+    'getReserves',
+  );
+
+  const { data: AGITotalSupply } = useReadContractNumber(
+    { address: getContracts().AGI.address, abi: getContracts().AGI.abi },
+    'totalSupply',
+    undefined,
+    false,
+  );
+
   return (
     <GlobalStatsContext.Provider
       value={{
         ethPrice: data?.data.ethereum.usd || 0,
         TVL: bigNumberToDecimal(TVL),
-        AGIPrice: 0,
-        AGITotalSupply: 0,
+        AGIPrice: tokenPrice,
+        AGITotalSupply,
       }}
     >
       <div className={style.container_body}>

@@ -1,3 +1,4 @@
+import { numberToPrecision } from '@utils/number';
 import React from 'react';
 import { useGlobalStatsContext } from '../../../contexts/globalStatsContext';
 import style from './index.module.less';
@@ -16,9 +17,13 @@ export const StatusBox = ({ data }: { data: IStatus }) => {
   return (
     <div className={style.status_box}>
       <div className={style.type}>{typeText === 'TVL' ? 'TVL' : 'AGI'}</div>
-      <div className={style.count}>{typeText === 'TVL' ? `${TVL.toFixed(3)} ETH` : `PRICE $${AGIPrice}`}</div>
+      <div className={style.count}>
+        {typeText === 'TVL' ? `${numberToPrecision(TVL, 3)} ETH` : `PRICE $${numberToPrecision(AGIPrice)}`}
+      </div>
       <div className={style.value}>
-        {typeText === 'TVL' ? `$${(TVL * ethPrice).toFixed(3)}` : `MC $${(AGIPrice * AGITotalSupply).toFixed(3)}`}
+        {typeText === 'TVL'
+          ? `$${numberToPrecision(TVL * ethPrice, 0)}`
+          : `MC $${numberToPrecision(AGIPrice * AGITotalSupply, 0)}`}
       </div>
     </div>
   );

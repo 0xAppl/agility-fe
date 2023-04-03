@@ -2,7 +2,7 @@
 import { type IStatus } from './StatusBox';
 import { type VestData } from './VestBox';
 import ETHIcon from '../../assets/ETH_icon.svg';
-import { AGIAbi, ETHPoolAbi } from './abis';
+import { AGIAbi, ETHPoolAbi, UniLpAbi } from './abis';
 
 export interface IContract {
   address: `0x${string}`;
@@ -19,7 +19,7 @@ export const nativeTokenAddress = '0x0000000000000000000000000000000000000000';
 
 export const getContracts = (
   network = '0x1',
-): Record<'ETHPool' | 'stETHPool' | 'AGI' | 'esAGI' | 'poolFactory', IContract> => {
+): Record<'ETHPool' | 'stETHPool' | 'AGI' | 'esAGI' | 'poolFactory' | 'uniV2Pool', IContract> => {
   return {
     ETHPool: {
       address: '0xdee9477b0a5D62f987aA9cfE18Ee651a68F13556',
@@ -40,6 +40,10 @@ export const getContracts = (
     poolFactory: {
       address: '0xa378671de217b5B69154CA14297e00086619b512',
       abi: [],
+    },
+    uniV2Pool: {
+      address: '0x3322f41dfa379B6D3050C1e271B0b435b3Ee3303',
+      abi: UniLpAbi,
     },
   };
 };

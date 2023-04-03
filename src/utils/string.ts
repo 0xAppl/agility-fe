@@ -9,3 +9,7 @@ export const addingOnGoingAffix = (verb: string) => {
 export const capitalize = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
+
+export const trimTailingZeros = (str: string) => {
+  return str.replace(/0+$/, '');
+};
