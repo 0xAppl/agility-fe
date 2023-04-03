@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import useReadContractNumber from '@hooks/useReadContractNumber';
+import { ONE_DAY_IN_SECS } from '@utils/time';
 import { BigNumber, ethers } from 'ethers';
 import React, { useCallback, useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
@@ -86,7 +87,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
   const { data: balanceOf } = useReadContractNumber(token.stakingContract, 'balanceOf', [address], true);
 
   const APR =
-    ((rewardPerTokenStored * 86400 * (balanceOf / (TVL === 0 ? 1 : TVL)) * AGIPrice * 365) /
+    ((rewardPerTokenStored * ONE_DAY_IN_SECS * (balanceOf / (TVL === 0 ? 1 : TVL)) * AGIPrice * 365) /
       (ethPrice * balanceOf || 1)) *
     100;
 
