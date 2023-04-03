@@ -3,7 +3,13 @@ import { bigNumberToDecimal } from '@utils/number';
 import { type BigNumber } from 'ethers';
 import { useAccount, useContractRead } from 'wagmi';
 
-const useReadContractNumber = (contract: IContract, valueName: string, args?: any[], watch?: boolean) => {
+const useReadContractNumber = (
+  contract: IContract,
+  valueName: string,
+  args?: any[],
+  watch?: boolean,
+  enabled?: boolean,
+) => {
   const { isConnected } = useAccount();
 
   const { data, isLoading, isError } = useContractRead({
@@ -12,7 +18,7 @@ const useReadContractNumber = (contract: IContract, valueName: string, args?: an
     functionName: valueName,
     args,
     watch,
-    enabled: isConnected,
+    enabled: enabled ?? isConnected,
   });
 
   return { data: isLoading || isError ? 0 : bigNumberToDecimal(data as unknown as BigNumber), isLoading, isError };

@@ -3,6 +3,7 @@ import cs from 'classnames';
 import { RedeemBtn, WithdrawAGIBtn } from '../../../components/Btns';
 import { API } from '../../../Api';
 import style from './index.module.less';
+import RedeemModal from './redeemModal';
 
 interface IVest {
   typeText: string;
@@ -18,11 +19,13 @@ export interface VestData {
 export const VestBox = ({ data }: { data: VestData }) => {
   const { balance, AGIList } = data;
 
+  const [modalOpen, setModalOpen] = React.useState(false);
+
   const onWithDrawClick = useCallback(() => {
     API.withdraw();
   }, []);
-  const onClaimClick = useCallback(() => {
-    API.claim();
+  const onClickRedeem = useCallback(() => {
+    setModalOpen(true);
   }, []);
 
   return (
@@ -39,7 +42,7 @@ export const VestBox = ({ data }: { data: VestData }) => {
             <div className={style.count}>{vestingDays.countText}</div>
           </div> */}
         </div>
-        <RedeemBtn onClick={onClaimClick} />
+        <RedeemBtn onClick={onClickRedeem} />
       </div>
 
       {/* input output */}
@@ -54,6 +57,7 @@ export const VestBox = ({ data }: { data: VestData }) => {
           <WithdrawAGIBtn onClick={onWithDrawClick} />
         </div>
       </div>
+      <RedeemModal isModalOpen={modalOpen} setIsModalOpen={setModalOpen}></RedeemModal>
     </>
   );
 };
