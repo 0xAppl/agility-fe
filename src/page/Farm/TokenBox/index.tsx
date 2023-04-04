@@ -17,8 +17,8 @@ import { ClaimBtn, StakeBtn, WithdrawBtn } from '../../../components/Btns';
 import OnChainNumberDisplay from '../../../components/OnChainNumberDisplay';
 import Shimmer from '../../../components/Shimmer';
 import { useGlobalStatsContext } from '../../../contexts/globalStatsContext';
-import { bigNumberToDecimal, numberToPrecision } from '../../../utils/number';
-import { capitalize } from '../../../utils/string';
+import { bigNumberToDecimal, numberToPrecision } from '@utils/number';
+import { capitalize } from '@utils/string';
 import { getContracts, type IToken } from '../tokenConfigs';
 // import { useContractContext } from '../../../contexts/contractContext';
 import style from './index.module.less';
@@ -124,17 +124,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         </div>
         <div className={style.tvl}>
           <div className={style.text}>TVL</div>
-          <div className={style.number}>
-            ${numberToPrecision(TVL * ethPrice, 0)}
-            {/* <OnChainNumberDisplay
-              contract={token.stakingContract}
-              valueName={'totalSupply'}
-              watch
-              transform={value => {
-                return `$${numberToPrecision(value * ethPrice, 0)}`;
-              }}
-            /> */}
-          </div>
+          <div className={style.number}>${numberToPrecision(TVL * ethPrice, 0)}</div>
         </div>
       </div>
 

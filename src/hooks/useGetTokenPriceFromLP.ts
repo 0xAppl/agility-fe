@@ -19,10 +19,15 @@ const useGetTokenPriceFromLP = (
     functionName,
     chainId: 1,
   });
-  if (!isLoading && !isError) {
-    const [reserve0, reserve1] = data as unknown as [BigNumber, BigNumber];
-    const tokenPrice = (1 / reserve1.div(reserve0).toNumber()) * ethPrice;
-    return tokenPrice;
+  if (!isLoading && !isError && data) {
+    try {
+      const [reserve0, reserve1] = data as unknown as [BigNumber, BigNumber];
+      const tokenPrice = (1 / reserve1.div(reserve0).toNumber()) * ethPrice;
+      return tokenPrice;
+    } catch (e) {
+      console.error(e);
+      return 0;
+    }
   } else {
     return 0;
   }
