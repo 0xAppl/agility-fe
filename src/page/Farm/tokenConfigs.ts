@@ -2,7 +2,7 @@
 import { type IStatus } from './StatusBox';
 import { type VestData } from './VestBox';
 import ETHIcon from '../../assets/ETH_icon.svg';
-import { AGIAbi, ETHPoolAbi, UniLpAbi } from './abis';
+import { AGIAbi, esAGIAbi, ETHPoolAbi, UniLpAbi } from './abis';
 
 export interface IContract {
   address: `0x${string}`;
@@ -35,7 +35,7 @@ export const getContracts = (
     },
     esAGI: {
       address: '0x6bCdeB6457982b26A244521CC3A129571BAB8D22',
-      abi: [],
+      abi: esAGIAbi,
     },
     poolFactory: {
       address: '0xa378671de217b5B69154CA14297e00086619b512',

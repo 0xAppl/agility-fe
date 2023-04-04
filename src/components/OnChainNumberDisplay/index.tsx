@@ -20,7 +20,13 @@ const OnChainNumberDisplay: React.FC<{
   //   return 333;
   const { isConnected } = useAccount();
 
-  const { data: value, isLoading } = useReadContractNumber(contract, valueName, args, watch);
+  const { data: value, isLoading } = useReadContractNumber({
+    address: contract.address,
+    abi: contract.abi,
+    functionName: valueName,
+    args,
+    watch,
+  });
 
   return (
     <>

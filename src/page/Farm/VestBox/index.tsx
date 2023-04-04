@@ -4,6 +4,10 @@ import { RedeemBtn, WithdrawAGIBtn } from '../../../components/Btns';
 import { API } from '../../../Api';
 import style from './index.module.less';
 import RedeemModal from './redeemModal';
+import useReadContractNumber from '@hooks/useReadContractNumber';
+import { getContracts } from '../tokenConfigs';
+import { useAccount } from 'wagmi';
+import { toast } from 'react-toastify';
 
 interface IVest {
   typeText: string;
@@ -21,9 +25,21 @@ export const VestBox = ({ data }: { data: VestData }) => {
 
   const [modalOpen, setModalOpen] = React.useState(false);
 
-  const onWithDrawClick = useCallback(() => {
+  const { address } = useAccount();
+
+  const { data: esAGIBalance } = useReadContractNumber({
+    ...getContracts().esAGI,
+    functionName: 'balanceOf',
+    args: [address],
+  });
+
+  const onWithDrawClick = () => {
+    if (esAGIBalance === 0) {
+      return toast.info('No esAGI balance');
+    }
     API.withdraw();
-  }, []);
+  };
+
   const onClickRedeem = useCallback(() => {
     setModalOpen(true);
   }, []);
@@ -42,7 +58,7 @@ export const VestBox = ({ data }: { data: VestData }) => {
             <div className={style.count}>{vestingDays.countText}</div>
           </div> */}
         </div>
-        <RedeemBtn onClick={onClickRedeem} />
+        <RedeemBtn onClick={onClickRedeem} disabled={esAGIBalance === 0} />
       </div>
 
       {/* input output */}

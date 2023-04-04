@@ -11,6 +11,7 @@ import CountDown from './CountDown';
 import { useAccount, useProvider } from 'wagmi';
 import { useGlobalStatsContext } from '../../contexts/globalStatsContext';
 import { numberToPrecision } from '@utils/number';
+import useReadContractNumber from '@hooks/useReadContractNumber';
 
 // const s = fetchSigner();
 
@@ -21,10 +22,16 @@ export const Farm = () => {
   const provider = useProvider();
   const { connector } = useAccount();
   // connector?.getProvider();
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
   const [signer, setSigner] = useState<any>(null);
 
   const { TVL, ethPrice } = useGlobalStatsContext();
+
+  const { data: esAGIBalance } = useReadContractNumber({
+    ...getContracts().esAGI,
+    functionName: 'balanceOf',
+    args: [address],
+  });
 
   return (
     // <ContractContext.Provider
@@ -64,7 +71,7 @@ export const Farm = () => {
       {/* Vesting  */}
       <div className={cs(style.farm_sec_container, style.vesting_container)}>
         <div className={style.title}>esAGI Vesting</div>
-        <div className={style.balance}>Balance {esAGIVestingConfig.balance.countText} $esAGI</div>
+        <div className={style.balance}>Balance {numberToPrecision(esAGIBalance)} $esAGI</div>
         <div className={style.box_container}>
           <VestBox data={esAGIVestingConfig} />
         </div>

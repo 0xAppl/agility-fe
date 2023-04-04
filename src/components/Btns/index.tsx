@@ -28,12 +28,17 @@ export const ClaimBtn = ({ onClick, isLoading }: { onClick: () => void; isLoadin
   );
 };
 
-export const RedeemBtn = ({ onClick }: { onClick: () => void }) => {
+export const RedeemBtn = ({ onClick, disabled }: { onClick: () => void; disabled: boolean }) => {
   return (
-    <div className={style.btn} onClick={onClick}>
+    <div
+      className={cs({
+        [style.btn]: true,
+        [style.disabled]: disabled,
+      })}
+      onClick={onClick}
+    >
       <ArrowIcon className={style.rotate280} />
-      Redeem ( only available when theres available esAGI, when esAGI = 0 || esAGI is vesting, this button is
-      unavailable)
+      Redeem
     </div>
   );
 };

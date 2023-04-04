@@ -23,6 +23,7 @@ import { getContracts, type IToken } from '../tokenConfigs';
 // import { useContractContext } from '../../../contexts/contractContext';
 import style from './index.module.less';
 import StackingModal from './StakeModal';
+import { useLocation } from 'react-router-dom';
 
 export const TokenBox = ({ token }: { token: IToken }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -80,11 +81,28 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     },
   });
 
-  const { data: rewardPerTokenStored } = useReadContractNumber(token.stakingContract, 'rewardRate', undefined, true);
+  const isHomepage = useLocation().pathname === '/';
 
-  const { data: TVL } = useReadContractNumber(token.stakingContract, 'totalSupply', undefined, true);
+  const commonProps = {
+    ...token.stakingContract,
+    enabled: !isHomepage,
+  };
 
-  const { data: balanceOf } = useReadContractNumber(token.stakingContract, 'balanceOf', [address], true);
+  const { data: rewardPerTokenStored } = useReadContractNumber({
+    ...commonProps,
+    functionName: 'rewardRate',
+  });
+
+  const { data: TVL } = useReadContractNumber({
+    ...commonProps,
+    functionName: 'totalSupply',
+  });
+
+  const { data: balanceOf } = useReadContractNumber({
+    ...commonProps,
+    functionName: 'balanceOf',
+    args: [address],
+  });
 
   const APR =
     ((rewardPerTokenStored * ONE_DAY_IN_SECS * (balanceOf / (TVL === 0 ? 1 : TVL)) * AGIPrice * 365) /

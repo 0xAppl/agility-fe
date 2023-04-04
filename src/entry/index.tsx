@@ -80,12 +80,11 @@ const Layout = ({ children }: any) => {
     'getReserves',
   );
 
-  const { data: AGITotalSupply } = useReadContractNumber(
-    { address: getContracts().AGI.address, abi: getContracts().AGI.abi },
-    'totalSupply',
-    undefined,
-    false,
-  );
+  const { data: AGITotalSupply } = useReadContractNumber({
+    address: getContracts().AGI.address,
+    abi: getContracts().AGI.abi,
+    functionName: 'totalSupply',
+  });
 
   return (
     <GlobalStatsContext.Provider
