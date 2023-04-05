@@ -1,2 +1,3 @@
 - staking params issue
 - APR calculation?
+- cancel function not working
