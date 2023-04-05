@@ -1,12 +1,14 @@
 import { type IContract } from '@page/Farm/tokenConfigs';
-import { bigNumberToDecimal } from '@utils/number';
+import { BigZero, bigNumberToDecimal } from '@utils/number';
 import { type ExtractArrayType, type ExtractFunctionParams } from '@utils/type';
 import { type BigNumber } from 'ethers';
 import { useAccount, useContractRead } from 'wagmi';
 
-type IUseReadContractNumber = ExtractArrayType<ExtractFunctionParams<typeof useContractRead>>;
+type IUseReadContractNumber = ExtractArrayType<ExtractFunctionParams<typeof useContractRead>> & {
+  outputBigNumber?: boolean;
+};
 
-const useReadContractNumber = (params: IUseReadContractNumber) => {
+const useReadContractNumber = <T = number>(params: IUseReadContractNumber) => {
   const { isConnected } = useAccount();
 
   const { data, isLoading, isError, ...rest } = useContractRead({
@@ -14,7 +16,16 @@ const useReadContractNumber = (params: IUseReadContractNumber) => {
     enabled: params?.enabled ?? isConnected,
   });
 
-  return { data: isLoading || isError ? 0 : bigNumberToDecimal(data as BigNumber), isLoading, isError, ...rest };
+  const outputData =
+    isLoading || isError
+      ? params.outputBigNumber ?? false
+        ? BigZero
+        : 0
+      : params.outputBigNumber ?? false
+      ? (data as BigNumber)
+      : bigNumberToDecimal(data as BigNumber);
+
+  return { data: outputData as T, isLoading, isError, ...rest };
 };
 
 export default useReadContractNumber;

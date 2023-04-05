@@ -19,7 +19,8 @@
     "paths": {
       "@hooks/*": ["src/hooks/*"],
       "@utils/*": ["src/utils/*"],
-      "@page/*": ["src/page/*"]
+      "@page/*": ["src/page/*"],
+      "@components/*": ["src/components/*"]
     }
   },
   "include": ["src"],

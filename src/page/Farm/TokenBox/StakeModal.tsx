@@ -93,7 +93,7 @@ const StackingModal: React.FC<{
       setLoading(true);
       fetchBalance({ address, formatUnits: 'ether' })
         .then(balance => {
-          setMaxValue(bigNumberToDecimal(balance.value));
+          setMaxValue(bigNumberToDecimal(balance.value) as number);
         })
         .catch(err => {
           console.log(err);
@@ -103,7 +103,7 @@ const StackingModal: React.FC<{
         });
     } else {
       if (stakingInfo && BigNumber.isBigNumber(stakingInfo)) {
-        setMaxValue(bigNumberToDecimal(stakingInfo));
+        setMaxValue(bigNumberToDecimal(stakingInfo) as number);
       }
     }
   }, [provider, isModalOpen, address, modalMode, stakingInfo]);

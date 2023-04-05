@@ -96,11 +96,11 @@ export const WithdrawBtn = ({
   );
 };
 
-export const WithdrawAGIBtn = ({ onClick }: { onClick: () => void }) => {
+export const WithdrawAGIBtn = ({ onClick, disabled }: { onClick: () => void; disabled: boolean }) => {
   return (
-    <div className={cs(style.btn, style.draw)} onClick={onClick}>
+    <div className={cs(style.btn, style.draw, disabled ? style.disabled : '')} onClick={onClick}>
       <ArrowIcon className={cs(style.arrow_white, style.rotate160)} />
-      Withdraw AGI
+      Claim AGI
     </div>
   );
 };

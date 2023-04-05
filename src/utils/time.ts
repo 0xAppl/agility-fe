@@ -12,4 +12,4 @@ export const secondsToDHMS = (seconds: number) => {
   };
 };
 
-export const ONE_DAY_IN_SECS = 86400;
+export const ONE_DAY_IN_SECS = 24 * 60 * 60;

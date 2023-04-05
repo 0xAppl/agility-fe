@@ -31,6 +31,7 @@ export const Farm = () => {
     ...getContracts().esAGI,
     functionName: 'balanceOf',
     args: [address],
+    watch: true,
   });
 
   return (
@@ -69,13 +70,7 @@ export const Farm = () => {
       </div>
 
       {/* Vesting  */}
-      <div className={cs(style.farm_sec_container, style.vesting_container)}>
-        <div className={style.title}>esAGI Vesting</div>
-        <div className={style.balance}>Balance {numberToPrecision(esAGIBalance)} $esAGI</div>
-        <div className={style.box_container}>
-          <VestBox data={esAGIVestingConfig} />
-        </div>
-      </div>
+      <VestBox />
     </div>
     // </ContractContext.Provider>
   );

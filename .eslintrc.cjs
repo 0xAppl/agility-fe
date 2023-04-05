@@ -34,6 +34,7 @@ module.exports = {
         skipComments: true,
       },
     ],
+    '@typesctipt-eslint/strict-boolean-expressions': 'off',
     'import/no-named-as-default': 'off',
     'import/default': 'off',
     'react-hooks/exhaustive-deps': 'error',

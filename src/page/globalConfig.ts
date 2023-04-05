@@ -3,3 +3,8 @@ export const globalConfig = {
   twitterHref: 'https://twitter.com/agility_lsd',
   discordHref: 'https://twitter.com/agility_lsd',
 };
+
+export const VestingDays = {
+  min: 3,
+  max: 14,
+};
