@@ -61,7 +61,7 @@ const RedeemModal: React.FC<{
       maskClosable={false}
     >
       <div>
-        <Slider value={day} onChange={setDay} min={3} max={14} step={1} />
+        <Slider value={day} onChange={setDay} min={VestingDays.min} max={VestingDays.max} step={1} />
         <span>
           <b>{day} days</b>
         </span>
@@ -85,7 +85,7 @@ const RedeemModal: React.FC<{
               }}
             />
           )}
-          Redeem
+          {isLoading ? 'Redeeming...' : 'Redeem'}
         </Button>
       </div>
     </Modal>

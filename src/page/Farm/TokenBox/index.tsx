@@ -108,7 +108,10 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     args: [address],
   });
 
-  const APY = ((1 + (PoolDailyEmission * AGIPrice) / (TVL * ethPrice)) ** (365 * 1) - 1) * 100;
+  const APY =
+    AGIPrice && TVL && ethPrice
+      ? ((1 + (PoolDailyEmission * AGIPrice) / (TVL * ethPrice)) ** (365 * 1) - 1) * 100
+      : '???';
 
   // console.log(({ APY }, PoolBlockEmission * AGIPrice) / TVL, PoolBlockEmission, AGIPrice, TVL);
 
@@ -143,7 +146,9 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       <div className={style.main_sec}>
         <div className={style.apr}>
           <div className={style.text}>APY</div>
-          <div className={style.number}>{numberToPrecision(APY, 2)}%</div>
+          <div className={style.number}>
+            {typeof APY === 'string' ? APY : APY > 99999 ? '99999+' : numberToPrecision(APY, 2)}%
+          </div>
         </div>
         <div className={style.tvl}>
           <div className={style.text}>TVL</div>

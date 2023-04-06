@@ -19,6 +19,7 @@ const VestingStatus: React.FC<{ index: number; data: AGIReedemInfo }> = ({ index
 
   const now = new Date().getTime();
   const canWithdraw = now > Number(endDate) * 1000;
+  //   const canWithdraw =
 
   const { config } = usePrepareContractWrite({
     address: getContracts().esAGI.address,
@@ -64,11 +65,11 @@ const VestingStatus: React.FC<{ index: number; data: AGIReedemInfo }> = ({ index
       </div>
       <div className={style.vest_inner_box}>
         <div className={style.type}>AGI OUTPUT</div>
-        <div className={style.count}>{bigNumberToDecimal(AGIOutput, true)}</div>
+        <div className={style.count}>{bigNumberToDecimal(AGIOutput, 6)}</div>
       </div>
       <div className={style.vest_inner_box}>
         <div className={style.type}>ESAGI INPUT</div>
-        <div className={style.count}>{bigNumberToDecimal(ESAGIInput, true)}</div>
+        <div className={style.count}>{bigNumberToDecimal(ESAGIInput, 6)}</div>
       </div>
       <div className={style.vest_inner_box}>
         <div className={style.type}>Claim On</div>

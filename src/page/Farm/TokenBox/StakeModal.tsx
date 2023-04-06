@@ -23,6 +23,7 @@ import { type IContract, nativeTokenAddress } from '../tokenConfigs';
 import style from './index.module.less';
 
 import { toast, ToastContainer } from 'react-toastify';
+import { capitalize } from '@utils/string';
 
 const StackingModal: React.FC<{
   isModalOpen: boolean;
@@ -62,7 +63,7 @@ const StackingModal: React.FC<{
   const { isLoading, isSuccess } = useWaitForTransaction({
     hash: data?.hash,
     onSuccess(data) {
-      toast.success('Transaction Success!');
+      toast.success(`${capitalize(modalMode)} Success!`);
       setIsModalOpen(false);
     },
     onError(err) {
