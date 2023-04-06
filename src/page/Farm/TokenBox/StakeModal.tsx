@@ -43,8 +43,6 @@ const StackingModal: React.FC<{
 
   const { address } = useAccount();
 
-  // console.log(debouncedValue);
-
   const { config, error: prepareError } = usePrepareContractWrite({
     address: contractAddress,
     abi: contractABI,
@@ -55,7 +53,6 @@ const StackingModal: React.FC<{
       modalMode === 'stake'
         ? {
             value: parseEther(debouncedValue.toString()),
-            gasLimit: BigNumber.from(200000),
           }
         : undefined,
   });

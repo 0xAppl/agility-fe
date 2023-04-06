@@ -74,10 +74,14 @@ export const TokenBox = ({ token }: { token: IToken }) => {
 
   const { write: exit, data: exitData, error: exitError } = useContractWrite(prepareExitConfig);
 
-  const { isLoading: isLoadingExit } = useWaitForTransaction({
+  const { isLoading: isLoadingExit, error } = useWaitForTransaction({
     hash: exitData?.hash,
     onSuccess(data) {
       toast.success('Withdraw all Success!');
+    },
+    onError(error) {
+      console.log(error);
+      toast.error('Withdraw all Failed!');
     },
   });
 
@@ -104,10 +108,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     args: [address],
   });
 
-  const APR =
-    ((rewardPerTokenStored * ONE_DAY_IN_SECS * (balanceOf / (TVL === 0 ? 1 : TVL)) * AGIPrice * 365) /
-      (ethPrice * balanceOf || 1)) *
-    100;
+  const APR = 200;
 
   const onExit = useCallback(() => {
     if (hasStacked) {
@@ -163,7 +164,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       <div className={style.stake_sec}>
         <div className={style.left}>
           <div className={style.text}> ETH Staked</div>
-          <div className={style.number}>{balanceOf}</div>
+          <div className={style.number}>{numberToPrecision(balanceOf, 6)}</div>
         </div>
 
         <StakeBtn
