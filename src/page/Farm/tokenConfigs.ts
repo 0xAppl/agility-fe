@@ -4,6 +4,9 @@ import { type VestData } from './VestBox';
 import ETHIcon from '../../assets/ETH_icon.svg';
 import { AGIAbi, esAGIAbi, ETHPoolAbi, UniLpAbi } from './abis';
 
+export const PoolDailyEmission = 400_000;
+export const PoolBlockEmission = PoolDailyEmission / 7200;
+
 export interface IContract {
   address: `0x${string}`;
   abi: any[];

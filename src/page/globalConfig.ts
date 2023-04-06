@@ -5,6 +5,6 @@ export const globalConfig = {
 };
 
 export const VestingDays = {
-  min: 3,
-  max: 14,
+  min: 0,
+  max: 1,
 };

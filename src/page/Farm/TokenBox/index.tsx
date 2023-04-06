@@ -19,7 +19,7 @@ import Shimmer from '../../../components/Shimmer';
 import { useGlobalStatsContext } from '../../../contexts/globalStatsContext';
 import { bigNumberToDecimal, numberToPrecision } from '@utils/number';
 import { capitalize } from '@utils/string';
-import { getContracts, type IToken } from '../tokenConfigs';
+import { getContracts, PoolBlockEmission, type IToken, PoolDailyEmission } from '../tokenConfigs';
 // import { useContractContext } from '../../../contexts/contractContext';
 import style from './index.module.less';
 import StackingModal from './StakeModal';
@@ -108,7 +108,11 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     args: [address],
   });
 
-  const APR = 200;
+  const APY = ((1 + (PoolDailyEmission * AGIPrice) / (TVL * ethPrice)) ** (365 * 1) - 1) * 100;
+
+  // console.log(({ APY }, PoolBlockEmission * AGIPrice) / TVL, PoolBlockEmission, AGIPrice, TVL);
+
+  // console.log(`Daily rewoard: ${PoolDailyEmission * AGIPrice}`, { TVL: TVL * ethPrice, APY });
 
   const onExit = useCallback(() => {
     if (hasStacked) {
@@ -138,8 +142,8 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       {/* main */}
       <div className={style.main_sec}>
         <div className={style.apr}>
-          <div className={style.text}>APR</div>
-          <div className={style.number}>{numberToPrecision(APR, 2)}%</div>
+          <div className={style.text}>APY</div>
+          <div className={style.number}>{numberToPrecision(APY, 2)}%</div>
         </div>
         <div className={style.tvl}>
           <div className={style.text}>TVL</div>
