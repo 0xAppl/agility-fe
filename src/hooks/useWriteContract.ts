@@ -20,7 +20,7 @@ const useWriteContract = (config: IUseWriteContract) => {
     enabled,
   });
 
-  const { write, data: finalizeRedeemData } = useContractWrite(writeConfig);
+  const { write, data: finalizeRedeemData, isLoading: isPendingTx } = useContractWrite(writeConfig);
 
   const { isLoading } = useWaitForTransaction({
     hash: finalizeRedeemData?.hash,
@@ -31,7 +31,7 @@ const useWriteContract = (config: IUseWriteContract) => {
       console.log(err);
     },
   });
-  return { write, isLoading };
+  return { write, isLoading: isLoading || isPendingTx };
 };
 
 export default useWriteContract;

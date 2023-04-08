@@ -9,7 +9,7 @@ export interface IStatus {
   valueText: string;
 }
 
-export const StatusBox = ({ data }: { data: IStatus }) => {
+export const StatusBox = data => {
   const { typeText } = data;
 
   const { TVL, ethPrice, AGIPrice, AGITotalSupply } = useGlobalStatsContext();
@@ -23,7 +23,7 @@ export const StatusBox = ({ data }: { data: IStatus }) => {
       <div className={style.value}>
         {typeText === 'TVL'
           ? `$${numberToPrecision(TVL * ethPrice, 0)}`
-          : `MC $${numberToPrecision(AGIPrice * AGITotalSupply, 0)}`}
+          : `MarketCap $${numberToPrecision(AGIPrice * AGITotalSupply, 0)}`}
       </div>
     </div>
   );

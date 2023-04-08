@@ -11,9 +11,17 @@ import CustomSpin from '../spin';
 import { pipe } from '../../utils/functional';
 import { addingOnGoingAffix, capitalize } from '../../utils/string';
 
-export const ClaimBtn = ({ onClick, isLoading }: { onClick: () => void; isLoading?: boolean }) => {
+export const ClaimBtn = ({
+  onClick,
+  isLoading,
+  disabled,
+}: {
+  onClick: () => void;
+  isLoading?: boolean;
+  disabled?: boolean;
+}) => {
   return (
-    <div className={style.btn} onClick={onClick}>
+    <div className={cs({ [style.btn]: true, [style.disabled]: disabled })} onClick={onClick}>
       {isLoading ? (
         <CustomSpin
           style={{
@@ -96,11 +104,28 @@ export const WithdrawBtn = ({
   );
 };
 
-export const WithdrawAGIBtn = ({ onClick, disabled }: { onClick: () => void; disabled: boolean }) => {
+export const WithdrawAGIBtn = ({
+  onClick,
+  disabled,
+  isLoading,
+}: {
+  onClick: () => void;
+  disabled: boolean;
+  isLoading?: boolean;
+}) => {
   return (
     <div className={cs(style.btn, style.draw, disabled ? style.disabled : '')} onClick={onClick}>
-      <ArrowIcon className={cs(style.arrow_white, style.rotate160)} />
-      Claim AGI
+      {isLoading ? (
+        <CustomSpin
+          style={{
+            marginRight: 8,
+            color: '#fff',
+          }}
+        />
+      ) : (
+        <ArrowIcon className={cs(style.arrow_white, style.rotate160)} />
+      )}
+      {isLoading ? 'Claiming' : 'Claim'} AGI
     </div>
   );
 };

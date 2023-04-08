@@ -40,7 +40,11 @@ const StackingModal: React.FC<{
   const [maxValue, setMaxValue] = useState(0);
   const provider = useProvider();
 
-  const debouncedValue = useDebounce(value);
+  let debouncedValue = useDebounce(value);
+
+  if (debouncedValue !== 0) {
+    debouncedValue -= 0.000000001;
+  }
 
   const { address } = useAccount();
 

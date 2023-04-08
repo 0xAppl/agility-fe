@@ -22,7 +22,7 @@ const useGetTokenPriceFromLP = (
   if (!isLoading && !isError && data) {
     try {
       const [reserve0, reserve1] = data as unknown as [BigNumber, BigNumber];
-      const tokenPrice = (1 / reserve1.div(reserve0).toNumber()) * ethPrice;
+      const tokenPrice = (Number(reserve1.toString()) / Number(reserve0.toString()) / 1) * ethPrice;
       return tokenPrice;
     } catch (e) {
       console.error(e);

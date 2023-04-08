@@ -46,6 +46,14 @@ export const VestBox = () => {
     enabled: isConnected,
   });
 
+  const { data: AGIBalance } = useReadContractNumber({
+    ...getContracts().AGI,
+    functionName: 'balanceOf',
+    args: [address],
+    outputBigNumber: true,
+    enabled: isConnected,
+  });
+
   const { data: AGIRedeemingCount } = useReadContractNumber({
     ...getContracts().esAGI,
     functionName: 'getUserRedeemsLength',
@@ -83,7 +91,8 @@ export const VestBox = () => {
       <div className={cs(farmStyle.farm_sec_container, farmStyle.vesting_container)}>
         <div className={farmStyle.title}>esAGI Vesting</div>
         <div className={farmStyle.balance}>
-          Balance: {bigNumberToDecimal(esAGIBalance as unknown as BigNumber, true)} $esAGI&nbsp;&nbsp;
+          Balance: $AGI: {bigNumberToDecimal(AGIBalance as unknown as BigNumber, true)}&nbsp;&nbsp;$esAGI:{' '}
+          {bigNumberToDecimal(esAGIBalance as unknown as BigNumber, true)}{' '}
           <RedeemBtn
             onClick={onClickRedeem}
             disabled={esAGIBalance === undefined ? true : (esAGIBalance as unknown as BigNumber).isZero()}

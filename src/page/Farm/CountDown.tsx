@@ -10,7 +10,7 @@ const CountDown = () => {
   const { days, hours, minutes, seconds } = secondsToDHMS(Math.round(countDown / 1000));
   return (
     <div className={style.rate_change}>
-      {days} days {hours} hours {minutes} minutes {seconds} seconds $esAGI emission rate will decrease by 50%.
+      {days} days {hours} hours {minutes} minutes {seconds} seconds until ETH staking pool starts.
     </div>
   );
 };

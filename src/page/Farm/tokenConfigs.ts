@@ -7,22 +7,11 @@ import { AGIAbi, esAGIAbi, ETHPoolAbi, UniLpAbi } from './abis';
 export const PoolDailyEmission = 400_000;
 export const PoolBlockEmission = PoolDailyEmission / 7200;
 
-export interface IContract {
-  address: `0x${string}`;
-  abi: any[];
-}
-
-export interface IToken {
-  icon: string;
-  name: string;
-  stakingContract: IContract;
-}
-
 export const nativeTokenAddress = '0x0000000000000000000000000000000000000000';
 
 export const getContracts = (
   network = '0x1',
-): Record<'ETHPool' | 'stETHPool' | 'AGI' | 'esAGI' | 'poolFactory' | 'uniV2Pool', IContract> => {
+): Record<'ETHPool' | 'stETHPool' | 'AGI' | 'esAGI' | 'poolFactory' | 'uniV2Pool' | 'AGIWETHLP', IContract> => {
   return {
     ETHPool: {
       address: '0xdee9477b0a5D62f987aA9cfE18Ee651a68F13556',
@@ -45,19 +34,34 @@ export const getContracts = (
       abi: [],
     },
     uniV2Pool: {
-      address: '0x3322f41dfa379B6D3050C1e271B0b435b3Ee3303',
+      address: '0x498c00e1ccc2afff80f6cc6144eaeb95c46cc3b5',
       abi: UniLpAbi,
+    },
+    AGIWETHLP: {
+      address: '0x811aa8a2e44d4020767b10f6535f29bea3e04bb5',
+      abi: [],
     },
   };
 };
 
-export interface TokenConfigs {
-  tokenList: IToken[];
-  statusList: IStatus[];
-  esAGIVestingConfig: VestData;
+export interface IContract {
+  address: `0x${string}`;
+  abi: any[];
 }
 
-export const havlingTime = 1680912000000;
+export interface IToken {
+  icon: string;
+  name: string;
+  stakingContract: IContract;
+  isNative?: boolean;
+  mode?: 'LP';
+}
+
+export interface TokenConfigs {
+  tokenList: IToken[];
+}
+
+export const havlingTime = 1681045200000;
 
 export const tokenConfigs: TokenConfigs = {
   tokenList: [
@@ -66,55 +70,12 @@ export const tokenConfigs: TokenConfigs = {
       name: 'ETH',
       stakingContract: getContracts().ETHPool,
     },
-    // {
-    //   icon: 'string',
-    //   name: 'stETH',
-    //   apr: 'string',
-    //   esAGIEarned: 'string',
-    //   ethStaked: 'string',
-    // },
-    // {
-    //   icon: 'string',
-    //   name: 'stETH2',
-    //   apr: 'string',
-    //   esAGIEarned: 'string',
-    //   ethStaked: 'string',
-    // },
-  ],
-  statusList: [
     {
-      typeText: 'TVL',
-      countText: '??? ETH',
-      valueText: '$???',
-    },
-    {
-      typeText: 'AGI',
-      countText: 'Price $???',
-      valueText: 'MC $???',
+      icon: ETHIcon,
+      name: 'AGI-WETH LP',
+      stakingContract: getContracts().ETHPool,
+      mode: 'LP',
+      isNative: false,
     },
   ],
-  esAGIVestingConfig: {
-    balance: {
-      typeText: 'Vesting Days',
-      countText: '???',
-    },
-    vestingDays: {
-      typeText: 'Vesting Amount',
-      countText: '???',
-    },
-    AGIList: [
-      {
-        typeText: 'AGI OUTPUT',
-        countText: '???',
-      },
-      {
-        typeText: 'ESAGI INPUT',
-        countText: '???',
-      },
-      {
-        typeText: 'TIMELEFT',
-        countText: '? month ?? days',
-      },
-    ],
-  },
 };

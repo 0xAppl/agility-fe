@@ -32,11 +32,9 @@ export const TokenBox = ({ token }: { token: IToken }) => {
 
   const { isConnected, address } = useAccount();
 
-  const {
-    data: stakedBalanceData,
-    isError,
-    isLoading: loadingStakedBalance,
-  } = useContractRead({
+  const { ethPrice, AGIPrice } = useGlobalStatsContext();
+
+  const { data: stakedBalanceData, isLoading: loadingStakedBalance } = useContractRead({
     address: token.stakingContract.address,
     abi: token.stakingContract.abi,
     functionName: 'balanceOf',
@@ -46,8 +44,6 @@ export const TokenBox = ({ token }: { token: IToken }) => {
   });
 
   const hasStacked = stakedBalanceData?.toString() !== '0';
-
-  const { ethPrice, AGIPrice } = useGlobalStatsContext();
 
   const { config: prepareClaimConfig, error: prepareClaimError } = usePrepareContractWrite({
     address: token.stakingContract.address,
@@ -92,11 +88,6 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     enabled: !isHomepage,
   };
 
-  const { data: rewardPerTokenStored } = useReadContractNumber({
-    ...commonProps,
-    functionName: 'rewardRate',
-  });
-
   const { data: TVL } = useReadContractNumber({
     ...commonProps,
     functionName: 'totalSupply',
@@ -108,14 +99,17 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     args: [address],
   });
 
+  const { data: esAGIEarned } = useReadContractNumber({
+    ...commonProps,
+    functionName: 'earned',
+    args: [address],
+    watch: true,
+  });
+
   const APY =
     AGIPrice && TVL && ethPrice
       ? ((1 + (PoolDailyEmission * AGIPrice) / (TVL * ethPrice)) ** (365 * 1) - 1) * 100
       : '???';
-
-  // console.log(({ APY }, PoolBlockEmission * AGIPrice) / TVL, PoolBlockEmission, AGIPrice, TVL);
-
-  // console.log(`Daily rewoard: ${PoolDailyEmission * AGIPrice}`, { TVL: TVL * ethPrice, APY });
 
   const onExit = useCallback(() => {
     if (hasStacked) {
@@ -124,7 +118,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
   }, [exit, hasStacked]);
 
   const onClaimClick = () => {
-    claimReward?.();
+    if (esAGIEarned) claimReward?.();
   };
 
   const onWithdrawClick = () => {
@@ -160,11 +154,9 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       <div className={style.claim_sec}>
         <div className={style.left}>
           <div className={style.text}> esAGI Earned</div>
-          <div className={style.number}>
-            <OnChainNumberDisplay contract={token.stakingContract} valueName={'earned'} args={[address]} watch /> $esAGI
-          </div>
+          <div className={style.number}>{numberToPrecision(esAGIEarned, 6)} $esAGI</div>
         </div>
-        <ClaimBtn onClick={onClaimClick} isLoading={isLoadingClaim} />
+        <ClaimBtn onClick={onClaimClick} isLoading={isLoadingClaim} disabled={!esAGIEarned} />
       </div>
 
       <div className={style.line}></div>

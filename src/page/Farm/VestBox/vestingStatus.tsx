@@ -6,7 +6,6 @@ import { CommonButton, WithdrawAGIBtn } from '../../../components/Btns';
 import style from './index.module.less';
 
 import { getContracts } from '../tokenConfigs';
-import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { toast } from 'react-toastify';
 import { bigNumberToDecimal } from '@utils/number';
 import CustomSpin from '@components/spin';
@@ -21,26 +20,35 @@ const VestingStatus: React.FC<{ index: number; data: AGIReedemInfo }> = ({ index
   const canWithdraw = now > Number(endDate) * 1000;
   //   const canWithdraw =
 
-  const { config } = usePrepareContractWrite({
+  //   const { config } = usePrepareContractWrite({
+  //     address: getContracts().esAGI.address,
+  //     abi: getContracts().esAGI.abi,
+  //     functionName: 'cancelRedeem',
+  //     args: [index],
+  //   });
+
+  //   const { write: cancelRedeem, data: cancelData, error } = useContractWrite(config);
+
+  //   const { isLoading: isLoadingCancelRedeem } = useWaitForTransaction({
+  //     hash: cancelData?.hash,
+  //     onSuccess(data) {
+  //       toast.success('Cancel Redeem Success!');
+  //     },
+  //     onError(err) {
+  //       console.log(err);
+  //     },
+  //   });
+
+  const { write: cencelRedeem, isLoading: isLoadingCancelRedeem } = useWriteContract({
     address: getContracts().esAGI.address,
     abi: getContracts().esAGI.abi,
     functionName: 'cancelRedeem',
     args: [index],
+    successMessage: 'Cancel Redeem Success!',
+    enabled: canWithdraw,
   });
 
-  const { write: cancelRedeem, data: cancelData, error } = useContractWrite(config);
-
-  const { isLoading: isLoadingCancelRedeem } = useWaitForTransaction({
-    hash: cancelData?.hash,
-    onSuccess(data) {
-      toast.success('Cancel Redeem Success!');
-    },
-    onError(err) {
-      console.log(err);
-    },
-  });
-
-  const { write: finalizeRedeem, isLoading } = useWriteContract({
+  const { write: finalizeRedeem, isLoading: isLoadingFinalizeRedeem } = useWriteContract({
     address: getContracts().esAGI.address,
     abi: getContracts().esAGI.abi,
     functionName: 'finalizeRedeem',
@@ -77,13 +85,13 @@ const VestingStatus: React.FC<{ index: number; data: AGIReedemInfo }> = ({ index
       </div>
 
       <div className={style.btn_group}>
-        <WithdrawAGIBtn onClick={onWithDrawClick} disabled={!canWithdraw} />
+        <WithdrawAGIBtn onClick={onWithDrawClick} disabled={!canWithdraw} isLoading={isLoadingFinalizeRedeem} />
         <CommonButton
           style={{
             fontSize: '12px',
           }}
           onClick={() => {
-            cancelRedeem?.();
+            cencelRedeem?.();
           }}
         >
           {isLoadingCancelRedeem ? <CustomSpin style={{ marginRight: 4 }} /> : null}Cancel

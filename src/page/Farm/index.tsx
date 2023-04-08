@@ -15,7 +15,7 @@ import useReadContractNumber from '@hooks/useReadContractNumber';
 
 // const s = fetchSigner();
 
-const { tokenList, statusList, esAGIVestingConfig } = tokenConfigs;
+const { tokenList } = tokenConfigs;
 
 export const Farm = () => {
   const contract = getContracts('0x1');
@@ -63,9 +63,8 @@ export const Farm = () => {
       <div className={cs(style.farm_sec_container, style.status_container)}>
         <div className={style.title}>Status</div>
         <div className={style.box_container}>
-          {statusList.map(status => (
-            <StatusBox data={status} key={status.typeText} />
-          ))}
+          <StatusBox typeText={'TVL'} />
+          <StatusBox typeText={'AGI'} />
         </div>
       </div>
 
