@@ -56,14 +56,16 @@ export const StakeBtn = ({
   styles,
   isLoading,
   children = 'stake',
+  disabled,
 }: {
   onClick: () => void;
   styles?: React.CSSProperties;
   isLoading?: boolean;
   children?: string;
+  disabled?: boolean;
 }) => {
   return (
-    <div className={style.btn} onClick={onClick} style={styles}>
+    <div className={cs(style.btn, disabled ? style.disabled : '')} onClick={onClick} style={styles}>
       {isLoading ? (
         <CustomSpin
           style={{

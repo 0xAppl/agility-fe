@@ -31,9 +31,10 @@ const StackingModal: React.FC<{
   stackingTokenAddress?: string;
   poolContract: IContract;
   stakingTokenContract?: IContract;
+
   title?: React.ReactNode;
   modalMode: 'stake' | 'withdraw';
-}> = ({ isModalOpen, setIsModalOpen, poolContract, title, modalMode }) => {
+}> = ({ isModalOpen, setIsModalOpen, poolContract, title, modalMode, stakingTokenContract }) => {
   //   const contracts = useContractContext();
   const [loading, setLoading] = React.useState(false);
   const [value, setValue] = useState<BigNumber>(BigZero);
@@ -50,7 +51,7 @@ const StackingModal: React.FC<{
     args: [debouncedValue.toString()],
     enabled: !debouncedValue.isZero() && isModalOpen,
     overrides:
-      modalMode === 'stake'
+      modalMode === 'stake' && !stakingTokenContract
         ? {
             value: debouncedValue.toString(),
           }
@@ -84,7 +85,7 @@ const StackingModal: React.FC<{
     // read user's wallet balance
     if (modalMode === 'stake') {
       setLoading(true);
-      fetchBalance({ address, formatUnits: 'ether' })
+      fetchBalance({ address, formatUnits: 'ether', token: stakingTokenContract?.address ?? undefined })
         .then(balance => {
           setMaxValue(balance.value);
         })
@@ -99,7 +100,7 @@ const StackingModal: React.FC<{
         setMaxValue(stakingInfo);
       }
     }
-  }, [isModalOpen, address, modalMode, stakingInfo]);
+  }, [isModalOpen, address, modalMode, stakingInfo, stakingTokenContract?.address]);
 
   useEffect(() => {
     if (error ?? prepareError) {
@@ -187,6 +188,7 @@ const StackingModal: React.FC<{
           }}
         >
           <StakeBtn
+            disabled={debouncedValue.isZero() || isLoading}
             styles={{
               margin: 'auto',
               marginTop: '20px',

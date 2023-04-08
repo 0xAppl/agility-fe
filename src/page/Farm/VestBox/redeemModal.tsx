@@ -32,7 +32,7 @@ const RedeemModal: React.FC<{
     enabled: isModalOpen && esAGIBalance.gt(0),
   });
 
-  const { write, data, error } = useContractWrite(config);
+  const { write, data, error, isLoading: writing } = useContractWrite(config);
 
   const { isLoading } = useWaitForTransaction({
     hash: data?.hash,
@@ -77,8 +77,8 @@ const RedeemModal: React.FC<{
         </p>
       </div>
       <div className="flex-center">
-        <Button onClick={write}>
-          {isLoading && (
+        <Button onClick={write} disabled={isLoading || writing}>
+          {(isLoading || writing) && (
             <CustomSpin
               style={{
                 marginRight: 8,

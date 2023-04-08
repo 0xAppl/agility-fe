@@ -4,8 +4,8 @@ import { type VestData } from './VestBox';
 import ETHIcon from '../../assets/ETH_icon.svg';
 import { AGIAbi, esAGIAbi, ETHPoolAbi, UniLpAbi as UniPoolAbi, AGIWETHContractAbi, AGIWETHLPAbi } from './abis';
 
-export const PoolDailyEmission = 400_000;
-export const PoolBlockEmission = PoolDailyEmission / 7200;
+// export const PoolDailyEmission = 400_000;
+// export const PoolBlockEmission = PoolDailyEmission / 7200;
 
 export const nativeTokenAddress = '0x0000000000000000000000000000000000000000';
 
@@ -64,6 +64,7 @@ export interface IToken {
   name: string;
   stakingContract: IContract;
   tokenContract?: IContract;
+  poolDailyEmission: number;
 }
 
 export interface TokenConfigs {
@@ -78,12 +79,14 @@ export const tokenConfigs: TokenConfigs = {
       icon: ETHIcon,
       name: 'ETH',
       stakingContract: getContracts().ETHPool,
+      poolDailyEmission: 400_000,
     },
     {
       icon: ETHIcon,
       name: 'AGI-WETH LP',
       stakingContract: getContracts().AGIWETHContract,
       tokenContract: getContracts().AGIWETHLP,
+      poolDailyEmission: 400_000,
     },
   ],
 };

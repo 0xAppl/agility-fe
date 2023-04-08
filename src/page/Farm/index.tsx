@@ -45,7 +45,7 @@ export const Farm = () => {
     <div className={style.farm_section}>
       {/* total  */}
       <div className={style.total_container}>
-        TVL ${numberToPrecision(TVL * ethPrice, 0)} ETH ${ethPrice || '???'}
+        TVL ${numberToPrecision(TVL, 0)} ETH ${ethPrice || '???'}
       </div>
 
       {/* farm tokens */}

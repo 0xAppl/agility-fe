@@ -17,15 +17,17 @@ import { ClaimBtn, CommonButton, StakeBtn, WithdrawBtn } from '../../../componen
 import OnChainNumberDisplay from '../../../components/OnChainNumberDisplay';
 import Shimmer from '../../../components/Shimmer';
 import { useGlobalStatsContext } from '../../../contexts/globalStatsContext';
-import { bigNumberToDecimal, numberToPrecision } from '@utils/number';
+import { BigZero, bigNumberToDecimal, numberToPrecision } from '@utils/number';
 import { capitalize } from '@utils/string';
-import { getContracts, PoolBlockEmission, type IToken, PoolDailyEmission } from '../tokenConfigs';
+import { getContracts, type IToken } from '../tokenConfigs';
 // import { useContractContext } from '../../../contexts/contractContext';
 import style from './index.module.less';
 import StackingModal from './StakeModal';
 import { useLocation } from 'react-router-dom';
 import useWriteContract from '@hooks/useWriteContract';
 import CustomSpin from '@components/spin';
+import { formatEther } from 'ethers/lib/utils.js';
+import useReportTVL from '@hooks/useReportTVL';
 
 export const TokenBox = ({ token }: { token: IToken }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -76,10 +78,27 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     enabled: !isHomepage,
   };
 
-  const { data: TVL } = useReadContractNumber({
+  const { data: totalSupply } = useReadContractNumber({
     ...commonProps,
     functionName: 'totalSupply',
+    watch: true,
   });
+
+  const { data } = useReadContractNumber({
+    ...(token.tokenContract ?? {}),
+    functionName: 'getReserves',
+    watch: true,
+    outputBigNumber: true,
+    enabled: !!token.tokenContract,
+  });
+
+  let AGIReserve = 0;
+  let ETHReserve = 0;
+
+  if (Array.isArray(data)) {
+    AGIReserve = bigNumberToDecimal(data[0]) as number;
+    ETHReserve = bigNumberToDecimal(data[1]) as number;
+  }
 
   const { data: balanceOf } = useReadContractNumber({
     ...commonProps,
@@ -94,10 +113,15 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     watch: true,
   });
 
-  const APY =
-    AGIPrice && TVL && ethPrice
-      ? ((1 + (PoolDailyEmission * AGIPrice) / (TVL * ethPrice)) ** (365 * 1) - 1) * 100
-      : '???';
+  const TVL = token.tokenContract ? AGIReserve * AGIPrice + ETHReserve * ethPrice : totalSupply * ethPrice;
+
+  const APYAvailable = token.tokenContract
+    ? AGIReserve && ETHReserve && ethPrice && AGIPrice
+    : AGIPrice && totalSupply && ethPrice;
+
+  const APY = APYAvailable ? ((1 + (token.poolDailyEmission * AGIPrice) / TVL) * 365 - 1) * 100 : '???';
+
+  useReportTVL(TVL, token.name);
 
   const onExit = useCallback(() => {
     if (hasStacked) {
@@ -183,7 +207,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         </div>
         <div className={style.tvl}>
           <div className={style.text}>TVL</div>
-          <div className={style.number}>${numberToPrecision(TVL * ethPrice, 0)}</div>
+          <div className={style.number}>${numberToPrecision(TVL, 0)}</div>
         </div>
       </div>
 
@@ -208,12 +232,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
           overrideApprovalStatus || stakingContractAllowance ? (
             stakeBtns
           ) : (
-            <CommonButton
-              style={{
-                width: '100%',
-              }}
-              onClick={allowSpending}
-            >
+            <CommonButton onClick={allowSpending}>
               {isLoadingApproving ? (
                 <CustomSpin
                   style={{
@@ -235,7 +254,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         poolContract={token.stakingContract}
-        stakingTokenContract={token.stakingContract}
+        stakingTokenContract={token.tokenContract}
         title={capitalize(modalMode)}
         modalMode={modalMode}
       />

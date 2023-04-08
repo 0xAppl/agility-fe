@@ -90,7 +90,7 @@ const Layout = ({ children }: any) => {
     <GlobalStatsContext.Provider
       value={{
         ethPrice: data?.data.ethereum.usd || 0,
-        TVL: bigNumberToDecimal(TVL) as number,
+        TVL,
         AGIPrice: tokenPrice,
         AGITotalSupply,
       }}
