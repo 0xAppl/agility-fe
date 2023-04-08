@@ -9,7 +9,7 @@ export interface IStatus {
   valueText: string;
 }
 
-export const StatusBox = data => {
+export const StatusBox = (data: any) => {
   const { typeText } = data;
 
   const { TVL, ethPrice, AGIPrice, AGITotalSupply } = useGlobalStatsContext();
