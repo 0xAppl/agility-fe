@@ -2,7 +2,7 @@
 import { type IStatus } from './StatusBox';
 import { type VestData } from './VestBox';
 import ETHIcon from '../../assets/ETH_icon.svg';
-import { AGIAbi, esAGIAbi, ETHPoolAbi, UniLpAbi } from './abis';
+import { AGIAbi, esAGIAbi, ETHPoolAbi, UniLpAbi as UniPoolAbi, AGIWETHContractAbi, AGIWETHLPAbi } from './abis';
 
 export const PoolDailyEmission = 400_000;
 export const PoolBlockEmission = PoolDailyEmission / 7200;
@@ -11,7 +11,10 @@ export const nativeTokenAddress = '0x0000000000000000000000000000000000000000';
 
 export const getContracts = (
   network = '0x1',
-): Record<'ETHPool' | 'stETHPool' | 'AGI' | 'esAGI' | 'poolFactory' | 'uniV2Pool' | 'AGIWETHLP', IContract> => {
+): Record<
+  'ETHPool' | 'stETHPool' | 'AGI' | 'esAGI' | 'poolFactory' | 'AGIETHTradingPool' | 'AGIWETHContract' | 'AGIWETHLP',
+  IContract
+> => {
   return {
     ETHPool: {
       address: '0xdee9477b0a5D62f987aA9cfE18Ee651a68F13556',
@@ -33,13 +36,20 @@ export const getContracts = (
       address: '0xa378671de217b5B69154CA14297e00086619b512',
       abi: [],
     },
-    uniV2Pool: {
+    /**
+     * AGI-ETH pool, for reading AGI price
+     */
+    AGIETHTradingPool: {
       address: '0x498c00e1ccc2afff80f6cc6144eaeb95c46cc3b5',
-      abi: UniLpAbi,
+      abi: UniPoolAbi,
+    },
+    AGIWETHContract: {
+      address: '0xEa2eCE2b185B5c78cB6F9814EC3E86777625060a',
+      abi: AGIWETHContractAbi,
     },
     AGIWETHLP: {
       address: '0x811aa8a2e44d4020767b10f6535f29bea3e04bb5',
-      abi: [],
+      abi: AGIWETHLPAbi,
     },
   };
 };
@@ -53,8 +63,7 @@ export interface IToken {
   icon: string;
   name: string;
   stakingContract: IContract;
-  isNative?: boolean;
-  mode?: 'LP';
+  tokenContract?: IContract;
 }
 
 export interface TokenConfigs {
@@ -73,9 +82,8 @@ export const tokenConfigs: TokenConfigs = {
     {
       icon: ETHIcon,
       name: 'AGI-WETH LP',
-      stakingContract: getContracts().ETHPool,
-      mode: 'LP',
-      isNative: false,
+      stakingContract: getContracts().AGIWETHContract,
+      tokenContract: getContracts().AGIWETHLP,
     },
   ],
 };

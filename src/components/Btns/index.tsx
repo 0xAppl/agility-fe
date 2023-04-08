@@ -82,13 +82,15 @@ export const WithdrawBtn = ({
   onClick,
   children = 'Withdraw',
   isLoading,
+  disabled,
 }: {
   onClick: () => void;
   children: React.ReactNode;
   isLoading?: boolean;
+  disabled?: boolean;
 }) => {
   return (
-    <div className={cs(style.btn, style.draw)} onClick={onClick}>
+    <div className={cs(style.btn, style.draw, disabled ? style.disabled : '')} onClick={onClick}>
       {isLoading ? (
         <CustomSpin
           style={{
@@ -148,7 +150,7 @@ export const DocsButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
 export const CommonButton: React.FC<
   React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
 > = props => {
-  return <button className={cs(style.btn, style.fs_lg)} {...props}></button>;
+  return <button className={cs(style.btn)} {...props}></button>;
 };
 
 const openNotification = () => {

@@ -2,7 +2,7 @@
 import { fetchBalance } from '@wagmi/core';
 import { Button, Input, Modal, Slider } from 'antd';
 import { BigNumber } from 'ethers';
-import { parseEther } from 'ethers/lib/utils.js';
+import { formatEther, parseEther } from 'ethers/lib/utils.js';
 import React, { useEffect, useState } from 'react';
 import {
   useAccount,
@@ -17,7 +17,7 @@ import {
 import { StakeBtn } from '../../../components/Btns';
 import CustomSpin from '../../../components/spin';
 import useDebounce from '../../../hooks/useDebounce';
-import { bigNumberToDecimal, expandTo18Decimals } from '../../../utils/number';
+import { bigNumberToDecimal, BigZero, expandTo18Decimals } from '../../../utils/number';
 // import { useContractContext } from '../../../contexts/contractContext';
 import { type IContract, nativeTokenAddress } from '../tokenConfigs';
 import style from './index.module.less';
@@ -29,42 +29,37 @@ const StackingModal: React.FC<{
   isModalOpen: boolean;
   setIsModalOpen: (isModalOpen: boolean) => void;
   stackingTokenAddress?: string;
-  contractAddress: IContract['address'];
-  contractABI: IContract['abi'];
+  poolContract: IContract;
+  stakingTokenContract?: IContract;
   title?: React.ReactNode;
   modalMode: 'stake' | 'withdraw';
-}> = ({ isModalOpen, setIsModalOpen, contractAddress, contractABI, title, modalMode }) => {
+}> = ({ isModalOpen, setIsModalOpen, poolContract, title, modalMode }) => {
   //   const contracts = useContractContext();
   const [loading, setLoading] = React.useState(false);
-  const [value, setValue] = useState(0);
-  const [maxValue, setMaxValue] = useState(0);
-  const provider = useProvider();
+  const [value, setValue] = useState<BigNumber>(BigZero);
+  const [maxValue, setMaxValue] = useState<BigNumber>(BigZero);
 
-  let debouncedValue = useDebounce(value);
-
-  if (debouncedValue !== 0) {
-    debouncedValue -= 0.000000001;
-  }
+  const debouncedValue = useDebounce(value);
 
   const { address } = useAccount();
 
   const { config, error: prepareError } = usePrepareContractWrite({
-    address: contractAddress,
-    abi: contractABI,
+    address: poolContract.address,
+    abi: poolContract.abi,
     functionName: modalMode,
-    args: [parseEther(debouncedValue.toString())],
-    enabled: debouncedValue !== 0 && isModalOpen,
+    args: [debouncedValue.toString()],
+    enabled: !debouncedValue.isZero() && isModalOpen,
     overrides:
       modalMode === 'stake'
         ? {
-            value: parseEther(debouncedValue.toString()),
+            value: debouncedValue.toString(),
           }
         : undefined,
   });
 
   const { write, data, error } = useContractWrite(config);
 
-  const { isLoading, isSuccess } = useWaitForTransaction({
+  const { isLoading } = useWaitForTransaction({
     hash: data?.hash,
     onSuccess(data) {
       toast.success(`${capitalize(modalMode)} Success!`);
@@ -75,13 +70,9 @@ const StackingModal: React.FC<{
     },
   });
 
-  const {
-    data: stakingInfo,
-    isError,
-    isLoading: isLoadingStakingInfo,
-  } = useContractRead({
-    address: contractAddress,
-    abi: contractABI,
+  const { data: stakingInfo, isLoading: isLoadingStakingInfo } = useContractRead({
+    address: poolContract.address,
+    abi: poolContract.abi,
     functionName: 'balanceOf',
     args: [address],
     watch: false,
@@ -95,7 +86,7 @@ const StackingModal: React.FC<{
       setLoading(true);
       fetchBalance({ address, formatUnits: 'ether' })
         .then(balance => {
-          setMaxValue(bigNumberToDecimal(balance.value) as number);
+          setMaxValue(balance.value);
         })
         .catch(err => {
           console.log(err);
@@ -105,10 +96,10 @@ const StackingModal: React.FC<{
         });
     } else {
       if (stakingInfo && BigNumber.isBigNumber(stakingInfo)) {
-        setMaxValue(bigNumberToDecimal(stakingInfo) as number);
+        setMaxValue(stakingInfo);
       }
     }
-  }, [provider, isModalOpen, address, modalMode, stakingInfo]);
+  }, [isModalOpen, address, modalMode, stakingInfo]);
 
   useEffect(() => {
     if (error ?? prepareError) {
@@ -126,7 +117,7 @@ const StackingModal: React.FC<{
         }}
         onCancel={() => {
           setIsModalOpen(false);
-          setValue(0);
+          setValue(BigZero);
         }}
         transitionName=""
         footer={null}
@@ -138,37 +129,44 @@ const StackingModal: React.FC<{
           </>
         ) : (
           <>
-            <Slider value={value} onChange={setValue} max={maxValue} step={0.0000001} />
+            <Slider
+              value={bigNumberToDecimal(value) as number}
+              max={bigNumberToDecimal(maxValue) as number}
+              onChange={value => {
+                setValue(parseEther(value.toString()));
+              }}
+              step={0.0000001}
+            />
             <div className={style.input_group}>
               <Input
-                value={value}
-                max={maxValue}
+                value={bigNumberToDecimal(value)}
+                max={bigNumberToDecimal(maxValue)}
                 onChange={e => {
-                  setValue(Number(e.target.value));
+                  setValue(parseEther(e.target.value));
                 }}
                 type="number"
-                step={0.001}
+                step={0.000001}
                 style={{
                   flexGrow: 1,
                 }}
               ></Input>
               <Button
                 onClick={() => {
-                  setValue(maxValue * 0.25);
+                  setValue(maxValue.div(4));
                 }}
               >
                 25%
               </Button>
               <Button
                 onClick={() => {
-                  setValue(maxValue * 0.5);
+                  setValue(maxValue.div(2));
                 }}
               >
                 50%
               </Button>
               <Button
                 onClick={() => {
-                  setValue(maxValue * 0.75);
+                  setValue(maxValue.div(4).mul(3));
                 }}
               >
                 75%

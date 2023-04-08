@@ -13,7 +13,7 @@ import {
   useWaitForTransaction,
 } from 'wagmi';
 import { API } from '../../../Api';
-import { ClaimBtn, StakeBtn, WithdrawBtn } from '../../../components/Btns';
+import { ClaimBtn, CommonButton, StakeBtn, WithdrawBtn } from '../../../components/Btns';
 import OnChainNumberDisplay from '../../../components/OnChainNumberDisplay';
 import Shimmer from '../../../components/Shimmer';
 import { useGlobalStatsContext } from '../../../contexts/globalStatsContext';
@@ -24,9 +24,13 @@ import { getContracts, PoolBlockEmission, type IToken, PoolDailyEmission } from 
 import style from './index.module.less';
 import StackingModal from './StakeModal';
 import { useLocation } from 'react-router-dom';
+import useWriteContract from '@hooks/useWriteContract';
+import CustomSpin from '@components/spin';
 
 export const TokenBox = ({ token }: { token: IToken }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [overrideApprovalStatus, setOverrideApprovalStatus] = useState(false);
 
   const [modalMode, setModalMode] = useState<'stake' | 'withdraw'>('stake');
 
@@ -44,22 +48,6 @@ export const TokenBox = ({ token }: { token: IToken }) => {
   });
 
   const hasStacked = stakedBalanceData?.toString() !== '0';
-
-  const { config: prepareClaimConfig, error: prepareClaimError } = usePrepareContractWrite({
-    address: token.stakingContract.address,
-    abi: token.stakingContract.abi,
-    functionName: 'getReward',
-  });
-
-  const { write: claimReward, data: claimData, error: claimError } = useContractWrite(prepareClaimConfig);
-
-  const { isLoading: isLoadingClaim } = useWaitForTransaction({
-    hash: claimData?.hash,
-    onSuccess(data) {
-      toast.success('Claim Success!');
-      setIsModalOpen(false);
-    },
-  });
 
   const { config: prepareExitConfig, error: prepareExitError } = usePrepareContractWrite({
     address: token.stakingContract.address,
@@ -126,6 +114,55 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     setIsModalOpen(true);
   };
 
+  const { write: claimReward, isLoading: isLoadingClaim } = useWriteContract({
+    address: token.stakingContract.address,
+    abi: token.stakingContract.abi,
+    functionName: 'getReward',
+    enabled: esAGIEarned !== 0,
+    successMessage: 'Claim Success!',
+  });
+
+  const { write: allowSpending, isLoading: isLoadingApproving } = useWriteContract({
+    ...(token.tokenContract ?? {}),
+    functionName: 'approve',
+    successMessage: 'Approve Success!',
+    args: [token.stakingContract.address, ethers.constants.MaxUint256],
+    enabled: !!token.tokenContract,
+    successCallback: () => {
+      setOverrideApprovalStatus(true);
+    },
+  });
+
+  const { data: stakingContractAllowance } = useReadContractNumber({
+    ...(token.tokenContract ?? {}),
+    functionName: 'allowance',
+    args: [address, token.stakingContract.address],
+    enabled: !!token.tokenContract,
+    watch: true,
+  });
+
+  const withdrawBtns = (
+    <>
+      <WithdrawBtn onClick={onWithdrawClick} disabled={!hasStacked}>
+        Withdraw
+      </WithdrawBtn>
+      <WithdrawBtn onClick={onExit} isLoading={isLoadingExit} disabled={!hasStacked}>
+        {`${isLoadingExit ? 'Withdrawing' : 'Withdraw'}`} All
+      </WithdrawBtn>
+    </>
+  );
+
+  const stakeBtns = (
+    <StakeBtn
+      onClick={() => {
+        if (isConnected) {
+          setModalMode('stake');
+          setIsModalOpen(true);
+        }
+      }}
+    />
+  );
+
   return (
     <div className={style.token_box}>
       {/* token info */}
@@ -164,32 +201,41 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       {/* stake */}
       <div className={style.stake_sec}>
         <div className={style.left}>
-          <div className={style.text}> ETH Staked</div>
+          <div className={style.text}> {token.name} Staked</div>
           <div className={style.number}>{numberToPrecision(balanceOf, 6)}</div>
         </div>
-
-        <StakeBtn
-          onClick={() => {
-            if (isConnected) {
-              setModalMode('stake');
-              setIsModalOpen(true);
-            }
-          }}
-        />
+        {token.tokenContract ? (
+          overrideApprovalStatus || stakingContractAllowance ? (
+            stakeBtns
+          ) : (
+            <CommonButton
+              style={{
+                width: '100%',
+              }}
+              onClick={allowSpending}
+            >
+              {isLoadingApproving ? (
+                <CustomSpin
+                  style={{
+                    marginInlineEnd: '4px',
+                  }}
+                ></CustomSpin>
+              ) : null}
+              {isLoadingApproving ? 'Approving' : 'Approve'}
+            </CommonButton>
+          )
+        ) : (
+          stakeBtns
+        )}
       </div>
 
-      <div className={style.withdraw_btns}>
-        <WithdrawBtn onClick={onWithdrawClick}>Withdraw</WithdrawBtn>
-        <WithdrawBtn onClick={onExit} isLoading={isLoadingExit}>
-          {`${isLoadingExit ? 'Withdrawing' : 'Withdraw'}`} All
-        </WithdrawBtn>
-      </div>
+      <div className={style.withdraw_btns}>{withdrawBtns}</div>
 
       <StackingModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
-        contractAddress={getContracts().ETHPool.address}
-        contractABI={getContracts().ETHPool.abi}
+        poolContract={token.stakingContract}
+        stakingTokenContract={token.stakingContract}
         title={capitalize(modalMode)}
         modalMode={modalMode}
       />

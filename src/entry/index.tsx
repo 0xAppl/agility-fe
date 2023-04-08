@@ -75,8 +75,8 @@ const Layout = ({ children }: any) => {
 
   const tokenPrice = useGetTokenPriceFromLP(
     data?.data.ethereum.usd || 0,
-    getContracts().uniV2Pool.address,
-    getContracts().uniV2Pool.abi,
+    getContracts().AGIETHTradingPool.address,
+    getContracts().AGIETHTradingPool.abi,
     'getReserves',
   );
 
