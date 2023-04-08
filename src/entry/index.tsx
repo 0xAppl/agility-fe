@@ -2,7 +2,17 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { WagmiConfig, createClient, goerli, mainnet, configureChains, useQuery, useContractRead } from 'wagmi';
+import {
+  WagmiConfig,
+  createClient,
+  goerli,
+  mainnet,
+  configureChains,
+  useQuery,
+  useContractRead,
+  useConnect,
+  useAccount,
+} from 'wagmi';
 import 'react-toastify/dist/ReactToastify.css';
 import style from './index.module.less';
 import { routeConfigs } from './routeConfigs';
@@ -60,6 +70,8 @@ const client = createClient({
 const { list, home } = routeConfigs;
 
 const Layout = ({ children }: any) => {
+  const { isConnected } = useAccount();
+
   const { data, isFetching } = useQuery(
     ['ethPrice'],
     async () => {
@@ -84,6 +96,7 @@ const Layout = ({ children }: any) => {
     address: getContracts().AGI.address,
     abi: getContracts().AGI.abi,
     functionName: 'totalSupply',
+    enabled: isConnected,
   });
 
   return (

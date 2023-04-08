@@ -79,14 +79,14 @@ export const tokenConfigs: TokenConfigs = {
       icon: ETHIcon,
       name: 'ETH',
       stakingContract: getContracts().ETHPool,
-      poolDailyEmission: 400_000,
+      poolDailyEmission: 540_000,
     },
     {
       icon: ETHIcon,
       name: 'AGI-WETH LP',
       stakingContract: getContracts().AGIWETHContract,
       tokenContract: getContracts().AGIWETHLP,
-      poolDailyEmission: 400_000,
+      poolDailyEmission: 470_000,
     },
   ],
 };

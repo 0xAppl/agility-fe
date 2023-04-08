@@ -78,10 +78,11 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     enabled: !isHomepage,
   };
 
-  const { data: totalSupply } = useReadContractNumber({
+  const { data: totalStakedETH } = useReadContractNumber({
     ...commonProps,
     functionName: 'totalSupply',
     watch: true,
+    enabled: isConnected,
   });
 
   const { data } = useReadContractNumber({
@@ -89,7 +90,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     functionName: 'getReserves',
     watch: true,
     outputBigNumber: true,
-    enabled: !!token.tokenContract,
+    enabled: !!token.tokenContract && isConnected,
   });
 
   let AGIReserve = 0;
@@ -113,13 +114,13 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     watch: true,
   });
 
-  const TVL = token.tokenContract ? AGIReserve * AGIPrice + ETHReserve * ethPrice : totalSupply * ethPrice;
+  const TVL = token.tokenContract ? AGIReserve * AGIPrice + ETHReserve * ethPrice : totalStakedETH * ethPrice;
 
   const APYAvailable = token.tokenContract
     ? AGIReserve && ETHReserve && ethPrice && AGIPrice
-    : AGIPrice && totalSupply && ethPrice;
+    : AGIPrice && totalStakedETH && ethPrice;
 
-  const APY = APYAvailable ? ((1 + (token.poolDailyEmission * AGIPrice) / TVL) * 365 - 1) * 100 : '???';
+  const APR = APYAvailable ? ((1 + (token.poolDailyEmission * AGIPrice) / TVL) * 365 - 1) * 100 : '???';
 
   useReportTVL(TVL, token.name);
 
@@ -200,9 +201,9 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       {/* main */}
       <div className={style.main_sec}>
         <div className={style.apr}>
-          <div className={style.text}>APY</div>
+          <div className={style.text}>APR</div>
           <div className={style.number}>
-            {typeof APY === 'string' ? APY : APY > 99999 ? '99999+' : numberToPrecision(APY, 2)}%
+            {typeof APR === 'string' ? APR : APR > 99999 ? '99999+' : numberToPrecision(APR, 2)}%
           </div>
         </div>
         <div className={style.tvl}>
