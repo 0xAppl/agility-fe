@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 
@@ -13,7 +15,7 @@ interface IUseWriteContract {
 
 const useWriteContract = (config: IUseWriteContract) => {
   const { address, abi, functionName, args, successMessage, enabled, successCallback } = config;
-  const { config: writeConfig } = usePrepareContractWrite({
+  const { config: writeConfig, error: prepareContractError } = usePrepareContractWrite({
     address,
     abi,
     functionName,
@@ -21,9 +23,14 @@ const useWriteContract = (config: IUseWriteContract) => {
     enabled,
   });
 
-  const { write, data: finalizeRedeemData, isLoading: isPendingTx } = useContractWrite(writeConfig);
+  const {
+    write,
+    error: contractWriteError,
+    data: finalizeRedeemData,
+    isLoading: isPendingTx,
+  } = useContractWrite(writeConfig);
 
-  const { isLoading } = useWaitForTransaction({
+  const { isLoading, error: useWaitForTransactionError } = useWaitForTransaction({
     hash: finalizeRedeemData?.hash,
     onSuccess(data) {
       toast.success(successMessage ?? 'Success!');
@@ -33,6 +40,19 @@ const useWriteContract = (config: IUseWriteContract) => {
       console.log(err);
     },
   });
+
+  useEffect(() => {
+    if (prepareContractError) {
+      toast.error(prepareContractError.message);
+    }
+    if (contractWriteError) {
+      toast.error(contractWriteError.message);
+    }
+    if (useWaitForTransactionError) {
+      toast.error(useWaitForTransactionError.message);
+    }
+  }, [prepareContractError, contractWriteError, useWaitForTransactionError]);
+
   return { write, isLoading: isLoading || isPendingTx };
 };
 

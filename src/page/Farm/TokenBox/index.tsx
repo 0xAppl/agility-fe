@@ -77,7 +77,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
 
   const commonProps = {
     ...token.stakingContract,
-    enabled: !isHomepage,
+    enabled: !isHomepage && !disabled,
   };
 
   const { data: totalStakedETH } = useReadContractNumber({
@@ -126,11 +126,12 @@ export const TokenBox = ({ token }: { token: IToken }) => {
 
   useReportTVL(TVL, token.name);
 
-  const onExit = useCallback(() => {
+  const onExit = () => {
+    if (disabled) return;
     if (hasStacked) {
       exit?.();
     }
-  }, [exit, hasStacked]);
+  };
 
   const onClaimClick = () => {
     if (disabled) return;
@@ -172,7 +173,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
 
   const withdrawBtns = (
     <>
-      <WithdrawBtn onClick={onWithdrawClick} disabled={!hasStacked}>
+      <WithdrawBtn onClick={onWithdrawClick} disabled={!hasStacked || disabled}>
         Withdraw
       </WithdrawBtn>
       <Tooltip title={`Withdraw all your staked ${token.name} + esAGI rewards`}>
@@ -181,7 +182,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
             width: '100%',
           }}
         >
-          <WithdrawBtn onClick={onExit} isLoading={isLoadingExit} disabled={!hasStacked}>
+          <WithdrawBtn onClick={onExit} isLoading={isLoadingExit} disabled={!hasStacked || disabled}>
             {`${isLoadingExit ? 'Withdrawing' : 'Withdraw'}`} All
           </WithdrawBtn>
         </div>
@@ -227,9 +228,11 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       <div className={style.claim_sec}>
         <div className={style.left}>
           <div className={style.text}> esAGI Earned</div>
-          <div className={style.number}>{numberToPrecision(esAGIEarned, 6)} $esAGI</div>
+          <div className={style.number}>{disabled ? 0 : numberToPrecision(esAGIEarned, 6)} $esAGI</div>
         </div>
-        {esAGIEarned ? <ClaimBtn onClick={onClaimClick} isLoading={isLoadingClaim} disabled={!esAGIEarned} /> : null}
+        {esAGIEarned ? (
+          <ClaimBtn onClick={onClaimClick} isLoading={isLoadingClaim} disabled={!esAGIEarned || disabled} />
+        ) : null}
       </div>
 
       <div className={style.line}></div>
@@ -238,7 +241,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       <div className={style.stake_sec}>
         <div className={style.left}>
           <div className={style.text}> {token.name} Staked</div>
-          <div className={style.number}>{numberToPrecision(balanceOf, 6)}</div>
+          <div className={style.number}>{disabled ? '0' : numberToPrecision(balanceOf, 6)}</div>
         </div>
         {token.tokenContract ? (
           (overrideApprovalStatus || stakingContractAllowance) && !disabled ? (
