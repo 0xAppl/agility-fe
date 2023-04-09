@@ -148,7 +148,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     address: token.stakingContract.address,
     abi: token.stakingContract.abi,
     functionName: 'getReward',
-    enabled: esAGIEarned !== 0,
+    enabled: esAGIEarned !== 0 && !disabled,
     successMessage: 'Claim Success!',
   });
 

@@ -43,15 +43,17 @@ const useWriteContract = (config: IUseWriteContract) => {
 
   useEffect(() => {
     if (prepareContractError) {
-      toast.error(prepareContractError.message);
+      toast.error(`prepare contract ${String(address)}, method ${functionName} error:${prepareContractError.message}`);
     }
     if (contractWriteError) {
-      toast.error(contractWriteError.message);
+      toast.error(`write contract ${String(address)}, method ${functionName} error:${contractWriteError.message}`);
     }
     if (useWaitForTransactionError) {
-      toast.error(useWaitForTransactionError.message);
+      toast.error(
+        `wait for contract ${String(address)}, method ${functionName} error:${useWaitForTransactionError.message}`,
+      );
     }
-  }, [prepareContractError, contractWriteError, useWaitForTransactionError]);
+  }, [prepareContractError, contractWriteError, useWaitForTransactionError, address, functionName]);
 
   return { write, isLoading: isLoading || isPendingTx };
 };
