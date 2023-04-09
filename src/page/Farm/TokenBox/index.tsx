@@ -230,7 +230,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
           <div className={style.text}> esAGI Earned</div>
           <div className={style.number}>{disabled ? 0 : numberToPrecision(esAGIEarned, 6)} $esAGI</div>
         </div>
-        {esAGIEarned ? (
+        {esAGIEarned && !disabled ? (
           <ClaimBtn onClick={onClaimClick} isLoading={isLoadingClaim} disabled={!esAGIEarned || disabled} />
         ) : null}
       </div>
