@@ -1,21 +1,17 @@
 /* eslint-disable no-constant-condition */
-import React, { useCallback } from 'react';
+import React from 'react';
 import cs from 'classnames';
-import { CommonButton, RedeemBtn, WithdrawAGIBtn } from '../../../components/Btns';
-import { API } from '../../../Api';
+import { RedeemBtn } from '../../../components/Btns';
 import style from './index.module.less';
 import farmStyle from '../index.module.less';
 
 import RedeemModal from './redeemModal';
 import useReadContractNumber from '@hooks/useReadContractNumber';
 import { getContracts } from '../tokenConfigs';
-import { useAccount, useContractReads, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
+import { useAccount, useContractReads } from 'wagmi';
 import { toast } from 'react-toastify';
 import { type BigNumber } from 'ethers';
-import { formatEther, parseEther } from 'ethers/lib/utils.js';
-import { bigNumberToDecimal, numberToPrecision } from '@utils/number';
-import { ONE_DAY_IN_SECS } from '@utils/time';
-import CustomSpin from '@components/spin';
+import { bigNumberToDecimal } from '@utils/number';
 import VestingStatus from './vestingStatus';
 
 interface IVest {
@@ -34,17 +30,7 @@ export type AGIReedemInfo = [BigNumber, BigNumber, BigNumber, `0x${string}`, Big
 export const VestBox = () => {
   const [modalOpen, setModalOpen] = React.useState(false);
 
-  const [operatingIndex, setOperatingIndex] = React.useState(0);
-
   const { address, isConnected } = useAccount();
-
-  const { data: esAGIBalance } = useReadContractNumber({
-    ...getContracts().esAGI,
-    functionName: 'balanceOf',
-    args: [address],
-    outputBigNumber: true,
-    enabled: isConnected,
-  });
 
   const { data: AGIBalance } = useReadContractNumber({
     ...getContracts().AGI,
@@ -52,6 +38,16 @@ export const VestBox = () => {
     args: [address],
     outputBigNumber: true,
     enabled: isConnected,
+    watch: true,
+  });
+
+  const { data: esAGIBalance } = useReadContractNumber({
+    ...getContracts().esAGI,
+    functionName: 'balanceOf',
+    args: [address],
+    outputBigNumber: true,
+    enabled: isConnected,
+    watch: true,
   });
 
   const { data: AGIRedeemingCount } = useReadContractNumber({
