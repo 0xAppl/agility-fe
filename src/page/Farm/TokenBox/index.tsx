@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import useReadContractNumber from '@hooks/useReadContractNumber';
 import { ONE_DAY_IN_SECS } from '@utils/time';
-import { BigNumber, ethers } from 'ethers';
+import { type BigNumber, ethers } from 'ethers';
 import React, { useCallback, useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import {
@@ -87,7 +87,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     enabled: isConnected,
   });
 
-  const { data } = useReadContractNumber({
+  const { data: LPReserves } = useReadContractNumber<[BigNumber, BigNumber]>({
     ...(token.tokenContract ?? {}),
     functionName: 'getReserves',
     watch: true,
@@ -98,9 +98,9 @@ export const TokenBox = ({ token }: { token: IToken }) => {
   let AGIReserve = 0;
   let ETHReserve = 0;
 
-  if (Array.isArray(data)) {
-    AGIReserve = bigNumberToDecimal(data[0]) as number;
-    ETHReserve = bigNumberToDecimal(data[1]) as number;
+  if (Array.isArray(LPReserves)) {
+    AGIReserve = bigNumberToDecimal(LPReserves[0]) as number;
+    ETHReserve = bigNumberToDecimal(LPReserves[1]) as number;
   }
 
   const { data: balanceOf } = useReadContractNumber({

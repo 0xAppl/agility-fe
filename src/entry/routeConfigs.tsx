@@ -18,7 +18,7 @@ export const routeConfigs = {
       path: 'aUSDTrading',
       label: 'aUSD Trading',
       disabled: true,
-      component: <aUSDTrading />,
+      component: () => <div>aUSD Trading</div>,
     },
     {
       path: 'farm',
