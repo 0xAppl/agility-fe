@@ -8,10 +8,10 @@ import farmStyle from '../index.module.less';
 import RedeemModal from './redeemModal';
 import useReadContractNumber from '@hooks/useReadContractNumber';
 import { getContracts } from '../tokenConfigs';
-import { useAccount, useContractReads } from 'wagmi';
+import { useAccount, useContractRead, useContractReads } from 'wagmi';
 import { toast } from 'react-toastify';
 import { type BigNumber } from 'ethers';
-import { bigNumberToDecimal } from '@utils/number';
+import { BigZero, bigNumberToDecimal } from '@utils/number';
 import VestingStatus from './vestingStatus';
 
 interface IVest {
@@ -32,32 +32,64 @@ export const VestBox = () => {
 
   const { address, isConnected } = useAccount();
 
-  const { data: AGIBalance } = useReadContractNumber({
-    ...getContracts().AGI,
-    functionName: 'balanceOf',
-    args: [address],
-    outputBigNumber: true,
+  const { data } = useContractReads({
+    contracts: [
+      {
+        ...getContracts().AGI,
+        functionName: 'balanceOf',
+        args: [address],
+      },
+      {
+        ...getContracts().esAGI,
+        functionName: 'balanceOf',
+        args: [address],
+      },
+      {
+        ...getContracts().esAGI,
+        functionName: 'getUserRedeemsLength',
+        args: [address],
+      },
+    ],
     enabled: isConnected,
     watch: true,
   });
 
-  const { data: esAGIBalance } = useReadContractNumber({
-    ...getContracts().esAGI,
-    functionName: 'balanceOf',
-    args: [address],
-    outputBigNumber: true,
-    enabled: isConnected,
-    watch: true,
-  });
+  let AGIBalance = BigZero;
+  let esAGIBalance = BigZero;
+  let AGIRedeemingCount = BigZero;
 
-  const { data: AGIRedeemingCount } = useReadContractNumber({
-    ...getContracts().esAGI,
-    functionName: 'getUserRedeemsLength',
-    args: [address],
-    enabled: isConnected,
-    outputBigNumber: true,
-    watch: true,
-  });
+  if (Array.isArray(data)) {
+    AGIBalance = data[0] as unknown as BigNumber;
+    esAGIBalance = data[1] as unknown as BigNumber;
+    AGIRedeemingCount = data[2] as unknown as BigNumber;
+  }
+
+  // const { data: AGIBalance } = useReadContractNumber({
+  //   ...getContracts().AGI,
+  //   functionName: 'balanceOf',
+  //   args: [address],
+  //   outputBigNumber: true,
+  //   enabled: isConnected,
+  //   watch: true,
+  // });
+
+  // const { data: esAGIBalance } = useReadContractNumber({
+  //   ...getContracts().esAGI,
+  //   functionName: 'balanceOf',
+  //   args: [address],
+  //   outputBigNumber: true,
+  //   enabled: isConnected,
+  //   watch: true,
+  // });
+
+  // const { data: AGIRedeemingCount } = useReadContractNumber({
+  //   ...getContracts().esAGI,
+  //   functionName: 'getUserRedeemsLength',
+  //   args: [address],
+  //   enabled: isConnected,
+  //   outputBigNumber: true,
+  //   watch: true,
+  // });
 
   const convertedAGIRedeemingCount =
     AGIRedeemingCount !== undefined ? (AGIRedeemingCount as unknown as BigNumber).toNumber() : 0;

@@ -27,12 +27,12 @@ export const Farm = () => {
 
   const { TVL, ethPrice, AGIPrice } = useGlobalStatsContext();
 
-  const { data: esAGIBalance } = useReadContractNumber({
-    ...getContracts().esAGI,
-    functionName: 'balanceOf',
-    args: [address],
-    watch: true,
-  });
+  // const { data: esAGIBalance } = useReadContractNumber({
+  //   ...getContracts().esAGI,
+  //   functionName: 'balanceOf',
+  //   args: [address],
+  //   watch: true,
+  // });
 
   return (
     // <ContractContext.Provider

@@ -40,13 +40,11 @@ import useReadContractNumber from '@hooks/useReadContractNumber';
 
 // Configure chains & providers with the Alchemy provider.
 // Two popular providers are Alchemy (alchemy.com) and Infura (infura.io)
-const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, goerli],
-  [infuraProvider({ apiKey: '984b463612ff47fc93c9607b89e96ee8' }), publicProvider()],
-);
+const { chains, provider, webSocketProvider } = configureChains([mainnet, goerli], [publicProvider()]);
 
 const client = createClient({
   autoConnect: true,
+
   connectors: [
     new MetaMaskConnector({ chains }),
     new WalletConnectConnector({

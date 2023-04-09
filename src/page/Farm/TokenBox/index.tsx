@@ -1,32 +1,20 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import useReadContractNumber from '@hooks/useReadContractNumber';
-import { ONE_DAY_IN_SECS } from '@utils/time';
 import { type BigNumber, ethers } from 'ethers';
-import React, { useCallback, useEffect, useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
-import {
-  useAccount,
-  useContractRead,
-  useContractWrite,
-  usePrepareContractWrite,
-  useProvider,
-  useWaitForTransaction,
-} from 'wagmi';
-import { API } from '../../../Api';
+import { React, useState } from 'react';
+import { toast } from 'react-toastify';
+import { useAccount, useContractRead, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { ClaimBtn, CommonButton, StakeBtn, WithdrawBtn } from '../../../components/Btns';
-import OnChainNumberDisplay from '../../../components/OnChainNumberDisplay';
-import Shimmer from '../../../components/Shimmer';
 import { useGlobalStatsContext } from '../../../contexts/globalStatsContext';
-import { BigZero, bigNumberToDecimal, numberToPrecision } from '@utils/number';
+import { bigNumberToDecimal, numberToPrecision } from '@utils/number';
 import { capitalize } from '@utils/string';
-import { getContracts, type IToken } from '../tokenConfigs';
+import { type IToken } from '../tokenConfigs';
 // import { useContractContext } from '../../../contexts/contractContext';
 import style from './index.module.less';
 import StackingModal from './StakeModal';
 import { useLocation } from 'react-router-dom';
 import useWriteContract from '@hooks/useWriteContract';
 import CustomSpin from '@components/spin';
-import { formatEther } from 'ethers/lib/utils.js';
 import useReportTVL from '@hooks/useReportTVL';
 import { Tooltip } from 'antd';
 import DoubleTokenLogo from '@components/TripleTokenLogo';
@@ -121,6 +109,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     ...commonStakingContractProps,
     functionName: 'balanceOf',
     args: [address],
+    watch: true,
   });
 
   const { data: esAGIEarned } = useReadContractNumber({

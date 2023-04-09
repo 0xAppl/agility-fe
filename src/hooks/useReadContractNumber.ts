@@ -9,11 +9,9 @@ type IUseReadContractNumber = ExtractArrayType<ExtractFunctionParams<typeof useC
 };
 
 const useReadContractNumber = <T = number>(params: IUseReadContractNumber) => {
-  const { isConnected } = useAccount();
-
   const { data, isLoading, isError, ...rest } = useContractRead({
     ...params,
-    enabled: params?.enabled ?? isConnected,
+    enabled: params?.enabled ?? false,
   });
 
   const outputData =
