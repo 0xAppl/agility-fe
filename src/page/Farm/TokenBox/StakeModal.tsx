@@ -19,7 +19,7 @@ import CustomSpin from '../../../components/spin';
 import useDebounce from '../../../hooks/useDebounce';
 import { bigNumberToDecimal, BigZero, expandTo18Decimals } from '../../../utils/number';
 // import { useContractContext } from '../../../contexts/contractContext';
-import { type IContract, nativeTokenAddress } from '../tokenConfigs';
+import { type IContract } from '../tokenConfigs';
 import style from './index.module.less';
 
 import { toast, ToastContainer } from 'react-toastify';

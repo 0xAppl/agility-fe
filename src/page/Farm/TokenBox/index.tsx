@@ -124,7 +124,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
 
   const APR = APYAvailable ? ((1 + (token.poolDailyEmission * AGIPrice) / TVL) * 365 - 1) * 100 : '???';
 
-  useReportTVL(TVL, token.name);
+  useReportTVL(TVL, token.name, disabled);
 
   const onExit = () => {
     if (disabled) return;

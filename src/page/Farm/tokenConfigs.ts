@@ -10,8 +10,6 @@ import fraxETH from '../../assets/fraxETH.svg';
 // export const PoolDailyEmission = 400_000;
 // export const PoolBlockEmission = PoolDailyEmission / 7200;
 
-export const nativeTokenAddress = '0x0000000000000000000000000000000000000000';
-
 export const getContracts = (
   network = '0x1',
 ): Record<
