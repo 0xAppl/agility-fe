@@ -251,7 +251,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         </div>
         <div className={style.tvl}>
           <div className={style.text}>TVL</div>
-          <div className={style.number}>${disabled ? '???' : numberToPrecision(TVL, 0)}</div>
+          <div className={style.number}>${disabled ?? isNaN(TVL) ? '???' : numberToPrecision(TVL, 0)}</div>
         </div>
       </div>
 
