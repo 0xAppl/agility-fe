@@ -18,6 +18,7 @@ const VestingStatus: React.FC<{ index: number; data: AGIReedemInfo }> = ({ index
 
   const now = new Date().getTime();
   const canWithdraw = now > Number(endDate) * 1000;
+
   //   const canWithdraw =
 
   //   const { config } = usePrepareContractWrite({
@@ -45,7 +46,7 @@ const VestingStatus: React.FC<{ index: number; data: AGIReedemInfo }> = ({ index
     functionName: 'cancelRedeem',
     args: [index],
     successMessage: 'Cancel Redeem Success!',
-    enabled: canWithdraw,
+    // enabled: canWithdraw,
   });
 
   const { write: finalizeRedeem, isLoading: isLoadingFinalizeRedeem } = useWriteContract({
