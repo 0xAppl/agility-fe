@@ -55,7 +55,7 @@ export const NavLine = () => {
       </span>
     ))
     .concat(
-      <span className={classNames(style.nav_route)}>
+      <span className={classNames(style.nav_route)} key={'docs'}>
         <a href={docsHref} className={style.icon_href} target="_blank" rel="noreferrer">
           Docs
         </a>
