@@ -3,6 +3,9 @@ import { type IStatus } from './StatusBox';
 import { type VestData } from './VestBox';
 import ETHIcon from '../../assets/ETH_icon.svg';
 import { AGIAbi, esAGIAbi, ETHPoolAbi, UniLpAbi as UniPoolAbi, AGIWETHContractAbi, AGIWETHLPAbi } from './abis';
+import stETH from '../../assets/stETH.svg';
+import rETH from '../../assets/rETH.svg';
+import fraxETH from '../../assets/fraxETH.svg';
 
 // export const PoolDailyEmission = 400_000;
 // export const PoolBlockEmission = PoolDailyEmission / 7200;
@@ -60,11 +63,12 @@ export interface IContract {
 }
 
 export interface IToken {
-  icon: string;
+  icon?: string;
   name: string;
   stakingContract: IContract;
   tokenContract?: IContract;
   poolDailyEmission: number;
+  disabled?: true;
 }
 
 export interface TokenConfigs {
@@ -87,6 +91,37 @@ export const tokenConfigs: TokenConfigs = {
       stakingContract: getContracts().AGIWETHContract,
       tokenContract: getContracts().AGIWETHLP,
       poolDailyEmission: 470_000,
+    },
+    {
+      icon: stETH,
+      name: 'stETH',
+      stakingContract: getContracts().AGIWETHContract,
+      tokenContract: getContracts().AGIWETHLP,
+      poolDailyEmission: 470_000,
+      disabled: true,
+    },
+    {
+      icon: rETH,
+      name: 'rETH',
+      stakingContract: getContracts().AGIWETHContract,
+      tokenContract: getContracts().AGIWETHLP,
+      poolDailyEmission: 470_000,
+      disabled: true,
+    },
+    {
+      icon: fraxETH,
+      name: 'fraxETH',
+      stakingContract: getContracts().AGIWETHContract,
+      tokenContract: getContracts().AGIWETHLP,
+      poolDailyEmission: 470_000,
+      disabled: true,
+    },
+    {
+      name: '???',
+      stakingContract: getContracts().AGIWETHContract,
+      tokenContract: getContracts().AGIWETHLP,
+      poolDailyEmission: 470_000,
+      disabled: true,
     },
   ],
 };

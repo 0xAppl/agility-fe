@@ -5,6 +5,10 @@ import { InjectedConnector } from 'wagmi/connectors/injected';
 import { Link, useLocation } from 'react-router-dom';
 import { Button, Modal } from 'antd';
 import logoSvg from '../../assets/logo.svg';
+import logoSvgSimplified from '../../assets/agility_logo.svg';
+
+import disconnectSvg from '../../assets/disconnect.svg';
+
 import walletSvg from '../../assets/wallet.svg';
 import twitterSvg from '../../assets/twitter.svg';
 import inviteSvg from '../../assets/invite.svg';
@@ -58,6 +62,7 @@ export const NavLine = () => {
         <div className={style.logo}>
           <Link to={`/`}>
             <img src={logoSvg} alt="Logo" />
+            <img src={logoSvgSimplified} alt="Logo" />
           </Link>
         </div>
         <div className={style.nav_route_wrapper}>
@@ -98,27 +103,19 @@ export const NavLine = () => {
           <a href={twitterHref} className={style.icon_href} target="_blank" rel="noreferrer">
             <img src={twitterSvg} alt="twitter" />
           </a>
-          <a
-            href={discordHref}
-            className={style.icon_href}
-            target="_blank"
-            rel="noreferrer"
-            style={{
-              display: 'none',
-            }}
-          >
-            <img src={inviteSvg} alt="invite" />
+          <a href={discordHref} className={style.icon_href} target="_blank" rel="noreferrer">
+            <img src={inviteSvg} alt="discord" />
           </a>
           <Hamburger activated={activated} setActivated={setActivated} />
         </div>
-        <div
-          className={classNames({
-            [style.mobileMenu]: true,
-            [style.active]: activated,
-          })}
-        >
-          {lists}
-        </div>
+      </div>
+      <div
+        className={classNames({
+          [style.mobileMenu]: true,
+          [style.active]: activated,
+        })}
+      >
+        {lists}
       </div>
       <Modal
         open={connectModalOpen && !isConnected}
@@ -128,6 +125,9 @@ export const NavLine = () => {
         transitionName={''}
         footer={null}
         title="Select Wallet"
+        bodyStyle={{
+          textAlign: 'center',
+        }}
       >
         {connectors.map(connector => (
           <CommonButton

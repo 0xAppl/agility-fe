@@ -10,6 +10,15 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    height: auto;
+    gap: 8px;
+    align-items: baseline;
+    & > :last-child {
+      margin-top: 12px;
+    }
+  }
   &.small {
     // width: 30%;
     margin-right: 24px;

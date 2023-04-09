@@ -62,6 +62,10 @@
   .box_container {
     justify-content: space-between;
     margin-top: 12px;
+    gap: 8px;
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
   }
 }
 

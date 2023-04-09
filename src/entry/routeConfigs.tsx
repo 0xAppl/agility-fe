@@ -2,7 +2,7 @@ import React from 'react';
 // import { Docs } from '../page/Docs';
 import { LiquidityDistribute } from '../page/LiquidityDistribute';
 import { Farm } from '../page/Farm';
-import { XUSDTrading } from '../page/XUSDTrading';
+import { aUSDTrading } from '../page/aUSDrading';
 import LandingPage from '../page/Landing';
 
 export const routeConfigs = {
@@ -15,10 +15,10 @@ export const routeConfigs = {
       component: <LiquidityDistribute />,
     },
     {
-      path: 'xUSDTrading',
-      label: 'xUSD Trading',
+      path: 'aUSDTrading',
+      label: 'aUSD Trading',
       disabled: true,
-      component: <XUSDTrading />,
+      component: <aUSDTrading />,
     },
     {
       path: 'farm',

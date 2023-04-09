@@ -25,7 +25,7 @@ export const Farm = () => {
   const { isConnected, address } = useAccount();
   const [signer, setSigner] = useState<any>(null);
 
-  const { TVL, ethPrice } = useGlobalStatsContext();
+  const { TVL, ethPrice, AGIPrice } = useGlobalStatsContext();
 
   const { data: esAGIBalance } = useReadContractNumber({
     ...getContracts().esAGI,
@@ -45,7 +45,7 @@ export const Farm = () => {
     <div className={style.farm_section}>
       {/* total  */}
       <div className={style.total_container}>
-        TVL ${numberToPrecision(TVL, 0)} ETH ${ethPrice || '???'}
+        TVL ${numberToPrecision(TVL, 0)} AGI ${AGIPrice ? numberToPrecision(AGIPrice, 3) : '???'}
       </div>
 
       {/* farm tokens */}

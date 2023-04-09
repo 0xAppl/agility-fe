@@ -28,8 +28,10 @@ import useWriteContract from '@hooks/useWriteContract';
 import CustomSpin from '@components/spin';
 import { formatEther } from 'ethers/lib/utils.js';
 import useReportTVL from '@hooks/useReportTVL';
+import { Tooltip } from 'antd';
 
 export const TokenBox = ({ token }: { token: IToken }) => {
+  const { disabled } = token;
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [overrideApprovalStatus, setOverrideApprovalStatus] = useState(false);
@@ -131,10 +133,12 @@ export const TokenBox = ({ token }: { token: IToken }) => {
   }, [exit, hasStacked]);
 
   const onClaimClick = () => {
+    if (disabled) return;
     if (esAGIEarned) claimReward?.();
   };
 
   const onWithdrawClick = () => {
+    if (disabled) return;
     setModalMode('withdraw');
     setIsModalOpen(true);
   };
@@ -171,14 +175,23 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       <WithdrawBtn onClick={onWithdrawClick} disabled={!hasStacked}>
         Withdraw
       </WithdrawBtn>
-      <WithdrawBtn onClick={onExit} isLoading={isLoadingExit} disabled={!hasStacked}>
-        {`${isLoadingExit ? 'Withdrawing' : 'Withdraw'}`} All
-      </WithdrawBtn>
+      <Tooltip title={`Withdraw all your staked ${token.name} + esAGI rewards`}>
+        <div
+          style={{
+            width: '100%',
+          }}
+        >
+          <WithdrawBtn onClick={onExit} isLoading={isLoadingExit} disabled={!hasStacked}>
+            {`${isLoadingExit ? 'Withdrawing' : 'Withdraw'}`} All
+          </WithdrawBtn>
+        </div>
+      </Tooltip>
     </>
   );
 
   const stakeBtns = (
     <StakeBtn
+      disabled={disabled}
       onClick={() => {
         if (isConnected) {
           setModalMode('stake');
@@ -192,9 +205,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     <div className={style.token_box}>
       {/* token info */}
       <div className={style.token_info}>
-        <span className={style.icon}>
-          <img src={token.icon} alt="" />
-        </span>
+        <span className={style.icon}>{token.icon ? <img src={token.icon} alt="" /> : <span>?</span>}</span>
         <span className={style.name}>{token.name}</span>
       </div>
 
@@ -203,12 +214,12 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         <div className={style.apr}>
           <div className={style.text}>APR</div>
           <div className={style.number}>
-            {typeof APR === 'string' ? APR : APR > 99999 ? '99999+' : numberToPrecision(APR, 2)}%
+            {disabled ? '???' : typeof APR === 'string' ? APR : APR > 99999 ? '99999+' : numberToPrecision(APR, 2)}%
           </div>
         </div>
         <div className={style.tvl}>
           <div className={style.text}>TVL</div>
-          <div className={style.number}>${numberToPrecision(TVL, 0)}</div>
+          <div className={style.number}>${disabled ? '???' : numberToPrecision(TVL, 0)}</div>
         </div>
       </div>
 
@@ -218,7 +229,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
           <div className={style.text}> esAGI Earned</div>
           <div className={style.number}>{numberToPrecision(esAGIEarned, 6)} $esAGI</div>
         </div>
-        <ClaimBtn onClick={onClaimClick} isLoading={isLoadingClaim} disabled={!esAGIEarned} />
+        {esAGIEarned ? <ClaimBtn onClick={onClaimClick} isLoading={isLoadingClaim} disabled={!esAGIEarned} /> : null}
       </div>
 
       <div className={style.line}></div>
@@ -230,10 +241,10 @@ export const TokenBox = ({ token }: { token: IToken }) => {
           <div className={style.number}>{numberToPrecision(balanceOf, 6)}</div>
         </div>
         {token.tokenContract ? (
-          overrideApprovalStatus || stakingContractAllowance ? (
+          (overrideApprovalStatus || stakingContractAllowance) && !disabled ? (
             stakeBtns
           ) : (
-            <CommonButton onClick={allowSpending}>
+            <CommonButton onClick={allowSpending} disabled={disabled}>
               {isLoadingApproving ? (
                 <CustomSpin
                   style={{
