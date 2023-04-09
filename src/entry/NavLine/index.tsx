@@ -42,17 +42,34 @@ export const NavLine = () => {
   // const { data: ensAvatar } = useEnsAvatar({ address });
   // const { data: ensName } = useEnsName({ address });
 
-  const lists: React.ReactElement[] = list.map(route => (
-    <span
-      className={classNames(style.nav_route, {
-        [style.disabled]: route.disabled,
-        [style.active]: pathname === `/${route.path}`,
-      })}
-      key={route.path}
-    >
-      {route.disabled ? route.label : <Link to={`/${route.path}`}>{route.label}</Link>}
-    </span>
-  ));
+  const lists: React.ReactElement[] = list
+    .map(route => (
+      <span
+        className={classNames(style.nav_route, {
+          [style.disabled]: route.disabled,
+          [style.active]: pathname === `/${route.path}`,
+        })}
+        key={route.path}
+      >
+        {route.disabled ? route.label : <Link to={`/${route.path}`}>{route.label}</Link>}
+      </span>
+    ))
+    .concat(
+      <span className={classNames(style.nav_route)}>
+        <a href={docsHref} className={style.icon_href} target="_blank" rel="noreferrer">
+          Docs
+        </a>
+      </span>,
+      <span className={classNames(style.nav_route)} key={'buy'}>
+        <a
+          href="https://app.uniswap.org/#/swap?outputCurrency=0x5f18ea482ad5cc6bc65803817c99f477043dce85"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Buy $AGI
+        </a>
+      </span>,
+    );
 
   if (pathname === '/') return null;
 
@@ -65,15 +82,7 @@ export const NavLine = () => {
             <img src={logoSvgSimplified} alt="Logo" />
           </Link>
         </div>
-        <div className={style.nav_route_wrapper}>
-          {lists}
-
-          <span className={classNames(style.nav_route)}>
-            <a href={docsHref} className={style.icon_href} target="_blank" rel="noreferrer">
-              Docs
-            </a>
-          </span>
-        </div>
+        <div className={style.nav_route_wrapper}>{lists}</div>
 
         <div className={style.right_nav}>
           <div className={style.wallet_icon}>

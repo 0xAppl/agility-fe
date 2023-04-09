@@ -1,12 +1,10 @@
 import { useEffect } from 'react';
 
-const useReportTVL = (TVL: number, pool: string, disabled?: boolean) => {
+const useReportTVL = (TVL: number, pool: string) => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    if (!disabled) {
-      window.postMessage({ type: 'TVL', TVL, pool }, '*');
-    }
-  }, [TVL, pool, disabled]);
+    window.postMessage({ type: 'TVL', TVL, pool }, '*');
+  }, [TVL, pool]);
 };
 
 export default useReportTVL;

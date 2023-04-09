@@ -26,12 +26,12 @@ const useWriteContract = (config: IUseWriteContract) => {
   const {
     write,
     error: contractWriteError,
-    data: finalizeRedeemData,
+    data: contractWriteData,
     isLoading: isPendingTx,
   } = useContractWrite(writeConfig);
 
   const { isLoading, error: useWaitForTransactionError } = useWaitForTransaction({
-    hash: finalizeRedeemData?.hash,
+    hash: contractWriteData?.hash,
     onSuccess(data) {
       toast.success(successMessage ?? 'Success!');
       successCallback?.(data);

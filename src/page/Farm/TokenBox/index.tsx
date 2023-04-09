@@ -29,6 +29,7 @@ import CustomSpin from '@components/spin';
 import { formatEther } from 'ethers/lib/utils.js';
 import useReportTVL from '@hooks/useReportTVL';
 import { Tooltip } from 'antd';
+import DoubleTokenLogo from '@components/TripleTokenLogo';
 
 export const TokenBox = ({ token }: { token: IToken }) => {
   const { disabled } = token;
@@ -75,16 +76,16 @@ export const TokenBox = ({ token }: { token: IToken }) => {
 
   const isHomepage = useLocation().pathname === '/';
 
-  const commonProps = {
+  const commonStakingContractProps = {
     ...token.stakingContract,
     enabled: !isHomepage && !disabled,
   };
 
   const { data: totalStakedETH } = useReadContractNumber({
-    ...commonProps,
+    ...commonStakingContractProps,
     functionName: 'totalSupply',
     watch: true,
-    enabled: isConnected,
+    enabled: isConnected && commonStakingContractProps.enabled,
   });
 
   const { data: LPReserves } = useReadContractNumber<[BigNumber, BigNumber]>({
@@ -93,6 +94,19 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     watch: true,
     outputBigNumber: true,
     enabled: !!token.tokenContract && isConnected,
+  });
+
+  const { data: LPTotalSupply } = useReadContractNumber({
+    ...(token.tokenContract ?? {}),
+    functionName: 'totalSupply',
+    watch: true,
+    enabled: !!token.tokenContract && isConnected,
+  });
+
+  const { data: LPStakedBalance } = useReadContractNumber({
+    ...commonStakingContractProps,
+    functionName: 'totalSupply',
+    watch: true,
   });
 
   let AGIReserve = 0;
@@ -104,27 +118,29 @@ export const TokenBox = ({ token }: { token: IToken }) => {
   }
 
   const { data: balanceOf } = useReadContractNumber({
-    ...commonProps,
+    ...commonStakingContractProps,
     functionName: 'balanceOf',
     args: [address],
   });
 
   const { data: esAGIEarned } = useReadContractNumber({
-    ...commonProps,
+    ...commonStakingContractProps,
     functionName: 'earned',
     args: [address],
     watch: true,
   });
 
-  const TVL = token.tokenContract ? AGIReserve * AGIPrice + ETHReserve * ethPrice : totalStakedETH * ethPrice;
+  const TVL = token.tokenContract
+    ? (AGIReserve * AGIPrice + ETHReserve * ethPrice) * (LPStakedBalance / LPTotalSupply)
+    : totalStakedETH * ethPrice;
 
   const APYAvailable = token.tokenContract
-    ? AGIReserve && ETHReserve && ethPrice && AGIPrice
+    ? AGIReserve && ETHReserve && ethPrice && AGIPrice && LPStakedBalance && LPTotalSupply
     : AGIPrice && totalStakedETH && ethPrice;
 
   const APR = APYAvailable ? ((1 + (token.poolDailyEmission * AGIPrice) / TVL) * 365 - 1) * 100 : '???';
 
-  useReportTVL(TVL, token.name, disabled);
+  useReportTVL(disabled ? 0 : TVL, token.name);
 
   const onExit = () => {
     if (disabled) return;
@@ -176,7 +192,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       <WithdrawBtn onClick={onWithdrawClick} disabled={!hasStacked || disabled}>
         Withdraw
       </WithdrawBtn>
-      <Tooltip title={`Withdraw all your staked ${token.name} + esAGI rewards`}>
+      <Tooltip title={`Withdraw all your staked ${token.name} + esAGI rewards`} placement="bottom">
         <div
           style={{
             width: '100%',
@@ -206,7 +222,22 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     <div className={style.token_box}>
       {/* token info */}
       <div className={style.token_info}>
-        <span className={style.icon}>{token.icon ? <img src={token.icon} alt="" /> : <span>?</span>}</span>
+        <span
+          className={style.icon}
+          style={{
+            marginRight: Array.isArray(token.icon) ? 10 : undefined,
+          }}
+        >
+          {token.icon ? (
+            Array.isArray(token.icon) ? (
+              <DoubleTokenLogo a0={token.icon[0]} a1={token.icon[1]}></DoubleTokenLogo>
+            ) : (
+              <img src={token.icon} alt="" />
+            )
+          ) : (
+            <span>?</span>
+          )}
+        </span>
         <span className={style.name}>{token.name}</span>
       </div>
 

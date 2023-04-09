@@ -19,27 +19,6 @@ const VestingStatus: React.FC<{ index: number; data: AGIReedemInfo }> = ({ index
   const now = new Date().getTime();
   const canWithdraw = now > Number(endDate) * 1000;
 
-  //   const canWithdraw =
-
-  //   const { config } = usePrepareContractWrite({
-  //     address: getContracts().esAGI.address,
-  //     abi: getContracts().esAGI.abi,
-  //     functionName: 'cancelRedeem',
-  //     args: [index],
-  //   });
-
-  //   const { write: cancelRedeem, data: cancelData, error } = useContractWrite(config);
-
-  //   const { isLoading: isLoadingCancelRedeem } = useWaitForTransaction({
-  //     hash: cancelData?.hash,
-  //     onSuccess(data) {
-  //       toast.success('Cancel Redeem Success!');
-  //     },
-  //     onError(err) {
-  //       console.log(err);
-  //     },
-  //   });
-
   const { write: cencelRedeem, isLoading: isLoadingCancelRedeem } = useWriteContract({
     address: getContracts().esAGI.address,
     abi: getContracts().esAGI.abi,

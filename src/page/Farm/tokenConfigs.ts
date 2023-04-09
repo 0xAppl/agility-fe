@@ -4,8 +4,10 @@ import { type VestData } from './VestBox';
 import ETHIcon from '../../assets/ETH_icon.svg';
 import { AGIAbi, esAGIAbi, ETHPoolAbi, UniLpAbi as UniPoolAbi, AGIWETHContractAbi, AGIWETHLPAbi } from './abis';
 import stETH from '../../assets/stETH.svg';
-import rETH from '../../assets/rETH.svg';
+import rETH from '../../assets/rETH.png';
 import fraxETH from '../../assets/fraxETH.svg';
+import wETH from '../../assets/weth_logo.png';
+import AGI from '../../assets/agi_logo.png';
 
 // export const PoolDailyEmission = 400_000;
 // export const PoolBlockEmission = PoolDailyEmission / 7200;
@@ -61,7 +63,7 @@ export interface IContract {
 }
 
 export interface IToken {
-  icon?: string;
+  icon?: string | [string, string];
   name: string;
   stakingContract: IContract;
   tokenContract?: IContract;
@@ -84,7 +86,7 @@ export const tokenConfigs: TokenConfigs = {
       poolDailyEmission: 540_000,
     },
     {
-      icon: ETHIcon,
+      icon: [AGI, wETH],
       name: 'AGI-WETH LP',
       stakingContract: getContracts().AGIWETHContract,
       tokenContract: getContracts().AGIWETHLP,
