@@ -46,7 +46,6 @@ const VestingStatus: React.FC<{ index: number; data: AGIReedemInfo }> = ({ index
     functionName: 'cancelRedeem',
     args: [index],
     successMessage: 'Cancel Redeem Success!',
-    // enabled: canWithdraw,
   });
 
   const { write: finalizeRedeem, isLoading: isLoadingFinalizeRedeem } = useWriteContract({
