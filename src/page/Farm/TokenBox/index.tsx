@@ -272,7 +272,10 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       <div className={style.stake_sec}>
         <div className={style.left}>
           <div className={style.text}> {token.name} Staked</div>
-          <div className={style.number}>{disabled ? '0' : numberToPrecision(balanceOf, 6)}</div>
+          <div className={style.number}>
+            {disabled ? '0' : numberToPrecision(balanceOf, 6)}
+            {/* {!disabled && <>{LPValue * balanceOf > 0 ? ` ($${numberToPrecision(LPValue * balanceOf, 0)})` : ''}</>} */}
+          </div>
         </div>
         {token.tokenContract ? (
           (overrideApprovalStatus || stakingContractAllowance) && !disabled ? (

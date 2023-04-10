@@ -10,7 +10,7 @@ import CountDown from './CountDown';
 // import ContractContext from '../../contexts/contractContext';
 import { useAccount, useProvider } from 'wagmi';
 import { useGlobalStatsContext } from '../../contexts/globalStatsContext';
-import { numberToPrecision } from '@utils/number';
+import { commas, numberToPrecision } from '@utils/number';
 import useReadContractNumber from '@hooks/useReadContractNumber';
 
 // const s = fetchSigner();
@@ -45,7 +45,7 @@ export const Farm = () => {
     <div className={style.farm_section}>
       {/* total  */}
       <div className={style.total_container}>
-        TVL ${numberToPrecision(TVL, 0)} AGI ${AGIPrice ? numberToPrecision(AGIPrice, 3) : '???'}
+        TVL ${commas(TVL)} AGI ${AGIPrice ? numberToPrecision(AGIPrice, 3) : '???'}
       </div>
 
       {/* farm tokens */}

@@ -21,3 +21,10 @@ export const bigNumberToDecimal = (bigNumber = BigZero, toPrecision?: boolean | 
 export const numberToPrecision = (number: number, precision: number = 3) => {
   return precision === 0 ? number.toFixed(0) : Number(trimTailingZeros(number.toFixed(precision)));
 };
+
+export const commas = (x: number) => {
+  return x
+    .toFixed(0)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
