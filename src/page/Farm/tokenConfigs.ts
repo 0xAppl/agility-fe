@@ -20,7 +20,7 @@ export const getContracts = (
 > => {
   return {
     ETHPool: {
-      address: '0xdee9477b0a5D62f987aA9cfE18Ee651a68F13556',
+      address: '0xB3db4e3238c1656fb6b832FB692643f4Fa452010',
       abi: ETHPoolAbi,
     },
     stETHPool: {
@@ -28,15 +28,15 @@ export const getContracts = (
       abi: [],
     },
     AGI: {
-      address: '0xa49573920bd91e61bd46669059E80288FB44FAa0',
+      address: '0x5F18ea482ad5cc6BC65803817C99f477043DcE85',
       abi: AGIAbi,
     },
     esAGI: {
-      address: '0x6bCdeB6457982b26A244521CC3A129571BAB8D22',
+      address: '0x801C71A771E5710D41AC4C0F1d6E82bd07B5Fa43',
       abi: esAGIAbi,
     },
     poolFactory: {
-      address: '0xa378671de217b5B69154CA14297e00086619b512',
+      address: '0xE4a51EC59233BA1f62b71F84554622a532B584ed',
       abi: [],
     },
     /**
@@ -47,11 +47,11 @@ export const getContracts = (
       abi: UniPoolAbi,
     },
     AGIWETHContract: {
-      address: '0xEa2eCE2b185B5c78cB6F9814EC3E86777625060a',
+      address: '0xC8187048f7Ab0db0774b674fEf3f4F4285A01bF4',
       abi: AGIWETHContractAbi,
     },
     AGIWETHLP: {
-      address: '0x811aa8a2e44d4020767b10f6535f29bea3e04bb5',
+      address: '0x498c00e1ccc2afff80f6cc6144eaeb95c46cc3b5',
       abi: AGIWETHLPAbi,
     },
   };
