@@ -168,13 +168,13 @@ export const LaunchAppButton: React.FC = () => {
       style={{
         display: 'inline-flex',
       }}
-      onClick={e => {
-        e.preventDefault();
-        openNotification();
-      }}
+      // onClick={e => {
+      //   e.preventDefault();
+      //   openNotification();
+      // }}
     >
       <div
-        className={cs(style.btn, style.fs_lg, style.color_gray)}
+        className={cs(style.btn, style.fs_lg)}
         style={{
           width: 'unset',
         }}
