@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
+import React, { useState } from 'react';
 import useReadContractNumber from '@hooks/useReadContractNumber';
 import { type BigNumber, ethers } from 'ethers';
-import { React, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useAccount, useContractRead, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { ClaimBtn, CommonButton, StakeBtn, WithdrawBtn } from '../../../components/Btns';
