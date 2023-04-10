@@ -68,6 +68,7 @@ const client = createClient({
 const { list, home } = routeConfigs;
 
 const Layout = ({ children }: any) => {
+  
   const { isConnected } = useAccount();
 
   const { data, isFetching } = useQuery(
