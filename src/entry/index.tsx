@@ -37,6 +37,7 @@ import { ToastContainer } from 'react-toastify';
 import { UniLpAbi } from '../page/Farm/abis';
 import useGetTokenPriceFromLP from '@hooks/useGetTokenPriceFromLP';
 import useReadContractNumber from '@hooks/useReadContractNumber';
+import { Button } from 'antd';
 
 // Configure chains & providers with the Alchemy provider.
 // Two popular providers are Alchemy (alchemy.com) and Infura (infura.io)
@@ -67,8 +68,44 @@ const client = createClient({
 
 const { list, home } = routeConfigs;
 
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  {
+    hasError: boolean;
+  }
+> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: any, errorInfo: any) {
+    console.log(error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <h1>
+          Something went wrong.{' '}
+          <Button
+            onClick={() => {
+              localStorage.clear();
+              window.location.reload();
+            }}
+          >
+            Refresh page
+          </Button>
+        </h1>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 const Layout = ({ children }: any) => {
-  
   const { isConnected } = useAccount();
 
   const { data, isFetching } = useQuery(
@@ -127,7 +164,9 @@ const Layout = ({ children }: any) => {
 export default function App() {
   return (
     <WagmiConfig client={client}>
-      <Layout></Layout>
+      <ErrorBoundary>
+        <Layout></Layout>
+      </ErrorBoundary>
     </WagmiConfig>
   );
 }

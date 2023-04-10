@@ -127,6 +127,8 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     ? AGIReserve && ETHReserve && ethPrice && AGIPrice && LPStakedBalance && LPTotalSupply
     : AGIPrice && totalStakedETH && ethPrice;
 
+  const LPValue = token.tokenContract ? TVL / LPStakedBalance : 0;
+
   const APR = APYAvailable ? ((token.poolDailyEmission * AGIPrice) / TVL) * 365 * 100 : '???';
 
   useReportTVL(disabled ? 0 : TVL, token.name);
