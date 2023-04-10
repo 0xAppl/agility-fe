@@ -87,7 +87,7 @@ class ErrorBoundary extends React.Component<
   render() {
     if (this.state.hasError) {
       return (
-        <h1>
+        <h1 style={{ padding: 32 }}>
           Something went wrong.{' '}
           <Button
             onClick={() => {
@@ -95,7 +95,7 @@ class ErrorBoundary extends React.Component<
               window.location.reload();
             }}
           >
-            Refresh page
+            Try Again
           </Button>
         </h1>
       );
