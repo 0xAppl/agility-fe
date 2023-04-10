@@ -219,7 +219,16 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         >
           {token.icon ? (
             Array.isArray(token.icon) ? (
-              <DoubleTokenLogo a0={token.icon[0]} a1={token.icon[1]}></DoubleTokenLogo>
+              <DoubleTokenLogo
+                a0={token.icon[0]}
+                a1={token.icon[1]}
+                a0Style={{
+                  marginRight: -18,
+                  width: 28,
+                  height: 28,
+                  marginTop: 2,
+                }}
+              ></DoubleTokenLogo>
             ) : (
               <img src={token.icon} alt="" />
             )

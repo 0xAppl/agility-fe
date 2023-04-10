@@ -5,11 +5,13 @@ const DoubleTokenLogo: React.FC<{
   a0: string;
   a1: string;
   size?: number;
-}> = ({ a0, a1, size }) => {
+  a0Style?: React.CSSProperties;
+  a1Style?: React.CSSProperties;
+}> = ({ a0, a1, size, a0Style, a1Style }) => {
   return (
     <div className={style.triple_token_logo}>
-      <img src={a0} alt="" />
-      <img src={a1} alt="" />
+      <img src={a0} alt="" style={a0Style} />
+      <img src={a1} alt="" style={a1Style} />
     </div>
   );
 };

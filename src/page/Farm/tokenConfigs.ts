@@ -7,7 +7,7 @@ import stETH from '../../assets/stETH.svg';
 import rETH from '../../assets/rETH.png';
 import fraxETH from '../../assets/fraxETH.svg';
 import wETH from '../../assets/weth_logo.png';
-import AGI from '../../assets/agi_logo.png';
+import AGI from '../../assets/agility_logo.png';
 
 // export const PoolDailyEmission = 400_000;
 // export const PoolBlockEmission = PoolDailyEmission / 7200;
