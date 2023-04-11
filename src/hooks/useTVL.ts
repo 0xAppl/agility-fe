@@ -1,8 +1,4 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
-import { BigNumber } from 'ethers';
-import { useAccount, useContractRead, useContractReads } from 'wagmi';
-import { getContracts, tokenConfigs } from '../page/Farm/tokenConfigs';
-import { BigZero } from '@utils/number';
 import { useEffect, useState } from 'react';
 
 const useTVL = (): number => {

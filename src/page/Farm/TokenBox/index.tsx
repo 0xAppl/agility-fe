@@ -1,12 +1,10 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import React, { useState } from 'react';
-import useReadContractNumber from '@hooks/useReadContractNumber';
 import { type BigNumber, ethers } from 'ethers';
-import { toast } from 'react-toastify';
-import { useAccount, useContractRead, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
+import { useAccount, useContractReads } from 'wagmi';
 import { ClaimBtn, CommonButton, StakeBtn, WithdrawBtn } from '../../../components/Btns';
 import { useGlobalStatsContext } from '../../../contexts/globalStatsContext';
-import { bigNumberToDecimal, numberToPrecision } from '@utils/number';
+import { BigZero, bigNumberToDecimal, numberToPrecision } from '@utils/number';
 import { capitalize } from '@utils/string';
 import { type IToken } from '../tokenConfigs';
 // import { useContractContext } from '../../../contexts/contractContext';
@@ -21,6 +19,8 @@ import DoubleTokenLogo from '@components/TripleTokenLogo';
 
 export const TokenBox = ({ token }: { token: IToken }) => {
   const { disabled } = token;
+  const isHomepage = useLocation().pathname === '/';
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [overrideApprovalStatus, setOverrideApprovalStatus] = useState(false);
@@ -31,103 +31,153 @@ export const TokenBox = ({ token }: { token: IToken }) => {
 
   const { ethPrice, AGIPrice } = useGlobalStatsContext();
 
-  const { data: stakedBalanceData, isLoading: loadingStakedBalance } = useContractRead({
-    address: token.stakingContract.address,
-    abi: token.stakingContract.abi,
-    functionName: 'balanceOf',
-    args: [address],
+  const { data: publicData, isLoading: isLoadingPublic } = useContractReads({
+    contracts: [
+      {
+        ...token.stakingContract,
+        functionName: 'totalSupply',
+      },
+    ].concat(
+      token.tokenContract
+        ? [
+            {
+              ...token.tokenContract,
+              functionName: 'getReserves',
+            },
+            {
+              ...token.tokenContract,
+              functionName: 'totalSupply',
+            },
+          ]
+        : [],
+    ),
+    enabled: !isHomepage && !disabled,
     watch: true,
-    enabled: isConnected,
   });
 
-  const hasStacked = stakedBalanceData?.toString() !== '0';
+  const { data: accountData, isLoading: isLoadingAccountData } = useContractReads({
+    contracts: [
+      {
+        ...token.stakingContract,
+        functionName: 'balanceOf',
+        args: [address],
+      },
+      {
+        ...token.stakingContract,
+        functionName: 'earned',
+        args: [address],
+      },
+    ].concat(
+      token.tokenContract
+        ? [
+            {
+              ...token.tokenContract,
+              functionName: 'allowance',
+              args: [address, token.stakingContract.address],
+            },
+          ]
+        : [],
+    ),
+    enabled: isConnected && !isHomepage && !disabled,
+    watch: true,
+  });
 
-  const { config: prepareExitConfig, error: prepareExitError } = usePrepareContractWrite({
+  const totalStackedToken = (publicData?.[0] as BigNumber) ?? BigZero;
+
+  const LPReserves = (publicData?.[1] as BigNumber[]) ?? [BigZero, BigZero];
+
+  const LPTotalSupply = (publicData?.[2] as BigNumber) ?? BigZero;
+
+  const accountStakedBalance = (accountData?.[0] as unknown as BigNumber) ?? BigZero;
+
+  const esAGIEarned = (accountData?.[1] as unknown as BigNumber) ?? BigZero;
+
+  const stakingContractAllowance = (accountData?.[2] as unknown as BigNumber) ?? BigZero;
+
+  // console.log(totalStackedToken * 100);
+
+  const hasStacked = !accountStakedBalance.isZero();
+
+  const { write: exit, isLoading: isLoadingExit } = useWriteContract({
     address: token.stakingContract.address,
     abi: token.stakingContract.abi,
     functionName: 'exit',
-    enabled: !loadingStakedBalance && hasStacked,
+    enabled: !isLoadingAccountData && hasStacked,
+    successMessage: 'Withdraw all Success!',
   });
 
-  const { write: exit, data: exitData, error: exitError } = useContractWrite(prepareExitConfig);
+  // const { data: totalStackedToken } = useReadContractNumber({
+  //   ...commonStakingContractProps,
+  //   functionName: 'totalSupply',
+  //   watch: true,
+  //   enabled: commonStakingContractProps.enabled,
+  // });
 
-  const { isLoading: isLoadingExit, error } = useWaitForTransaction({
-    hash: exitData?.hash,
-    onSuccess(data) {
-      toast.success('Withdraw all Success!');
-    },
-    onError(error) {
-      console.log(error);
-      toast.error('Withdraw all Failed!');
-    },
-  });
+  // console.log('totalStakedETH', totalStackedToken);
 
-  const isHomepage = useLocation().pathname === '/';
+  // const { data: LPReserves } = useReadContractNumber<[BigNumber, BigNumber]>({
+  //   ...(token.tokenContract ?? {}),
+  //   functionName: 'getReserves',
+  //   watch: true,
+  //   outputBigNumber: true,
+  //   enabled: !!token.tokenContract && isConnected,
+  // });
 
-  const commonStakingContractProps = {
-    ...token.stakingContract,
-    enabled: !isHomepage && !disabled,
-  };
+  // const { data: LPTotalSupply } = useReadContractNumber({
+  //   ...(token.tokenContract ?? {}),
+  //   functionName: 'totalSupply',
+  //   watch: true,
+  //   enabled: !!token.tokenContract,
+  // });
 
-  const { data: totalStakedETH } = useReadContractNumber({
-    ...commonStakingContractProps,
-    functionName: 'totalSupply',
-    watch: true,
-    enabled: isConnected && commonStakingContractProps.enabled,
-  });
+  // const { data: LPStakedBalance } = useReadContractNumber({
+  //   ...commonStakingContractProps,
+  //   functionName: 'totalSupply',
+  //   watch: true,
+  // });
 
-  const { data: LPReserves } = useReadContractNumber<[BigNumber, BigNumber]>({
-    ...(token.tokenContract ?? {}),
-    functionName: 'getReserves',
-    watch: true,
-    outputBigNumber: true,
-    enabled: !!token.tokenContract && isConnected,
-  });
-
-  const { data: LPTotalSupply } = useReadContractNumber({
-    ...(token.tokenContract ?? {}),
-    functionName: 'totalSupply',
-    watch: true,
-    enabled: !!token.tokenContract && isConnected,
-  });
-
-  const { data: LPStakedBalance } = useReadContractNumber({
-    ...commonStakingContractProps,
-    functionName: 'totalSupply',
-    watch: true,
-  });
+  // console.log(LPStakedBalance, LPTotalSupply);
 
   let AGIReserve = 0;
   let ETHReserve = 0;
 
   if (Array.isArray(LPReserves)) {
-    AGIReserve = bigNumberToDecimal(LPReserves[0]) as number;
-    ETHReserve = bigNumberToDecimal(LPReserves[1]) as number;
+    AGIReserve = bigNumberToDecimal(LPReserves[0]);
+    ETHReserve = bigNumberToDecimal(LPReserves[1]);
   }
 
-  const { data: balanceOf } = useReadContractNumber({
-    ...commonStakingContractProps,
-    functionName: 'balanceOf',
-    args: [address],
-    watch: true,
-  });
+  // const { data: balanceOf } = useReadContractNumber({
+  //   ...commonStakingContractProps,
+  //   functionName: 'balanceOf',
+  //   args: [address],
+  //   watch: true,
+  // });
 
-  const { data: esAGIEarned } = useReadContractNumber({
-    ...commonStakingContractProps,
-    functionName: 'earned',
-    args: [address],
-    watch: true,
-  });
+  // console.log(totalStackedToken, LPStakedBalance);
+
+  // const { data: esAGIEarned } = useReadContractNumber({
+  //   ...commonStakingContractProps,
+  //   functionName: 'earned',
+  //   args: [address],
+  //   watch: true,
+  // });
 
   const TVL = token.tokenContract
-    ? (AGIReserve * AGIPrice + ETHReserve * ethPrice) * (LPStakedBalance / LPTotalSupply)
-    : totalStakedETH * ethPrice;
+    ? (AGIReserve * AGIPrice + ETHReserve * ethPrice) *
+      (bigNumberToDecimal(totalStackedToken) / bigNumberToDecimal(LPTotalSupply))
+    : bigNumberToDecimal(totalStackedToken) * ethPrice;
+
+  if (!token.tokenContract) {
+    // console.log('TVL', TVL, totalStackedToken, ethPrice);
+  }
 
   const APYAvailable = token.tokenContract
-    ? AGIReserve && ETHReserve && ethPrice && AGIPrice && LPStakedBalance && LPTotalSupply
-    : AGIPrice && totalStakedETH && ethPrice;
+    ? AGIReserve && ETHReserve && ethPrice && AGIPrice && totalStackedToken && LPTotalSupply
+    : AGIPrice && bigNumberToDecimal(totalStackedToken) && ethPrice;
 
-  const LPValue = token.tokenContract ? TVL / LPStakedBalance : 0;
+  const LPValue = token.tokenContract ? TVL / bigNumberToDecimal(totalStackedToken) : 0;
+
+  // console.log(LPValue);
 
   const APR = APYAvailable ? ((token.poolDailyEmission * AGIPrice) / TVL) * 365 * 100 : '???';
 
@@ -142,7 +192,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
 
   const onClaimClick = () => {
     if (disabled) return;
-    if (esAGIEarned) claimReward?.();
+    if (!esAGIEarned.isZero()) claimReward?.();
   };
 
   const onWithdrawClick = () => {
@@ -155,7 +205,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     address: token.stakingContract.address,
     abi: token.stakingContract.abi,
     functionName: 'getReward',
-    enabled: esAGIEarned !== 0 && !disabled,
+    enabled: !esAGIEarned.isZero() && !disabled,
     successMessage: 'Claim Success!',
   });
 
@@ -170,13 +220,13 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     },
   });
 
-  const { data: stakingContractAllowance } = useReadContractNumber({
-    ...(token.tokenContract ?? {}),
-    functionName: 'allowance',
-    args: [address, token.stakingContract.address],
-    enabled: !!token.tokenContract,
-    watch: true,
-  });
+  // const { data: stakingContractAllowance } = useReadContractNumber({
+  //   ...(token.tokenContract ?? {}),
+  //   functionName: 'allowance',
+  //   args: [address, token.stakingContract.address],
+  //   enabled: !!token.tokenContract,
+  //   watch: true,
+  // });
 
   const withdrawBtns = (
     <>
@@ -208,6 +258,8 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       }}
     />
   );
+
+  // console.log(TVL);
 
   return (
     <div className={style.token_box}>
@@ -259,10 +311,10 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       <div className={style.claim_sec}>
         <div className={style.left}>
           <div className={style.text}> esAGI Earned</div>
-          <div className={style.number}>{disabled ? 0 : numberToPrecision(esAGIEarned, 6)} $esAGI</div>
+          <div className={style.number}>{disabled ? 0 : bigNumberToDecimal(esAGIEarned, 6)} $esAGI</div>
         </div>
-        {esAGIEarned && !disabled ? (
-          <ClaimBtn onClick={onClaimClick} isLoading={isLoadingClaim} disabled={!esAGIEarned || disabled} />
+        {!esAGIEarned.isZero() && !disabled ? (
+          <ClaimBtn onClick={onClaimClick} isLoading={isLoadingClaim} disabled={esAGIEarned.isZero() || disabled} />
         ) : null}
       </div>
 
@@ -273,12 +325,18 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         <div className={style.left}>
           <div className={style.text}> {token.name} Staked</div>
           <div className={style.number}>
-            {disabled ? '0' : numberToPrecision(balanceOf, 6)}
-            {/* {!disabled && <>{LPValue * balanceOf > 0 ? ` ($${numberToPrecision(LPValue * balanceOf, 0)})` : ''}</>} */}
+            {disabled ? '0' : numberToPrecision(bigNumberToDecimal(accountStakedBalance), 6)}
+            {!disabled && (
+              <>
+                {LPValue * bigNumberToDecimal(accountStakedBalance) > 0
+                  ? ` ($${numberToPrecision(LPValue * bigNumberToDecimal(accountStakedBalance), 0)})`
+                  : ''}
+              </>
+            )}
           </div>
         </div>
         {token.tokenContract ? (
-          (overrideApprovalStatus || stakingContractAllowance) && !disabled ? (
+          (overrideApprovalStatus || !stakingContractAllowance.isZero()) && !disabled ? (
             stakeBtns
           ) : (
             <CommonButton onClick={allowSpending} disabled={disabled}>

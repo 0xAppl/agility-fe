@@ -14,10 +14,8 @@ const useGetTokenPriceFromLP = (
   const { data, isError, isLoading } = useContractRead({
     address: lpAddress,
     abi: lpAbi,
-    enabled: isConnected,
     watch: true,
     functionName,
-    chainId: 1,
   });
   if (!isLoading && !isError && data) {
     try {

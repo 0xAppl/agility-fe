@@ -132,8 +132,8 @@ const StackingModal: React.FC<{
           <>
             <h4>Balance: {bigNumberToDecimal(maxValue, 6)}</h4>
             <Slider
-              value={bigNumberToDecimal(value) as number}
-              max={bigNumberToDecimal(maxValue) as number}
+              value={bigNumberToDecimal(value)}
+              max={bigNumberToDecimal(maxValue)}
               onChange={value => {
                 setValue(parseEther(value.toString()));
               }}

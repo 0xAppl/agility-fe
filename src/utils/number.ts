@@ -9,17 +9,22 @@ export function expandTo18Decimals(n: number) {
 
 export const BigZero = BigNumber.from(0);
 
-export const bigNumberToDecimal = (bigNumber = BigZero, toPrecision?: boolean | number) => {
+export function bigNumberToDecimal(bigNumber = BigZero, toPrecision?: boolean | number) {
   const result = Number(formatEther(bigNumber));
-  return toPrecision === true
-    ? numberToPrecision(result)
-    : toPrecision !== undefined && toPrecision !== false
-    ? numberToPrecision(result, toPrecision)
-    : result;
-};
+  if (typeof toPrecision === 'boolean' && toPrecision) {
+    return numberToPrecision(result);
+  }
+  if (typeof toPrecision === 'number') {
+    return numberToPrecision(result, toPrecision);
+  }
+  if (typeof toPrecision === 'undefined') {
+    return result;
+  }
+  return result;
+}
 
 export const numberToPrecision = (number: number, precision: number = 3) => {
-  return precision === 0 ? number.toFixed(0) : Number(trimTailingZeros(number.toFixed(precision)));
+  return precision === 0 ? Number(number.toFixed(0)) : Number(trimTailingZeros(number.toFixed(precision)));
 };
 
 export const commas = (x: number) => {

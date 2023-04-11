@@ -70,7 +70,7 @@ const RedeemModal: React.FC<{
         <h3>You get: </h3>
         <p>
           <b>
-            {((bigNumberToDecimal(esAGIBalance) as number) * getPercentage).toFixed(3)} $AGI (
+            {(bigNumberToDecimal(esAGIBalance) * getPercentage).toFixed(3)} $AGI (
             {numberToPrecision(getPercentage * 100)}
             %)
           </b>
