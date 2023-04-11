@@ -4,7 +4,7 @@ import { type BigNumber, ethers } from 'ethers';
 import { useAccount, useContractReads } from 'wagmi';
 import { ClaimBtn, CommonButton, StakeBtn, WithdrawBtn } from '../../../components/Btns';
 import { useGlobalStatsContext } from '../../../contexts/globalStatsContext';
-import { BigZero, bigNumberToDecimal, numberToPrecision } from '@utils/number';
+import { BigZero, bigNumberToDecimal, commas, numberToPrecision } from '@utils/number';
 import { capitalize } from '@utils/string';
 import { type IToken } from '../tokenConfigs';
 // import { useContractContext } from '../../../contexts/contractContext';
@@ -303,7 +303,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         </div>
         <div className={style.tvl}>
           <div className={style.text}>TVL</div>
-          <div className={style.number}>${disabled ?? isNaN(TVL) ? '???' : numberToPrecision(TVL, 0)}</div>
+          <div className={style.number}>${disabled ?? isNaN(TVL) ? '???' : commas(TVL)}</div>
         </div>
       </div>
 
@@ -326,13 +326,13 @@ export const TokenBox = ({ token }: { token: IToken }) => {
           <div className={style.text}> {token.name} Staked</div>
           <div className={style.number}>
             {disabled ? '0' : numberToPrecision(bigNumberToDecimal(accountStakedBalance), 6)}
-            {!disabled && (
+            {/* {!disabled && (
               <>
                 {LPValue * bigNumberToDecimal(accountStakedBalance) > 0
                   ? ` ($${numberToPrecision(LPValue * bigNumberToDecimal(accountStakedBalance), 0)})`
                   : ''}
               </>
-            )}
+            )} */}
           </div>
         </div>
         {token.tokenContract ? (

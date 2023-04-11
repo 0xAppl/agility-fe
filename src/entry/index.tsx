@@ -132,6 +132,7 @@ const Layout = ({ children }: any) => {
     address: getContracts().AGI.address,
     abi: getContracts().AGI.abi,
     functionName: 'totalSupply',
+    enabled: true,
   });
 
   return (
