@@ -7,7 +7,7 @@ import { useGlobalStatsContext } from '../../../contexts/globalStatsContext';
 import { BigZero, bigNumberToDecimal, commas, numberToPrecision } from '@utils/number';
 import { capitalize } from '@utils/string';
 import { type IToken } from '../tokenConfigs';
-// import { useContractContext } from '../../../contexts/contractContext';
+
 import style from './index.module.less';
 import StackingModal from './StakeModal';
 import { useLocation } from 'react-router-dom';
@@ -84,7 +84,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
 
   const totalStackedToken = (publicData?.[0] as BigNumber) ?? BigZero;
 
-  const LPReserves = (publicData?.[1] as BigNumber[]) ?? [BigZero, BigZero];
+  const [AGIReserve, ETHReserve] = (publicData?.[1] as BigNumber[]) ?? [BigZero, BigZero];
 
   const LPTotalSupply = (publicData?.[2] as BigNumber) ?? BigZero;
 
@@ -93,8 +93,6 @@ export const TokenBox = ({ token }: { token: IToken }) => {
   const esAGIEarned = (accountData?.[1] as unknown as BigNumber) ?? BigZero;
 
   const stakingContractAllowance = (accountData?.[2] as unknown as BigNumber) ?? BigZero;
-
-  // console.log(totalStackedToken * 100);
 
   const hasStacked = !accountStakedBalance.isZero();
 
@@ -106,78 +104,16 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     successMessage: 'Withdraw all Success!',
   });
 
-  // const { data: totalStackedToken } = useReadContractNumber({
-  //   ...commonStakingContractProps,
-  //   functionName: 'totalSupply',
-  //   watch: true,
-  //   enabled: commonStakingContractProps.enabled,
-  // });
-
-  // console.log('totalStakedETH', totalStackedToken);
-
-  // const { data: LPReserves } = useReadContractNumber<[BigNumber, BigNumber]>({
-  //   ...(token.tokenContract ?? {}),
-  //   functionName: 'getReserves',
-  //   watch: true,
-  //   outputBigNumber: true,
-  //   enabled: !!token.tokenContract && isConnected,
-  // });
-
-  // const { data: LPTotalSupply } = useReadContractNumber({
-  //   ...(token.tokenContract ?? {}),
-  //   functionName: 'totalSupply',
-  //   watch: true,
-  //   enabled: !!token.tokenContract,
-  // });
-
-  // const { data: LPStakedBalance } = useReadContractNumber({
-  //   ...commonStakingContractProps,
-  //   functionName: 'totalSupply',
-  //   watch: true,
-  // });
-
-  // console.log(LPStakedBalance, LPTotalSupply);
-
-  let AGIReserve = 0;
-  let ETHReserve = 0;
-
-  if (Array.isArray(LPReserves)) {
-    AGIReserve = bigNumberToDecimal(LPReserves[0]);
-    ETHReserve = bigNumberToDecimal(LPReserves[1]);
-  }
-
-  // const { data: balanceOf } = useReadContractNumber({
-  //   ...commonStakingContractProps,
-  //   functionName: 'balanceOf',
-  //   args: [address],
-  //   watch: true,
-  // });
-
-  // console.log(totalStackedToken, LPStakedBalance);
-
-  // const { data: esAGIEarned } = useReadContractNumber({
-  //   ...commonStakingContractProps,
-  //   functionName: 'earned',
-  //   args: [address],
-  //   watch: true,
-  // });
-
   const TVL = token.tokenContract
-    ? (AGIReserve * AGIPrice + ETHReserve * ethPrice) *
+    ? (bigNumberToDecimal(AGIReserve) * AGIPrice + bigNumberToDecimal(ETHReserve) * ethPrice) *
       (bigNumberToDecimal(totalStackedToken) / bigNumberToDecimal(LPTotalSupply))
     : bigNumberToDecimal(totalStackedToken) * ethPrice;
-
-  if (!token.tokenContract) {
-    // console.log('TVL', TVL, totalStackedToken, ethPrice);
-  }
 
   const APYAvailable = token.tokenContract
     ? AGIReserve && ETHReserve && ethPrice && AGIPrice && totalStackedToken && LPTotalSupply
     : AGIPrice && bigNumberToDecimal(totalStackedToken) && ethPrice;
 
   const LPValue = token.tokenContract ? TVL / bigNumberToDecimal(totalStackedToken) : 0;
-
-  // console.log(LPValue);
 
   const APR = APYAvailable ? ((token.poolDailyEmission * AGIPrice) / TVL) * 365 * 100 : '???';
 
@@ -220,20 +156,15 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     },
   });
 
-  // const { data: stakingContractAllowance } = useReadContractNumber({
-  //   ...(token.tokenContract ?? {}),
-  //   functionName: 'allowance',
-  //   args: [address, token.stakingContract.address],
-  //   enabled: !!token.tokenContract,
-  //   watch: true,
-  // });
-
   const withdrawBtns = (
     <>
       <WithdrawBtn onClick={onWithdrawClick} disabled={!hasStacked || disabled}>
         Withdraw
       </WithdrawBtn>
-      <Tooltip title={`Withdraw all your staked ${token.name} + esAGI rewards`} placement="bottom">
+      <Tooltip
+        title={disabled ?? !hasStacked ? undefined : `Withdraw all your staked ${token.name} + esAGI rewards`}
+        placement="bottom"
+      >
         <div
           style={{
             width: '100%',
@@ -258,8 +189,6 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       }}
     />
   );
-
-  // console.log(TVL);
 
   return (
     <div className={style.token_box}>
