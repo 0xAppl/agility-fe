@@ -2,31 +2,56 @@
 import { type IStatus } from './StatusBox';
 import { type VestData } from './VestBox';
 import ETHIcon from '../../assets/ETH_icon.svg';
-import { AGIAbi, esAGIAbi, ETHPoolAbi, UniLpAbi as UniPoolAbi, AGIWETHContractAbi, AGIWETHLPAbi } from './abis';
+import {
+  AGIAbi,
+  esAGIAbi,
+  ETHPoolAbi,
+  UniLpAbi as UniPoolAbi,
+  AGIWETHContractAbi,
+  AGIWETHLPAbi,
+  stETHAbi,
+  stETHPoolABi,
+  fraxETHAbi,
+  fraxETHPoolAbi,
+  rETHAbi,
+  rETHPoolAbi,
+  ankrETHAbi,
+  ankrETHPoolAbi,
+} from './abis';
 import stETH from '../../assets/stETH.svg';
 import rETH from '../../assets/rETH.png';
 import fraxETH from '../../assets/fraxETH.svg';
 import wETH from '../../assets/weth_logo.png';
 import AGI from '../../assets/agility_logo.png';
+import ankrETH from '../../assets/ankreth-logo.png';
 
 // export const PoolDailyEmission = 400_000;
 // export const PoolBlockEmission = PoolDailyEmission / 7200;
 
-export const getContracts = (
-  network = '0x1',
-): Record<
-  'ETHPool' | 'stETHPool' | 'AGI' | 'esAGI' | 'poolFactory' | 'AGIETHTradingPool' | 'AGIWETHContract' | 'AGIWETHLP',
-  IContract
-> => {
+type ContractKeys =
+  | 'ETHPool'
+  | 'stETHPool'
+  | 'AGI'
+  | 'esAGI'
+  | 'poolFactory'
+  | 'AGIETHTradingPool'
+  | 'AGIWETHContract'
+  | 'AGIWETHLP'
+  | 'stETH'
+  | 'fraxETH'
+  | 'fraxETHPool'
+  | 'rETH'
+  | 'ankrETH'
+  | 'rEthPool'
+  | 'ankrEthPool';
+
+export const getContracts = (network = '0x1'): Record<ContractKeys, IContract> => {
   return {
     ETHPool: {
       address: '0xB3db4e3238c1656fb6b832FB692643f4Fa452010',
       abi: ETHPoolAbi,
     },
-    stETHPool: {
-      address: '0x8E7A8962a16f21005E93B3C8FCD39a81608ee520',
-      abi: [],
-    },
+
     AGI: {
       address: '0x5F18ea482ad5cc6BC65803817C99f477043DcE85',
       abi: AGIAbi,
@@ -53,6 +78,38 @@ export const getContracts = (
     AGIWETHLP: {
       address: '0x498c00e1ccc2afff80f6cc6144eaeb95c46cc3b5',
       abi: AGIWETHLPAbi,
+    },
+    stETH: {
+      address: '0xae7ab96520de3a18e5e111b5eaab095312d7fe84',
+      abi: stETHAbi,
+    },
+    stETHPool: {
+      address: '0xEFd8a0b5e0e01A95fCc15656DAd61D5B5436B2b4',
+      abi: stETHPoolABi,
+    },
+    fraxETH: {
+      address: '0x5E8422345238F34275888049021821E8E08CAa1f',
+      abi: fraxETHAbi,
+    },
+    fraxETHPool: {
+      address: '0xabb828565d46F9Db074d55241D82621B129bcF16',
+      abi: fraxETHPoolAbi,
+    },
+    rETH: {
+      address: '0xae78736cd615f374d3085123a210448e74fc6393',
+      abi: rETHAbi,
+    },
+    rEthPool: {
+      address: '0x9775F32737f141AB1b661dD83F7afdf4ef749F3D',
+      abi: rETHPoolAbi,
+    },
+    ankrETH: {
+      address: '0xe95a203b1a91a908f9b9ce46459d101078c2c3cb',
+      abi: ankrETHAbi,
+    },
+    ankrEthPool: {
+      address: '0x5d5897797287a3c2552251A9D9185E09dd25b558',
+      abi: ankrETHPoolAbi,
     },
   };
 };
@@ -95,29 +152,30 @@ export const tokenConfigs: TokenConfigs = {
     {
       icon: stETH,
       name: 'stETH',
-      stakingContract: getContracts().AGIWETHContract,
-      tokenContract: getContracts().AGIWETHLP,
+      stakingContract: getContracts().stETHPool,
+      tokenContract: getContracts().stETH,
       poolDailyEmission: 470_000,
       disabled: true,
     },
     {
       icon: rETH,
       name: 'rETH',
-      stakingContract: getContracts().AGIWETHContract,
-      tokenContract: getContracts().AGIWETHLP,
+      stakingContract: getContracts().rEthPool,
+      tokenContract: getContracts().rETH,
       poolDailyEmission: 470_000,
       disabled: true,
     },
     {
       icon: fraxETH,
       name: 'fraxETH',
-      stakingContract: getContracts().AGIWETHContract,
-      tokenContract: getContracts().AGIWETHLP,
+      stakingContract: getContracts().fraxETHPool,
+      tokenContract: getContracts().fraxETH,
       poolDailyEmission: 470_000,
       disabled: true,
     },
     {
-      name: '???',
+      icon: ankrETH,
+      name: 'ankrETH',
       stakingContract: getContracts().AGIWETHContract,
       tokenContract: getContracts().AGIWETHLP,
       poolDailyEmission: 470_000,
