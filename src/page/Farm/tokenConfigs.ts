@@ -123,6 +123,7 @@ export interface IToken {
   tokenContract?: IContract;
   poolDailyEmission: number;
   disabled?: true;
+  isLP?: boolean;
 }
 
 export interface TokenConfigs {
@@ -137,14 +138,15 @@ export const tokenConfigs: TokenConfigs = {
       icon: ETHIcon,
       name: 'ETH',
       stakingContract: getContracts().ETHPool,
-      poolDailyEmission: 540_000,
+      poolDailyEmission: 450_000,
     },
     {
       icon: [AGI, wETH],
       name: 'AGI-WETH LP',
       stakingContract: getContracts().AGIWETHContract,
       tokenContract: getContracts().AGIWETHLP,
-      poolDailyEmission: 470_000,
+      poolDailyEmission: 590_000,
+      isLP: true,
     },
     {
       icon: stETH,

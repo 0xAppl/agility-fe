@@ -37,20 +37,28 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         ...token.stakingContract,
         functionName: 'totalSupply',
       },
-    ].concat(
-      token.tokenContract
-        ? [
-            {
-              ...token.tokenContract,
-              functionName: 'getReserves',
-            },
-            {
-              ...token.tokenContract,
-              functionName: 'totalSupply',
-            },
-          ]
-        : [],
-    ),
+    ]
+      .concat(
+        token.tokenContract
+          ? [
+              {
+                ...token.tokenContract,
+                functionName: 'totalSupply',
+              },
+            ]
+          : [],
+      )
+      .concat(
+        token.isLP && token.tokenContract
+          ? [
+              {
+                address: token.tokenContract.address,
+                abi: token.tokenContract.abi,
+                functionName: 'getReserves',
+              },
+            ]
+          : [],
+      ),
     enabled: !isHomepage && !disabled,
     watch: true,
   });
@@ -84,9 +92,9 @@ export const TokenBox = ({ token }: { token: IToken }) => {
 
   const totalStackedToken = (publicData?.[0] as BigNumber) ?? BigZero;
 
-  const [AGIReserve, ETHReserve] = (publicData?.[1] as BigNumber[]) ?? [BigZero, BigZero];
+  const [AGIReserve, ETHReserve] = (publicData?.[2] as BigNumber[]) ?? [BigZero, BigZero];
 
-  const LPTotalSupply = (publicData?.[2] as BigNumber) ?? BigZero;
+  const LPTotalSupply = (publicData?.[1] as BigNumber) ?? BigZero;
 
   const accountStakedBalance = (accountData?.[0] as unknown as BigNumber) ?? BigZero;
 
@@ -104,10 +112,11 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     successMessage: 'Withdraw all Success!',
   });
 
-  const TVL = token.tokenContract
-    ? (bigNumberToDecimal(AGIReserve) * AGIPrice + bigNumberToDecimal(ETHReserve) * ethPrice) *
-      (bigNumberToDecimal(totalStackedToken) / bigNumberToDecimal(LPTotalSupply))
-    : bigNumberToDecimal(totalStackedToken) * ethPrice;
+  const TVL =
+    token.isLP && token.tokenContract
+      ? (bigNumberToDecimal(AGIReserve) * AGIPrice + bigNumberToDecimal(ETHReserve) * ethPrice) *
+        (bigNumberToDecimal(totalStackedToken) / bigNumberToDecimal(LPTotalSupply))
+      : bigNumberToDecimal(totalStackedToken) * ethPrice;
 
   const APYAvailable = token.tokenContract
     ? AGIReserve && ETHReserve && ethPrice && AGIPrice && totalStackedToken && LPTotalSupply
