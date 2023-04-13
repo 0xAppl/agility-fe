@@ -124,8 +124,6 @@ export const TokenBox = ({ token }: { token: IToken }) => {
       bigNumberToDecimal(LPTotalSupply)
     : otherPrices[token.name]?.price ?? ethPrice;
 
-  console.log(token.name, pricePerToken);
-
   const TVL = pricePerToken * bigNumberToDecimal(totalStackedToken);
 
   const APYAvailable = token.tokenContract
