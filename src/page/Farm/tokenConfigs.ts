@@ -12,11 +12,8 @@ import {
   stETHAbi,
   stETHPoolABi,
   fraxETHAbi,
-  fraxETHPoolAbi,
   rETHAbi,
-  rETHPoolAbi,
   ankrETHAbi,
-  ankrETHPoolAbi,
 } from './abis';
 import stETH from '../../assets/stETH.svg';
 import rETH from '../../assets/rETH.png';
@@ -93,7 +90,7 @@ export const getContracts = (network = '0x1'): Record<ContractKeys, IContract> =
     },
     fraxETHPool: {
       address: '0xabb828565d46F9Db074d55241D82621B129bcF16',
-      abi: fraxETHPoolAbi,
+      abi: stETHPoolABi,
     },
     rETH: {
       address: '0xae78736cd615f374d3085123a210448e74fc6393',
@@ -101,7 +98,7 @@ export const getContracts = (network = '0x1'): Record<ContractKeys, IContract> =
     },
     rEthPool: {
       address: '0x9775F32737f141AB1b661dD83F7afdf4ef749F3D',
-      abi: rETHPoolAbi,
+      abi: stETHPoolABi,
     },
     ankrETH: {
       address: '0xe95a203b1a91a908f9b9ce46459d101078c2c3cb',
@@ -109,7 +106,7 @@ export const getContracts = (network = '0x1'): Record<ContractKeys, IContract> =
     },
     ankrEthPool: {
       address: '0x5d5897797287a3c2552251A9D9185E09dd25b558',
-      abi: ankrETHPoolAbi,
+      abi: stETHPoolABi,
     },
   };
 };
