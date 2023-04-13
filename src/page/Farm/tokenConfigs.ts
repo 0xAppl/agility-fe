@@ -138,7 +138,7 @@ export const tokenConfigs: TokenConfigs = {
       icon: ETHIcon,
       name: 'ETH',
       stakingContract: getContracts().ETHPool,
-      poolDailyEmission: 450_000,
+      poolDailyEmission: new Date().getTime() > 1681376400000 ? 450_000 : 540_000,
     },
     {
       icon: [AGI, wETH],

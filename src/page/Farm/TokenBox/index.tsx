@@ -29,7 +29,14 @@ export const TokenBox = ({ token }: { token: IToken }) => {
 
   const { isConnected, address } = useAccount();
 
-  const { ethPrice, AGIPrice } = useGlobalStatsContext();
+  const { ethPrice, AGIPrice, ankrETH, rETH, fraxETH, stETH } = useGlobalStatsContext();
+
+  const otherPrices: Record<string, any> = {
+    ankrETH,
+    rETH,
+    fraxETH,
+    stETH,
+  };
 
   const { data: publicData, isLoading: isLoadingPublic } = useContractReads({
     contracts: [
@@ -112,11 +119,14 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     successMessage: 'Withdraw all Success!',
   });
 
-  const TVL =
-    token.isLP && token.tokenContract
-      ? (bigNumberToDecimal(AGIReserve) * AGIPrice + bigNumberToDecimal(ETHReserve) * ethPrice) *
-        (bigNumberToDecimal(totalStackedToken) / bigNumberToDecimal(LPTotalSupply))
-      : bigNumberToDecimal(totalStackedToken) * ethPrice;
+  const pricePerToken = token.isLP
+    ? (bigNumberToDecimal(AGIReserve) * AGIPrice + bigNumberToDecimal(ETHReserve) * ethPrice) /
+      bigNumberToDecimal(LPTotalSupply)
+    : otherPrices[token.name]?.price ?? ethPrice;
+
+  console.log(token.name, pricePerToken);
+
+  const TVL = pricePerToken * bigNumberToDecimal(totalStackedToken);
 
   const APYAvailable = token.tokenContract
     ? AGIReserve && ETHReserve && ethPrice && AGIPrice && totalStackedToken && LPTotalSupply

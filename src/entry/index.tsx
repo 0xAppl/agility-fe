@@ -111,7 +111,9 @@ const Layout = ({ children }: any) => {
   const { data, isFetching } = useQuery(
     ['ethPrice'],
     async () => {
-      return await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
+      return await axios.get(
+        'https://api.coingecko.com/api/v3/simple/price?ids=ethereum,staked-ether,rocket-pool-eth,frax-ether,ankreth&vs_currencies=usd',
+      );
     },
     {
       refetchInterval: 30000,
@@ -139,6 +141,18 @@ const Layout = ({ children }: any) => {
     <GlobalStatsContext.Provider
       value={{
         ethPrice: data?.data.ethereum.usd || 0,
+        stETH: {
+          price: data?.data['staked-ether']?.usd || 0,
+        },
+        fraxETH: {
+          price: data?.data['rocket-pool-eth']?.usd || 0,
+        },
+        rETH: {
+          price: data?.data['frax-ether']?.usd || 0,
+        },
+        ankrETH: {
+          price: data?.data.ankreth?.usd || 0,
+        },
         TVL,
         AGIPrice: tokenPrice,
         AGITotalSupply,
