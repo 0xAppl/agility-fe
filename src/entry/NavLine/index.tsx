@@ -69,6 +69,15 @@ export const NavLine = () => {
           Buy $AGI
         </a>
       </span>,
+      <span className={classNames(style.nav_route)} key={'lp'}>
+        <a
+          href="https://app.uniswap.org/#/add/v2/ETH/0x5F18ea482ad5cc6BC65803817C99f477043DcE85"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Add AGI-WETH LP
+        </a>
+      </span>,
     );
 
   if (pathname === '/') return null;
