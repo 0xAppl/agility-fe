@@ -164,7 +164,7 @@ export const tokenConfigs: TokenConfigs = {
     },
     {
       icon: fraxETH,
-      name: 'fraxETH',
+      name: 'frxETH',
       stakingContract: getContracts().fraxETHPool,
       tokenContract: getContracts().fraxETH,
       poolDailyEmission: 20_000,
