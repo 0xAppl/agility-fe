@@ -70,7 +70,12 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     watch: true,
   });
 
-  const { data: accountData, isLoading: isLoadingAccountData } = useContractReads({
+  const {
+    data: accountData,
+    isLoading: isLoadingAccountData,
+    isFetching: isFetchingAccountData,
+    isRefetching: isRefetchingAccountData,
+  } = useContractReads({
     contracts: [
       {
         ...token.stakingContract,
@@ -117,6 +122,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     functionName: 'exit',
     enabled: !isLoadingAccountData && hasStacked,
     successMessage: 'Withdraw all Success!',
+    supressWarning: true,
   });
 
   const pricePerToken = token.isLP

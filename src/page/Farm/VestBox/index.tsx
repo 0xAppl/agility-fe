@@ -64,33 +64,6 @@ export const VestBox = () => {
     AGIRedeemingCount = data[2] as unknown as BigNumber;
   }
 
-  // const { data: AGIBalance } = useReadContractNumber({
-  //   ...getContracts().AGI,
-  //   functionName: 'balanceOf',
-  //   args: [address],
-  //   outputBigNumber: true,
-  //   enabled: isConnected,
-  //   watch: true,
-  // });
-
-  // const { data: esAGIBalance } = useReadContractNumber({
-  //   ...getContracts().esAGI,
-  //   functionName: 'balanceOf',
-  //   args: [address],
-  //   outputBigNumber: true,
-  //   enabled: isConnected,
-  //   watch: true,
-  // });
-
-  // const { data: AGIRedeemingCount } = useReadContractNumber({
-  //   ...getContracts().esAGI,
-  //   functionName: 'getUserRedeemsLength',
-  //   args: [address],
-  //   enabled: isConnected,
-  //   outputBigNumber: true,
-  //   watch: true,
-  // });
-
   const convertedAGIRedeemingCount =
     AGIRedeemingCount !== undefined ? (AGIRedeemingCount as unknown as BigNumber).toNumber() : 0;
 
@@ -104,7 +77,6 @@ export const VestBox = () => {
     }),
     enabled: isConnected && convertedAGIRedeemingCount > 0,
     watch: true,
-    keepPreviousData: true,
   });
 
   const onClickRedeem = () => {
@@ -134,7 +106,7 @@ export const VestBox = () => {
           {(!Array.isArray(AGIRedeemingInfo) ? [] : (AGIRedeemingInfo as unknown as AGIReedemInfo[])).map(
             (data, index) => {
               // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-              return <VestingStatus index={index} key={data[2]?.toString() || index} data={data} />;
+              return <VestingStatus index={index} key={data[2]?.toString() + address || index} data={data} />;
             },
           )}
         </div>

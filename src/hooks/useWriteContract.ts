@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
@@ -11,16 +12,18 @@ interface IUseWriteContract {
   successMessage?: string;
   enabled?: boolean;
   successCallback?: (data: any) => void;
+  supressWarning?: boolean;
 }
 
 const useWriteContract = (config: IUseWriteContract) => {
-  const { address, abi, functionName, args, successMessage, enabled, successCallback } = config;
+  const { address, abi, functionName, args, successMessage, enabled, successCallback, supressWarning } = config;
   const { config: writeConfig, error: prepareContractError } = usePrepareContractWrite({
     address,
     abi,
     functionName,
     args,
     enabled,
+    scopeKey: address + functionName,
   });
 
   const {
@@ -42,8 +45,16 @@ const useWriteContract = (config: IUseWriteContract) => {
   });
 
   useEffect(() => {
+    if (supressWarning) {
+      return;
+    }
     if (prepareContractError) {
-      toast.error(`prepare contract ${String(address)}, method ${functionName} error:${prepareContractError.message}`);
+      console.log(prepareContractError);
+      toast.error(
+        `prepare contract ${String(address)}, method ${functionName} ${
+          args ? 'args: ' + JSON.stringify(args) : ''
+        }, error:${prepareContractError.message}`,
+      );
     }
     if (contractWriteError) {
       toast.error(`write contract ${String(address)}, method ${functionName} error:${contractWriteError.message}`);
