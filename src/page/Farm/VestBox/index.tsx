@@ -106,6 +106,8 @@ export const VestBox = () => {
           {(!Array.isArray(AGIRedeemingInfo) ? [] : (AGIRedeemingInfo as unknown as AGIReedemInfo[])).map(
             (data, index) => {
               // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+              if (!data) return null;
+              // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
               return <VestingStatus index={index} key={data[2]?.toString() + address || index} data={data} />;
             },
           )}
