@@ -88,7 +88,7 @@ class ErrorBoundary extends React.Component<
     if (this.state.hasError) {
       return (
         <h1 style={{ padding: 32 }}>
-          Something went wrong.{' '}
+          Oops! Something went wrong. <br />
           <Button
             onClick={() => {
               localStorage.clear();

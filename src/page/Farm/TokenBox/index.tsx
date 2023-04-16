@@ -136,6 +136,8 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     ? AGIReserve && ETHReserve && ethPrice && AGIPrice && totalStackedToken && LPTotalSupply
     : AGIPrice && bigNumberToDecimal(totalStackedToken) && ethPrice;
 
+  // const unde = totalStackedToken.sub.undefi.sdd;
+
   const LPValue = token.tokenContract ? TVL / bigNumberToDecimal(totalStackedToken) : 0;
 
   const APR = APYAvailable ? ((token.poolDailyEmission * AGIPrice) / TVL) * 365 * 100 : '???';
