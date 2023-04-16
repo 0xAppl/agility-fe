@@ -58,10 +58,10 @@ export const VestBox = () => {
   let esAGIBalance = BigZero;
   let AGIRedeemingCount = BigZero;
 
-  if (Array.isArray(data)) {
-    AGIBalance = data[0] as unknown as BigNumber;
-    esAGIBalance = data[1] as unknown as BigNumber;
-    AGIRedeemingCount = data[2] as unknown as BigNumber;
+  if (Array.isArray(data) && data.every(Boolean)) {
+    AGIBalance = (data[0] as unknown as BigNumber) ?? BigZero;
+    esAGIBalance = (data[1] as unknown as BigNumber) ?? BigZero;
+    AGIRedeemingCount = (data[2] as unknown as BigNumber) ?? BigZero;
   }
 
   const convertedAGIRedeemingCount =
