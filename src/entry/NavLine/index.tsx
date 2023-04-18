@@ -3,7 +3,7 @@ import React from 'react';
 import { useAccount, useConnect, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { Link, useLocation } from 'react-router-dom';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Tooltip } from 'antd';
 import logoSvg from '../../assets/logo.svg';
 import logoSvgSimplified from '../../assets/agility_logo.svg';
 
@@ -118,18 +118,24 @@ export const NavLine = () => {
               </Button>
             )}
           </div>
-          <a href={twitterHref} className={style.icon_href} target="_blank" rel="noreferrer">
-            <img src={twitterSvg} alt="twitter" />
-          </a>
-          <a href={discordHref} className={style.icon_href} target="_blank" rel="noreferrer">
-            <img src={inviteSvg} alt="discord" />
-          </a>
-          <a href={globalConfig.snapshotHref} className={style.icon_href} target="_blank" rel="noreferrer">
-            <img
-              src={'https://ccgateway.infura-ipfs.io/ipfs/QmZDQFEJoRH8Cvk1bEo3n4we2bxAXrPN3PH3Stfv7oEd33'}
-              alt="discord"
-            />
-          </a>
+          <Tooltip title={'Twitter'}>
+            <a href={twitterHref} className={style.icon_href} target="_blank" rel="noreferrer">
+              <img src={twitterSvg} alt="twitter" />
+            </a>
+          </Tooltip>
+          <Tooltip title={'Discord'}>
+            <a href={discordHref} className={style.icon_href} target="_blank" rel="noreferrer">
+              <img src={inviteSvg} alt="discord" />
+            </a>
+          </Tooltip>
+          <Tooltip title={'Snapshot'}>
+            <a href={globalConfig.snapshotHref} className={style.icon_href} target="_blank" rel="noreferrer">
+              <img
+                src={'https://ccgateway.infura-ipfs.io/ipfs/QmZDQFEJoRH8Cvk1bEo3n4we2bxAXrPN3PH3Stfv7oEd33'}
+                alt="discord"
+              />
+            </a>
+          </Tooltip>
           <Hamburger activated={activated} setActivated={setActivated} />
         </div>
       </div>
