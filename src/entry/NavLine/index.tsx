@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAccount, useConnect, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { Link, useLocation } from 'react-router-dom';
@@ -12,6 +12,11 @@ import disconnectSvg from '../../assets/disconnect.svg';
 import walletSvg from '../../assets/wallet.svg';
 import twitterSvg from '../../assets/twitter.svg';
 import inviteSvg from '../../assets/invite.svg';
+
+import metamaskLogo from '../../assets/wallets/metamask.png';
+import walletConnectLogo from '../../assets/wallets/walletconnect.png';
+import okx from '../../assets/wallets/okx.png';
+
 import { routeConfigs } from '../routeConfigs';
 import { globalConfig } from '../../page/globalConfig';
 import { shortenWalletAddress } from '../../utils/string';
@@ -24,6 +29,12 @@ import { CommonButton } from '../../components/Btns';
 const { twitterHref, discordHref, docsHref } = globalConfig;
 
 const { list } = routeConfigs;
+
+const walletLogoMapping: Record<string, string> = {
+  MetaMask: metamaskLogo,
+  WalletConnect: walletConnectLogo,
+  'OKX Wallet': okx,
+};
 
 export const NavLine = () => {
   const { pathname } = useLocation();
@@ -38,6 +49,12 @@ export const NavLine = () => {
   // });
   const { disconnect } = useDisconnect();
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
+
+  useEffect(() => {
+    if (isConnected) {
+      setConnectModalOpen(false);
+    }
+  }, [isConnected]);
 
   // const { data: ensAvatar } = useEnsAvatar({ address });
   // const { data: ensName } = useEnsName({ address });
@@ -158,25 +175,32 @@ export const NavLine = () => {
         bodyStyle={{
           textAlign: 'center',
         }}
+        width={400}
       >
-        {connectors.map(connector => (
-          <CommonButton
-            disabled={!connector.ready}
-            key={connector.id}
-            onClick={() => {
-              connect({ connector });
-              setConnectModalOpen(false);
-            }}
-            style={{
-              width: 'auto',
-              marginRight: 8,
-            }}
-          >
-            {connector.name}
-            {!connector.ready && ' (unsupported)'}
-            {isLoading && connector.id === pendingConnector?.id && ' (connecting)'}
-          </CommonButton>
-        ))}
+        <div className={style.connectors}>
+          {connectors.map(connector => (
+            <CommonButton
+              disabled={!connector.ready}
+              key={connector.id}
+              onClick={() => {
+                connect({ connector });
+                if (connector.name === 'WalletConnect') {
+                  setConnectModalOpen(false);
+                }
+                // setConnectModalOpen(false);
+              }}
+              style={{
+                width: 'auto',
+                marginRight: 8,
+              }}
+            >
+              <img src={walletLogoMapping[connector.name]} alt="" />
+              {connector.name}
+              {!connector.ready && ' (unsupported)'}
+              {isLoading && connector.id === pendingConnector?.id && ' (connecting)'}
+            </CommonButton>
+          ))}
+        </div>
       </Modal>
     </>
   );

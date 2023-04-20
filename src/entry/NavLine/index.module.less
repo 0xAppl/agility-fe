@@ -10,7 +10,7 @@
   padding: 0 10%;
   box-sizing: border-box;
   white-space: nowrap;
-  z-index: 999;
+  z-index: 88;
   isolation: isolate;
   position: relative;
   overflow: scroll;
@@ -131,5 +131,15 @@
     font-size: 1.5em;
     font-weight: 600;
     margin-bottom: 16px;
+  }
+}
+
+.connectors {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  > button > img {
+    height: 100%;
+    margin-inline-end: 8px;
   }
 }

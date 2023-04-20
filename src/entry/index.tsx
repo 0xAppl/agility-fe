@@ -24,7 +24,9 @@ import { publicProvider } from 'wagmi/providers/public';
 
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
-import { InjectedConnector } from 'wagmi/dist/connectors/injected';
+
+import { InjectedConnector } from 'wagmi/connectors/injected';
+
 import { GlobalStatsContext } from '../contexts/globalStatsContext';
 import axios from 'axios';
 import useTVL from '../hooks/useTVL';
@@ -48,19 +50,19 @@ const client = createClient({
 
   connectors: [
     new MetaMaskConnector({ chains }),
+    new InjectedConnector({
+      chains,
+      options: {
+        name: 'OKX Wallet',
+        shimDisconnect: true,
+      },
+    }),
     new WalletConnectConnector({
       chains,
       options: {
         projectId: '3d8d3a0c9a64a94b80febc07f5ae4c9e',
       },
     }),
-    // new InjectedConnector({
-    //   chains,
-    //   options: {
-    //     name: 'Injected',
-    //     shimDisconnect: true,
-    //   },
-    // }),
   ],
   provider,
   webSocketProvider,
