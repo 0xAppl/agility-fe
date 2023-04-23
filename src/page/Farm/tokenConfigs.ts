@@ -15,6 +15,7 @@ import {
   rETHAbi,
   ankrETHAbi,
   stafiStakedETHAbi,
+  lockedAGIWETHLPPoolAbi,
 } from './abis';
 import stETHLogo from '../../assets/stETH.svg';
 import rETHLogo from '../../assets/rETH.png';
@@ -44,6 +45,8 @@ import stafiStakedETHLogo from '../../assets/stafi-staked-eth.png';
 //   | 'rEthPool'
 //   | 'ankrEthPool';
 
+const isTestnet = parseInt((window?.ethereum as any)?.chainId, 16) !== 1;
+
 export const getContracts = (network = '0x1') => {
   return {
     ETHPool: {
@@ -52,11 +55,11 @@ export const getContracts = (network = '0x1') => {
     },
 
     AGI: {
-      address: '0x5F18ea482ad5cc6BC65803817C99f477043DcE85',
+      address: isTestnet ? '0xA91EA4023Da8e4FEf15372EC79e3DA15dFF3Be48' : '0x5F18ea482ad5cc6BC65803817C99f477043DcE85',
       abi: AGIAbi,
     },
     esAGI: {
-      address: '0x801C71A771E5710D41AC4C0F1d6E82bd07B5Fa43',
+      address: isTestnet ? '0x76d0c12b6164b184dae8899320b237646ce535d5' : '0x801C71A771E5710D41AC4C0F1d6E82bd07B5Fa43',
       abi: esAGIAbi,
     },
     poolFactory: {
@@ -118,6 +121,10 @@ export const getContracts = (network = '0x1') => {
       address: '0x9559aaa82d9649c7a7b220e7c461d2e74c9a3593',
       abi: stafiStakedETHAbi,
     },
+    lockedAGIWETHLPPool: {
+      address: '0x87d4712b1291a5a3e30e2e31255e7b6f7cbabf81',
+      abi: lockedAGIWETHLPPoolAbi,
+    },
   } as const;
 };
 
@@ -129,14 +136,41 @@ export interface IContract {
 export interface IToken {
   icon?: string | [string, string];
   name: string;
+  /**
+   * staking contract, the contract that user stake to
+   */
   stakingContract: IContract;
+  /**
+   * token contract, the token contract that user stake
+   */
   tokenContract?: IContract;
+  /**
+   * pool daily emission, in esAGI
+   */
   poolDailyEmission: number;
+  /**
+   * is disabled
+   */
   disabled?: true;
+  /**
+   * is LP
+   */
   isLP?: boolean;
-  explainText?: string;
-  byLPText?: string;
-  byLPLink?: string;
+  /**
+   * explain content
+   */
+  explainContent?: {
+    explainText?: string;
+    byLPText?: string;
+    byLPLink?: string;
+  };
+  stakeSettings?: {
+    isLocked?: boolean;
+    minStakeTime?: number;
+    maxStakeTime?: number;
+    stakeFunctionName?: string;
+    totalSupplyFunctionName?: string;
+  };
 }
 
 export interface TokenConfigs {
@@ -147,58 +181,78 @@ export const havlingTime = 1681045200001;
 
 export const moduleConfigs: TokenConfigs = {
   tokenList: [
-    {
-      icon: ETHIcon,
-      name: 'ETH',
-      stakingContract: getContracts().ETHPool,
-      poolDailyEmission: 402_255 / 3,
-    },
-    {
-      icon: [AGILogo, wETHLogo],
-      name: 'AGI-WETH LP',
-      stakingContract: getContracts().AGIWETHContract,
-      tokenContract: getContracts().AGIWETHLP,
-      poolDailyEmission: 1177545.6 / 3,
-      isLP: true,
-      byLPText: 'Mint AGI-WETH LP',
-      byLPLink: 'https://app.uniswap.org/#/swap?outputCurrency=0x5f18ea482ad5cc6bc65803817c99f477043dce85',
-    },
-    {
-      icon: stETHLogo,
-      name: 'stETH',
-      stakingContract: getContracts().stETHPool,
-      tokenContract: getContracts().stETH,
-      poolDailyEmission: 1039500 / 3,
-    },
-    {
-      icon: rETHLogo,
-      name: 'rETH',
-      explainText: 'Rocket Pool ETH',
-      stakingContract: getContracts().rEthPool,
-      tokenContract: getContracts().rETH,
-      poolDailyEmission: 6615 / 3,
-    },
-    {
-      icon: fraxETHLogo,
-      name: 'frxETH',
-      stakingContract: getContracts().fraxETHPool,
-      tokenContract: getContracts().fraxETH,
-      poolDailyEmission: 12600 / 3,
-    },
-    {
-      icon: ankrETHLogo,
-      name: 'ankrETH',
-      stakingContract: getContracts().ankrEthPool,
-      tokenContract: getContracts().ankrETH,
-      poolDailyEmission: 15750 / 3,
-    },
+    // {
+    //   icon: ETHIcon,
+    //   name: 'ETH',
+    //   stakingContract: getContracts().ETHPool,
+    //   poolDailyEmission: 402_255 / 3,
+    // },
+    // {
+    //   icon: [AGILogo, wETHLogo],
+    //   name: 'AGI-WETH LP',
+    //   stakingContract: getContracts().AGIWETHContract,
+    //   tokenContract: getContracts().AGIWETHLP,
+    //   poolDailyEmission: 1177545.6 / 3,
+    //   isLP: true,
+    //   explainContent: {
+    //     byLPText: 'Mint AGI-WETH LP',
+    //     byLPLink: 'https://app.uniswap.org/#/swap?outputCurrency=0x5f18ea482ad5cc6bc65803817c99f477043dce85',
+    //   },
+    // },
+    // {
+    //   icon: stETHLogo,
+    //   name: 'stETH',
+    //   stakingContract: getContracts().stETHPool,
+    //   tokenContract: getContracts().stETH,
+    //   poolDailyEmission: 1039500 / 3,
+    // },
+    // {
+    //   icon: rETHLogo,
+    //   name: 'rETH',
+    //   explainContent: {
+    //     explainText: 'Rocket Pool ETH',
+    //   },
+    //   stakingContract: getContracts().rEthPool,
+    //   tokenContract: getContracts().rETH,
+    //   poolDailyEmission: 6615 / 3,
+    // },
+    // {
+    //   icon: fraxETHLogo,
+    //   name: 'frxETH',
+    //   stakingContract: getContracts().fraxETHPool,
+    //   tokenContract: getContracts().fraxETH,
+    //   poolDailyEmission: 12600 / 3,
+    // },
+    // {
+    //   icon: ankrETHLogo,
+    //   name: 'ankrETH',
+    //   stakingContract: getContracts().ankrEthPool,
+    //   tokenContract: getContracts().ankrETH,
+    //   poolDailyEmission: 15750 / 3,
+    // },
+    // {
+    //   icon: stafiStakedETHLogo,
+    //   name: 'rETH',
+    //   stakingContract: getContracts().stafiRETHPool,
+    //   tokenContract: getContracts()['stafi-staked-eth'],
+    //   poolDailyEmission: (15750 * 2) / 3,
+    //   explainContent: {
+    //     explainText: 'Stafi staked ETH',
+    //   },
+    // },
     {
       icon: stafiStakedETHLogo,
-      name: 'rETH',
-      stakingContract: getContracts().stafiRETHPool,
-      tokenContract: getContracts()['stafi-staked-eth'],
+      name: 'AGI-WETH Locked LP',
+      stakingContract: getContracts().lockedAGIWETHLPPool,
+      tokenContract: { ...getContracts().AGI, address: '0xed39eb8b3c81381988baa71a2eafba2282edabc4' },
       poolDailyEmission: (15750 * 2) / 3,
-      explainText: 'Stafi staked ETH',
+      stakeSettings: {
+        isLocked: true,
+        minStakeTime: 1 * 60,
+        maxStakeTime: 30 * 60,
+        stakeFunctionName: 'stakeLocked',
+        totalSupplyFunctionName: 'totalLiquidityLocked',
+      },
     },
   ],
 };

@@ -16,6 +16,7 @@ const useGetTokenPriceFromLP = (
     abi: lpAbi,
     watch: true,
     functionName,
+    chainId: 1,
   });
   if (!isLoading && !isError && data) {
     try {

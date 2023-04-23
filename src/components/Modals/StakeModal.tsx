@@ -19,7 +19,7 @@ import CustomSpin from '../spin';
 import useDebounce from '../../hooks/useDebounce';
 import { bigNumberToDecimal, BigZero, expandTo18Decimals } from '../../utils/number';
 // import { useContractContext } from '../../../contexts/contractContext';
-import { type IContract } from '../../page/Farm/tokenConfigs';
+import { type IToken, type IContract } from '../../page/Farm/tokenConfigs';
 import style from './index.module.less';
 
 import { toast, ToastContainer } from 'react-toastify';
@@ -28,31 +28,40 @@ import { capitalize } from '@utils/string';
 const StackingModal: React.FC<{
   isModalOpen: boolean;
   setIsModalOpen: (isModalOpen: boolean) => void;
-  stackingTokenAddress?: string;
   poolContract: IContract;
   stakingTokenContract?: IContract;
   title?: React.ReactNode;
   modalMode: 'stake' | 'withdraw' | string;
-}> = ({ isModalOpen, setIsModalOpen, poolContract, title, modalMode, stakingTokenContract }) => {
+  stakeSettings?: IToken['stakeSettings'];
+}> = ({ isModalOpen, setIsModalOpen, poolContract, title, modalMode, stakingTokenContract, stakeSettings }) => {
   //   const contracts = useContractContext();
   const [loading, setLoading] = React.useState(false);
-  const [value, setValue] = useState<BigNumber>(BigZero);
-  const [maxValue, setMaxValue] = useState<BigNumber>(BigZero);
+  const [stakingValue, setStakingValue] = useState<BigNumber>(BigZero);
+  const [maxStakingValue, setMaxStakingValue] = useState<BigNumber>(BigZero);
 
-  const debouncedValue = useDebounce(value);
+  const [stakingLockTime, setStakingLockTime] = useState<number>(stakeSettings?.minStakeTime ?? 0);
+
+  const debouncedStakingValue = useDebounce(stakingValue);
+
+  const debouncedStakingLockTime = useDebounce(stakingLockTime);
 
   const { address } = useAccount();
 
   const { config, error: prepareError } = usePrepareContractWrite({
     address: poolContract.address,
     abi: poolContract.abi,
-    functionName: modalMode,
-    args: [debouncedValue.toString()],
-    enabled: !debouncedValue.isZero() && isModalOpen,
+    functionName: stakeSettings?.stakeFunctionName ?? modalMode,
+    args: [debouncedStakingValue.toString()].concat(
+      stakeSettings?.isLocked ? [debouncedStakingLockTime.toString()] : [],
+    ),
+    enabled: !debouncedStakingValue.isZero() && isModalOpen,
+    /**
+     * for staking ETH, we need to pass the value to the contract
+     */
     overrides:
       modalMode === 'stake' && !stakingTokenContract
         ? {
-            value: debouncedValue.toString(),
+            value: debouncedStakingValue.toString(),
           }
         : undefined,
   });
@@ -86,7 +95,7 @@ const StackingModal: React.FC<{
       setLoading(true);
       fetchBalance({ address, formatUnits: 'ether', token: stakingTokenContract?.address ?? undefined })
         .then(balance => {
-          setMaxValue(balance.value);
+          setMaxStakingValue(balance.value);
         })
         .catch(err => {
           console.log(err);
@@ -96,7 +105,7 @@ const StackingModal: React.FC<{
         });
     } else {
       if (stakingInfo && BigNumber.isBigNumber(stakingInfo)) {
-        setMaxValue(stakingInfo);
+        setMaxStakingValue(stakingInfo);
       }
     }
   }, [isModalOpen, address, modalMode, stakingInfo, stakingTokenContract?.address]);
@@ -117,7 +126,7 @@ const StackingModal: React.FC<{
         }}
         onCancel={() => {
           setIsModalOpen(false);
-          setValue(BigZero);
+          setStakingValue(BigZero);
         }}
         transitionName=""
         footer={null}
@@ -129,21 +138,23 @@ const StackingModal: React.FC<{
           </>
         ) : (
           <>
-            <h4>Balance: {bigNumberToDecimal(maxValue, 6)}</h4>
+            <h4>Balance: {bigNumberToDecimal(maxStakingValue, 6)}</h4>
             <Slider
-              value={bigNumberToDecimal(value)}
-              max={bigNumberToDecimal(maxValue)}
+              value={bigNumberToDecimal(stakingValue)}
+              max={bigNumberToDecimal(maxStakingValue)}
               onChange={value => {
-                setValue(parseEther(value.toString()).gt(maxValue) ? maxValue : parseEther(value.toString()));
+                setStakingValue(
+                  parseEther(value.toString()).gt(maxStakingValue) ? maxStakingValue : parseEther(value.toString()),
+                );
               }}
               step={0.0000001}
             />
             <div className={style.input_group}>
               <Input
-                value={bigNumberToDecimal(value)}
-                max={bigNumberToDecimal(maxValue)}
+                value={bigNumberToDecimal(stakingValue)}
+                max={bigNumberToDecimal(maxStakingValue)}
                 onChange={e => {
-                  setValue(parseEther(e.target.value));
+                  setStakingValue(parseEther(e.target.value));
                 }}
                 type="number"
                 step={0.000001}
@@ -153,33 +164,50 @@ const StackingModal: React.FC<{
               ></Input>
               <Button
                 onClick={() => {
-                  setValue(maxValue.div(4));
+                  setStakingValue(maxStakingValue.div(4));
                 }}
               >
                 25%
               </Button>
               <Button
                 onClick={() => {
-                  setValue(maxValue.div(2));
+                  setStakingValue(maxStakingValue.div(2));
                 }}
               >
                 50%
               </Button>
               <Button
                 onClick={() => {
-                  setValue(maxValue.div(4).mul(3));
+                  setStakingValue(maxStakingValue.div(4).mul(3));
                 }}
               >
                 75%
               </Button>
               <Button
                 onClick={() => {
-                  setValue(maxValue);
+                  setStakingValue(maxStakingValue);
                 }}
               >
                 Max
               </Button>
             </div>
+            {stakeSettings?.minStakeTime ? (
+              <div>
+                <p>
+                  <b>Select Unlock Time: {stakingLockTime}</b>
+                </p>
+                <Slider
+                  value={stakingLockTime}
+                  min={stakeSettings.minStakeTime}
+                  max={stakeSettings.maxStakeTime}
+                  onChange={value => {
+                    setStakingLockTime(value);
+                  }}
+                  step={1}
+                  disabled={stakingValue.isZero()}
+                />
+              </div>
+            ) : null}
           </>
         )}
         <div
@@ -188,7 +216,7 @@ const StackingModal: React.FC<{
           }}
         >
           <StakeBtn
-            disabled={debouncedValue.isZero() || isLoading}
+            disabled={debouncedStakingValue.isZero() || isLoading}
             styles={{
               margin: 'auto',
               marginTop: '20px',

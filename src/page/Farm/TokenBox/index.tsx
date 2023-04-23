@@ -43,7 +43,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     contracts: [
       {
         ...token.stakingContract,
-        functionName: 'totalSupply',
+        functionName: token.stakeSettings?.totalSupplyFunctionName ?? 'totalSupply',
       },
     ]
       .concat(
@@ -111,7 +111,9 @@ export const TokenBox = ({ token }: { token: IToken }) => {
 
   const accountStakedBalance = (accountData?.[0] as unknown as BigNumber) ?? BigZero;
 
-  const esAGIEarned = (accountData?.[1] as unknown as BigNumber) ?? BigZero;
+  const esAGIEarned: BigNumber = Array.isArray(accountData?.[1])
+    ? (accountData?.[1][0] as BigNumber) ?? BigZero
+    : (accountData?.[1] as unknown as BigNumber) ?? BigZero;
 
   const stakingContractAllowance = (accountData?.[2] as unknown as BigNumber) ?? BigZero;
 
@@ -248,8 +250,8 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         <span className={style.name}>
           <span>
             {token.name}
-            {token.explainText ? (
-              <Tooltip title={token.explainText}>
+            {token.explainContent?.explainText ? (
+              <Tooltip title={token.explainContent.explainText}>
                 <InfoIcon
                   fill={'#a6b0c3'}
                   style={{
@@ -259,9 +261,9 @@ export const TokenBox = ({ token }: { token: IToken }) => {
               </Tooltip>
             ) : null}
           </span>
-          {token.byLPLink ? (
+          {token.explainContent?.byLPLink ? (
             <span>
-              <a href={token.byLPLink}>{token.byLPText}</a>
+              <a href={token.explainContent.byLPLink}>{token.explainContent.byLPText}</a>
             </span>
           ) : null}
         </span>
@@ -338,6 +340,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         stakingTokenContract={token.tokenContract}
         title={capitalize(modalMode)}
         modalMode={modalMode}
+        stakeSettings={token.stakeSettings}
       />
     </div>
   );
