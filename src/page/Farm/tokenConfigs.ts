@@ -143,7 +143,7 @@ export interface TokenConfigs {
   tokenList: IToken[];
 }
 
-export const havlingTime = 1681045200000;
+export const havlingTime = 1681045200001;
 
 export const moduleConfigs: TokenConfigs = {
   tokenList: [
