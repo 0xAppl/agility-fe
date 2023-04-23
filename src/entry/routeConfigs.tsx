@@ -4,6 +4,10 @@ import { LiquidityDistribute } from '../page/LiquidityDistribute';
 import { Farm } from '../page/Farm';
 import { aUSDTrading as AUSDTrading } from '../page/aUSDrading';
 import LandingPage from '../page/Landing';
+import TriceratopsRewards from '@page/TriceratopsRewards';
+import { globalConfig } from '@page/globalConfig';
+
+const { twitterHref, discordHref, docsHref } = globalConfig;
 
 export const routeConfigs = {
   home: <LandingPage />,
@@ -25,6 +29,20 @@ export const routeConfigs = {
       label: 'Farm',
       disabled: false,
       component: <Farm />,
+    },
+    {
+      path: 'https://app.uniswap.org/#/swap?outputCurrency=0x5f18ea482ad5cc6bc65803817c99f477043dce85',
+      label: 'Buy $AGI',
+    },
+    {
+      path: 'triceratops',
+      label: 'Triceratops Rewards',
+      disabled: false,
+      component: <TriceratopsRewards />,
+    },
+    {
+      path: docsHref,
+      label: 'Docs',
     },
     // {
     //   path: 'Docs',

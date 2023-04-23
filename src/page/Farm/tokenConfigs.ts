@@ -14,35 +14,37 @@ import {
   fraxETHAbi,
   rETHAbi,
   ankrETHAbi,
+  stafiStakedETHAbi,
 } from './abis';
-import stETH from '../../assets/stETH.svg';
-import rETH from '../../assets/rETH.png';
-import fraxETH from '../../assets/fraxETH.svg';
-import wETH from '../../assets/weth_logo.png';
-import AGI from '../../assets/agility_logo.png';
-import ankrETH from '../../assets/ankreth-logo.png';
+import stETHLogo from '../../assets/stETH.svg';
+import rETHLogo from '../../assets/rETH.png';
+import fraxETHLogo from '../../assets/fraxETH.svg';
+import wETHLogo from '../../assets/weth_logo.png';
+import AGILogo from '../../assets/agility_logo.png';
+import ankrETHLogo from '../../assets/ankreth-logo.png';
+import stafiStakedETHLogo from '../../assets/stafi-staked-eth.png';
 
 // export const PoolDailyEmission = 400_000;
 // export const PoolBlockEmission = PoolDailyEmission / 7200;
 
-type ContractKeys =
-  | 'ETHPool'
-  | 'stETHPool'
-  | 'AGI'
-  | 'esAGI'
-  | 'poolFactory'
-  | 'AGIETHTradingPool'
-  | 'AGIWETHContract'
-  | 'AGIWETHLP'
-  | 'stETH'
-  | 'fraxETH'
-  | 'fraxETHPool'
-  | 'rETH'
-  | 'ankrETH'
-  | 'rEthPool'
-  | 'ankrEthPool';
+// type ContractKeys =
+//   | 'ETHPool'
+//   | 'stETHPool'
+//   | 'AGI'
+//   | 'esAGI'
+//   | 'poolFactory'
+//   | 'AGIETHTradingPool'
+//   | 'AGIWETHContract'
+//   | 'AGIWETHLP'
+//   | 'stETH'
+//   | 'fraxETH'
+//   | 'fraxETHPool'
+//   | 'rETH'
+//   | 'ankrETH'
+//   | 'rEthPool'
+//   | 'ankrEthPool';
 
-export const getContracts = (network = '0x1'): Record<ContractKeys, IContract> => {
+export const getContracts = (network = '0x1') => {
   return {
     ETHPool: {
       address: '0xB3db4e3238c1656fb6b832FB692643f4Fa452010',
@@ -108,7 +110,15 @@ export const getContracts = (network = '0x1'): Record<ContractKeys, IContract> =
       address: '0x5d5897797287a3c2552251A9D9185E09dd25b558',
       abi: stETHPoolABi,
     },
-  };
+    stafiRETHPool: {
+      address: '0xF9FDb8eF7b8cd32c1Db753E525EBbc3089DE963b',
+      abi: stETHPoolABi,
+    },
+    'stafi-staked-eth': {
+      address: '0x9559aaa82d9649c7a7b220e7c461d2e74c9a3593',
+      abi: stafiStakedETHAbi,
+    },
+  } as const;
 };
 
 export interface IContract {
@@ -124,6 +134,9 @@ export interface IToken {
   poolDailyEmission: number;
   disabled?: true;
   isLP?: boolean;
+  explainText?: string;
+  byLPText?: string;
+  byLPLink?: string;
 }
 
 export interface TokenConfigs {
@@ -132,49 +145,60 @@ export interface TokenConfigs {
 
 export const havlingTime = 1681045200000;
 
-export const tokenConfigs: TokenConfigs = {
+export const moduleConfigs: TokenConfigs = {
   tokenList: [
     {
       icon: ETHIcon,
       name: 'ETH',
       stakingContract: getContracts().ETHPool,
-      poolDailyEmission: 386_100 / 3,
+      poolDailyEmission: 402_255 / 3,
     },
     {
-      icon: [AGI, wETH],
+      icon: [AGILogo, wETHLogo],
       name: 'AGI-WETH LP',
       stakingContract: getContracts().AGIWETHContract,
       tokenContract: getContracts().AGIWETHLP,
-      poolDailyEmission: 1_121_472 / 3,
+      poolDailyEmission: 1177545.6 / 3,
       isLP: true,
+      byLPText: 'Mint AGI-WETH LP',
+      byLPLink: 'https://app.uniswap.org/#/swap?outputCurrency=0x5f18ea482ad5cc6bc65803817c99f477043dce85',
     },
     {
-      icon: stETH,
+      icon: stETHLogo,
       name: 'stETH',
       stakingContract: getContracts().stETHPool,
       tokenContract: getContracts().stETH,
-      poolDailyEmission: 990_000 / 3,
+      poolDailyEmission: 1039500 / 3,
     },
     {
-      icon: rETH,
+      icon: rETHLogo,
       name: 'rETH',
+      explainText: 'Rocket Pool ETH',
       stakingContract: getContracts().rEthPool,
       tokenContract: getContracts().rETH,
-      poolDailyEmission: 13_200 / 3,
+      poolDailyEmission: 6615 / 3,
     },
     {
-      icon: fraxETH,
+      icon: fraxETHLogo,
       name: 'frxETH',
       stakingContract: getContracts().fraxETHPool,
       tokenContract: getContracts().fraxETH,
-      poolDailyEmission: 13_200 / 3,
+      poolDailyEmission: 12600 / 3,
     },
     {
-      icon: ankrETH,
+      icon: ankrETHLogo,
       name: 'ankrETH',
       stakingContract: getContracts().ankrEthPool,
       tokenContract: getContracts().ankrETH,
-      poolDailyEmission: 2_640 / 3,
+      poolDailyEmission: 15750 / 3,
+    },
+    {
+      icon: stafiStakedETHLogo,
+      name: 'rETH',
+      stakingContract: getContracts().stafiRETHPool,
+      tokenContract: getContracts()['stafi-staked-eth'],
+      poolDailyEmission: (15750 * 2) / 3,
+      explainText: 'Stafi staked ETH',
     },
   ],
 };

@@ -1,0 +1,56 @@
+.convert_inner {
+  background-color: #fff;
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+  }
+  :global {
+    h2,
+    h3,
+    h4 {
+      margin: 0px auto;
+    }
+  }
+}
+
+.bg_white {
+  background-color: #fff;
+}
+
+.bg_purple {
+  background: #cfb8ff;
+}
+
+.bg_yellow {
+  background: #fdffe7;
+}
+
+.rewards_item_wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+.rewards_item {
+  display: grid;
+  grid-template-columns: 5% 19% 19% 19% 19% 19%;
+  text-align: left;
+  font-weight: bold;
+  margin-top: 0px;
+  align-items: center;
+  @media screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+    grid-auto-flow: row;
+    gap: 8px;
+  }
+  div {
+    width: 100%;
+    // background-color: #000 !important;
+    // color: #fff !important;
+  }
+}

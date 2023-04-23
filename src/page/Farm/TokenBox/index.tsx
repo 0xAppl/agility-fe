@@ -9,13 +9,14 @@ import { capitalize } from '@utils/string';
 import { type IToken } from '../tokenConfigs';
 
 import style from './index.module.less';
-import StackingModal from './StakeModal';
+import StackingModal from '../../../components/Modals/StakeModal';
 import { useLocation } from 'react-router-dom';
 import useWriteContract from '@hooks/useWriteContract';
 import CustomSpin from '@components/spin';
 import useReportTVL from '@hooks/useReportTVL';
 import { Tooltip } from 'antd';
 import DoubleTokenLogo from '@components/TripleTokenLogo';
+import { InfoIcon } from '../../../icons';
 
 export const TokenBox = ({ token }: { token: IToken }) => {
   const { disabled } = token;
@@ -244,7 +245,26 @@ export const TokenBox = ({ token }: { token: IToken }) => {
             <span>?</span>
           )}
         </span>
-        <span className={style.name}>{token.name}</span>
+        <span className={style.name}>
+          <span>
+            {token.name}
+            {token.explainText ? (
+              <Tooltip title={token.explainText}>
+                <InfoIcon
+                  fill={'#a6b0c3'}
+                  style={{
+                    marginInlineStart: 4,
+                  }}
+                ></InfoIcon>
+              </Tooltip>
+            ) : null}
+          </span>
+          {token.byLPLink ? (
+            <span>
+              <a href={token.byLPLink}>{token.byLPText}</a>
+            </span>
+          ) : null}
+        </span>
       </div>
 
       {/* main */}

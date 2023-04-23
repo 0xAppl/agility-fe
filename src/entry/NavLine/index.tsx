@@ -59,8 +59,14 @@ export const NavLine = () => {
   // const { data: ensAvatar } = useEnsAvatar({ address });
   // const { data: ensName } = useEnsName({ address });
 
-  const lists: React.ReactElement[] = list
-    .map(route => (
+  const lists: React.ReactElement[] = list.map(route =>
+    route.path.startsWith('https') ? (
+      <span className={classNames(style.nav_route)} key={route.label}>
+        <a href={route.path} className={style.icon_href} target="_blank" rel="noreferrer">
+          {route.label}
+        </a>
+      </span>
+    ) : (
       <span
         className={classNames(style.nav_route, {
           [style.disabled]: route.disabled,
@@ -70,32 +76,8 @@ export const NavLine = () => {
       >
         {route.disabled ? route.label : <Link to={`/${route.path}`}>{route.label}</Link>}
       </span>
-    ))
-    .concat(
-      <span className={classNames(style.nav_route)} key={'docs'}>
-        <a href={docsHref} className={style.icon_href} target="_blank" rel="noreferrer">
-          Docs
-        </a>
-      </span>,
-      <span className={classNames(style.nav_route)} key={'buy'}>
-        <a
-          href="https://app.uniswap.org/#/swap?outputCurrency=0x5f18ea482ad5cc6bc65803817c99f477043dce85"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Buy $AGI
-        </a>
-      </span>,
-      <span className={classNames(style.nav_route)} key={'lp'}>
-        <a
-          href="https://app.uniswap.org/#/add/v2/ETH/0x5F18ea482ad5cc6BC65803817C99f477043DcE85"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Add AGI-WETH LP
-        </a>
-      </span>,
-    );
+    ),
+  );
 
   if (pathname === '/') return null;
 

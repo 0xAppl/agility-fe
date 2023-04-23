@@ -12,6 +12,7 @@ import {
   useContractRead,
   useConnect,
   useAccount,
+  useContractReads,
 } from 'wagmi';
 import 'react-toastify/dist/ReactToastify.css';
 import style from './index.module.less';
@@ -33,7 +34,7 @@ import useTVL from '../hooks/useTVL';
 import { formatEther, parseEther } from 'ethers/lib/utils.js';
 import { getContracts } from '../page/Farm/tokenConfigs';
 import { type BigNumber } from 'ethers';
-import { bigNumberToDecimal } from '../utils/number';
+import { BigZero, bigNumberToDecimal } from '../utils/number';
 import { ToastContainer } from 'react-toastify';
 // import useGetTokenPriceFromLP from '@hooks/useGetTokenPriceFromLP';
 import { UniLpAbi } from '../page/Farm/abis';
@@ -108,7 +109,7 @@ class ErrorBoundary extends React.Component<
 }
 
 const Layout = ({ children }: any) => {
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
 
   const { data, isFetching } = useQuery(
     ['ethPrice'],
@@ -124,6 +125,38 @@ const Layout = ({ children }: any) => {
   );
 
   const TVL = useTVL();
+
+  const { data: userBalanceInfo } = useContractReads({
+    contracts: [
+      {
+        ...getContracts().AGI,
+        functionName: 'balanceOf',
+        args: [address],
+      },
+      {
+        ...getContracts().esAGI,
+        functionName: 'balanceOf',
+        args: [address],
+      },
+      {
+        ...getContracts().esAGI,
+        functionName: 'getUserRedeemsLength',
+        args: [address],
+      },
+    ],
+    enabled: isConnected,
+    watch: true,
+  });
+
+  let AGIBalance = BigZero;
+  let esAGIBalance = BigZero;
+  let AGIRedeemingCount = BigZero;
+
+  if (Array.isArray(userBalanceInfo) && userBalanceInfo.every(Boolean)) {
+    AGIBalance = (userBalanceInfo[0] as any) ?? BigZero;
+    esAGIBalance = (userBalanceInfo[1] as any) ?? BigZero;
+    AGIRedeemingCount = (userBalanceInfo[2] as any) ?? BigZero;
+  }
 
   const tokenPrice = useGetTokenPriceFromLP(
     data?.data.ethereum.usd || 0,
@@ -158,6 +191,9 @@ const Layout = ({ children }: any) => {
         TVL,
         AGIPrice: tokenPrice,
         AGITotalSupply,
+        userAGIBalance: AGIBalance,
+        userEsAGIBalance: esAGIBalance,
+        userAGIRedeemingCount: AGIRedeemingCount,
       }}
     >
       <div className={style.container_body}>
@@ -165,9 +201,13 @@ const Layout = ({ children }: any) => {
         <div className={style.main_content_wrapper}>
           <Routes>
             <Route path="/" element={home} />
-            {list.map(route => (
-              <Route path={route.path} element={route.component} key={route.path} />
-            ))}
+            {list
+              .filter(r => {
+                return !r.path.startsWith('https');
+              })
+              .map(route => (
+                <Route path={route.path} element={route.component} key={route.path} />
+              ))}
             <Route path="*" element={home} />
           </Routes>
           <ToastContainer hideProgressBar autoClose={5000} />

@@ -5,7 +5,7 @@ import { Button, Modal, Slider } from 'antd';
 
 import React, { useEffect, useState } from 'react';
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
-import { getContracts } from '../tokenConfigs';
+import { getContracts } from '../../page/Farm/tokenConfigs';
 import { parseEther } from 'ethers/lib/utils.js';
 import useDebounce from '@hooks/useDebounce';
 import { ONE_DAY_IN_SECS } from '@utils/time';
@@ -17,8 +17,15 @@ const RedeemModal: React.FC<{
   isModalOpen: boolean;
   setIsModalOpen: (isModalOpen: boolean) => void;
   esAGIBalance: BigNumber;
-}> = ({ isModalOpen, setIsModalOpen, esAGIBalance }) => {
-  const [day, setDay] = useState(VestingDays.min);
+  lockReemPeriod?: number;
+}> = ({ isModalOpen, setIsModalOpen, esAGIBalance, lockReemPeriod }) => {
+  const [day, setDay] = useState(lockReemPeriod ?? VestingDays.min);
+
+  useEffect(() => {
+    if (lockReemPeriod !== undefined) {
+      setDay(lockReemPeriod);
+    }
+  }, [lockReemPeriod]);
 
   const getPercentage = 0.5 + ((day - VestingDays.min) / (VestingDays.max - VestingDays.min)) * 0.5;
 
@@ -47,7 +54,7 @@ const RedeemModal: React.FC<{
 
   return (
     <Modal
-      title={'Choose Vesting Time'}
+      title={'Vesting'}
       open={isModalOpen}
       onOk={() => {
         setIsModalOpen(false);
@@ -60,19 +67,25 @@ const RedeemModal: React.FC<{
       footer={null}
       maskClosable={false}
     >
+      {lockReemPeriod === undefined ? (
+        <div>
+          <h4>
+            Vesting Time:{' '}
+            <span>
+              <b>{day} days</b>
+            </span>
+          </h4>
+          <Slider value={day} onChange={setDay} min={VestingDays.min} max={VestingDays.max} step={1} />
+        </div>
+      ) : null}
       <div>
-        <Slider value={day} onChange={setDay} min={VestingDays.min} max={VestingDays.max} step={1} />
-        <span>
-          <b>{day} days</b>
-        </span>
-      </div>
-      <div>
-        <h3>You get: </h3>
+        <h4>
+          By Redeeming your <b>{bigNumberToDecimal(esAGIBalance, 3)} $esAGI</b>, you get:
+        </h4>
         <p>
           <b>
-            {(bigNumberToDecimal(esAGIBalance) * getPercentage).toFixed(3)} $AGI (
-            {numberToPrecision(getPercentage * 100)}
-            %)
+            {(bigNumberToDecimal(esAGIBalance) * getPercentage).toFixed(3)} $AGI{' '}
+            {lockReemPeriod === undefined ? `(${numberToPrecision(getPercentage * 100, 2)}%)` : ''}
           </b>
         </p>
       </div>

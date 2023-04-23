@@ -14,12 +14,12 @@ import {
   useSigner,
   useWaitForTransaction,
 } from 'wagmi';
-import { StakeBtn } from '../../../components/Btns';
-import CustomSpin from '../../../components/spin';
-import useDebounce from '../../../hooks/useDebounce';
-import { bigNumberToDecimal, BigZero, expandTo18Decimals } from '../../../utils/number';
+import { StakeBtn } from '../Btns';
+import CustomSpin from '../spin';
+import useDebounce from '../../hooks/useDebounce';
+import { bigNumberToDecimal, BigZero, expandTo18Decimals } from '../../utils/number';
 // import { useContractContext } from '../../../contexts/contractContext';
-import { type IContract } from '../tokenConfigs';
+import { type IContract } from '../../page/Farm/tokenConfigs';
 import style from './index.module.less';
 
 import { toast, ToastContainer } from 'react-toastify';
@@ -31,9 +31,8 @@ const StackingModal: React.FC<{
   stackingTokenAddress?: string;
   poolContract: IContract;
   stakingTokenContract?: IContract;
-
   title?: React.ReactNode;
-  modalMode: 'stake' | 'withdraw';
+  modalMode: 'stake' | 'withdraw' | string;
 }> = ({ isModalOpen, setIsModalOpen, poolContract, title, modalMode, stakingTokenContract }) => {
   //   const contracts = useContractContext();
   const [loading, setLoading] = React.useState(false);
@@ -135,7 +134,7 @@ const StackingModal: React.FC<{
               value={bigNumberToDecimal(value)}
               max={bigNumberToDecimal(maxValue)}
               onChange={value => {
-                setValue(parseEther(value.toString()));
+                setValue(parseEther(value.toString()).gt(maxValue) ? maxValue : parseEther(value.toString()));
               }}
               step={0.0000001}
             />

@@ -1,51 +1,36 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import React, { useState } from 'react';
 import cs from 'classnames';
-import { getContracts, tokenConfigs } from './tokenConfigs';
+import { getContracts, moduleConfigs } from './tokenConfigs';
 import style from './index.module.less';
 import { TokenBox } from './TokenBox';
 import { StatusBox } from './StatusBox';
 import { VestBox } from './VestBox';
 import CountDown from './CountDown';
-// import ContractContext from '../../contexts/contractContext';
+
 import { useAccount, useProvider } from 'wagmi';
 import { useGlobalStatsContext } from '../../contexts/globalStatsContext';
 import { commas, numberToPrecision } from '@utils/number';
 import useReadContractNumber from '@hooks/useReadContractNumber';
+import PageWrapper from '@components/pageWrapper';
+import FarmSectionWrapper from '@components/farmSectionWrapper';
 
-// const s = fetchSigner();
-
-const { tokenList } = tokenConfigs;
+const { tokenList } = moduleConfigs;
 
 export const Farm = () => {
   const contract = getContracts('0x1');
   const provider = useProvider();
   const { connector } = useAccount();
-  // connector?.getProvider();
+
   const { isConnected, address } = useAccount();
   const [signer, setSigner] = useState<any>(null);
 
   const { TVL, ethPrice, AGIPrice } = useGlobalStatsContext();
 
-  // const { data: esAGIBalance } = useReadContractNumber({
-  //   ...getContracts().esAGI,
-  //   functionName: 'balanceOf',
-  //   args: [address],
-  //   watch: true,
-  // });
-
   return (
-    // <ContractContext.Provider
-    //   value={{
-    //     contracts: {
-    //       ETHContract: new ethers.Contract(contract.ETHPool.address, contract.ETHPool.abi, provider),
-    //     },
-    //   }}
-    // >
-    <div className={style.farm_section}>
+    <PageWrapper>
       {/* total  */}
       <div className={style.total_container}>
-        TVL ${commas(TVL)} AGI ${AGIPrice ? numberToPrecision(AGIPrice, 3) : '???'}
+        TVL ${commas(TVL)} AGI ${numberToPrecision(AGIPrice, 3)}
       </div>
 
       {/* farm tokens */}
@@ -53,8 +38,8 @@ export const Farm = () => {
         <div className={style.title}>Farm</div>
         <CountDown />
         <div className={style.box_container}>
-          {tokenList.map(token => (
-            <TokenBox token={token} key={token.name} />
+          {tokenList.map((token, idx) => (
+            <TokenBox token={token} key={idx} />
           ))}
         </div>
       </div>
@@ -70,7 +55,6 @@ export const Farm = () => {
 
       {/* Vesting  */}
       <VestBox />
-    </div>
-    // </ContractContext.Provider>
+    </PageWrapper>
   );
 };

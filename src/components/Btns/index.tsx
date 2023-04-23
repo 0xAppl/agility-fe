@@ -15,28 +15,34 @@ export const ClaimBtn = ({
   onClick,
   isLoading,
   disabled,
+  children,
 }: {
-  onClick: () => void;
+  onClick?: () => void;
   isLoading?: boolean;
   disabled?: boolean;
+  children?: React.ReactNode;
 }) => {
   return (
     <div className={cs({ [style.btn]: true, [style.disabled]: disabled })} onClick={onClick}>
-      {isLoading ? (
-        <CustomSpin
-          style={{
-            marginRight: 8,
-          }}
-        />
-      ) : (
-        <ArrowIcon className={style.rotate280} />
+      {children ?? (
+        <>
+          {isLoading ? (
+            <CustomSpin
+              style={{
+                marginRight: 8,
+              }}
+            />
+          ) : (
+            <ArrowIcon className={style.rotate280} />
+          )}
+          {`${isLoading ? 'Claiming' : 'Claim'}`} esAGI
+        </>
       )}
-      {`${isLoading ? 'Claiming' : 'Claim'}`} esAGI
     </div>
   );
 };
 
-export const RedeemBtn = ({ onClick, disabled }: { onClick: () => void; disabled: boolean }) => {
+export const RedeemBtn = ({ onClick, disabled }: { onClick: () => void; disabled?: boolean }) => {
   return (
     <div
       className={cs({
