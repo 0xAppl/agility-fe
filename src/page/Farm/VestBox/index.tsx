@@ -53,7 +53,7 @@ export const VestBox: React.FC<{
   });
 
   const onClickRedeem = () => {
-    if (userAGIBalance.isZero()) {
+    if (userEsAGIBalance.isZero()) {
       return toast.info('No esAGI balance');
     }
     setModalOpen(true);
@@ -69,7 +69,7 @@ export const VestBox: React.FC<{
           {disableRedeem === undefined && (
             <RedeemBtn
               onClick={onClickRedeem}
-              disabled={userAGIBalance === undefined ? true : userAGIBalance.isZero()}
+              disabled={userEsAGIBalance === undefined ? true : userEsAGIBalance.isZero()}
             />
           )}
         </div>
