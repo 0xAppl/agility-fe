@@ -70,7 +70,7 @@ export const TokenBox = ({
     rETH,
     fraxETH,
     stETH,
-    AGI: AGIPrice,
+    AGI: { price: AGIPrice },
   };
 
   const { data: publicData, isLoading: isLoadingPublic } = useContractReads({
@@ -218,6 +218,9 @@ export const TokenBox = ({
     },
   });
 
+  // if (token.name === 'AGI') {
+  //   console.log(TVL, pricePerToken, bigNumberToDecimal(totalStackedToken), otherPrices);
+  // }
   const withdrawBtns = (
     <>
       <WithdrawBtn onClick={onWithdrawClick} disabled={!hasStacked || disabled}>
