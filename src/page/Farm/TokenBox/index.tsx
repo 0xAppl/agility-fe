@@ -260,6 +260,7 @@ export const TokenBox = ({
           className={style.icon}
           style={{
             marginRight: Array.isArray(token.icon) ? 10 : undefined,
+            overflow: Array.isArray(token.icon) ? 'visible' : 'hidden',
           }}
         >
           {token.icon ? (

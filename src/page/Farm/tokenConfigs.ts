@@ -22,6 +22,7 @@ import wETHLogo from '../../assets/weth_logo.png';
 import AGILogo from '../../assets/agility_logo.png';
 import ankrETHLogo from '../../assets/ankreth-logo.png';
 import stafiStakedETHLogo from '../../assets/stafi-staked-eth.png';
+import binance from '../../assets/binance.jpeg';
 
 // export const PoolDailyEmission = 400_000;
 // export const PoolBlockEmission = PoolDailyEmission / 7200;
@@ -197,6 +198,13 @@ export const moduleConfigs: TokenConfigs = {
       name: 'ETH',
       stakingContract: getContracts().ETHPool,
       poolDailyEmission: 402_255 / 3,
+    },
+    {
+      icon: binance,
+      name: 'Binance ETH',
+      stakingContract: getContracts().ETHPool,
+      poolDailyEmission: 402_255 / 3,
+      disabled: true,
     },
     {
       icon: [AGILogo, wETHLogo],
