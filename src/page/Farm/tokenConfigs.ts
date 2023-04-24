@@ -45,7 +45,7 @@ import stafiStakedETHLogo from '../../assets/stafi-staked-eth.png';
 //   | 'rEthPool'
 //   | 'ankrEthPool';
 
-const isTestnet = parseInt((window?.ethereum as any)?.chainId, 16) !== 1;
+const isTestnet = false;
 
 export const getContracts = (network = '0x1') => {
   return {

@@ -158,8 +158,6 @@ const Layout = ({ children }: any) => {
     AGIRedeemingCount = (userBalanceInfo[2] as any) ?? BigZero;
   }
 
-  console.log(userBalanceInfo);
-
   const tokenPrice = useGetTokenPriceFromLP(
     data?.data.ethereum.usd || 0,
     getContracts().AGIETHTradingPool.address,
