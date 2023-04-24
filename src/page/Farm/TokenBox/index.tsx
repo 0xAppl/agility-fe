@@ -247,6 +247,7 @@ export const TokenBox = ({
     <StakeBtn
       disabled={disabled}
       onClick={() => {
+        if (disabled) return;
         if (isConnected) {
           setModalMode('stake');
           setIsModalOpen(true);
