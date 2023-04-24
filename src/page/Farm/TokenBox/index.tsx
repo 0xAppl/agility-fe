@@ -37,6 +37,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     rETH,
     fraxETH,
     stETH,
+    AGI: AGIPrice,
   };
 
   const { data: publicData, isLoading: isLoadingPublic } = useContractReads({

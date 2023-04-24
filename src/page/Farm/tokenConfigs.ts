@@ -6,11 +6,9 @@ import {
   AGIAbi,
   esAGIAbi,
   ETHPoolAbi,
-  UniLpAbi as UniPoolAbi,
   AGIWETHContractAbi,
   AGIWETHLPAbi,
   stETHAbi,
-  stETHPoolABi,
   fraxETHAbi,
   rETHAbi,
   ankrETHAbi,
@@ -54,6 +52,11 @@ export const getContracts = (network = '0x1') => {
       abi: ETHPoolAbi,
     },
 
+    AGIPool: {
+      address: '0x2090D4CDA71E3E870b8756ACee51481421806202',
+      abi: AGIWETHContractAbi,
+    },
+
     AGI: {
       address: isTestnet ? '0xA91EA4023Da8e4FEf15372EC79e3DA15dFF3Be48' : '0x5F18ea482ad5cc6BC65803817C99f477043DcE85',
       abi: AGIAbi,
@@ -71,7 +74,7 @@ export const getContracts = (network = '0x1') => {
      */
     AGIETHTradingPool: {
       address: '0x498c00e1ccc2afff80f6cc6144eaeb95c46cc3b5',
-      abi: UniPoolAbi,
+      abi: AGIWETHLPAbi,
     },
     AGIWETHContract: {
       address: '0xC8187048f7Ab0db0774b674fEf3f4F4285A01bF4',
@@ -87,7 +90,7 @@ export const getContracts = (network = '0x1') => {
     },
     stETHPool: {
       address: '0xEFd8a0b5e0e01A95fCc15656DAd61D5B5436B2b4',
-      abi: stETHPoolABi,
+      abi: AGIWETHContractAbi,
     },
     fraxETH: {
       address: '0x5E8422345238F34275888049021821E8E08CAa1f',
@@ -95,7 +98,7 @@ export const getContracts = (network = '0x1') => {
     },
     fraxETHPool: {
       address: '0xabb828565d46F9Db074d55241D82621B129bcF16',
-      abi: stETHPoolABi,
+      abi: AGIWETHContractAbi,
     },
     rETH: {
       address: '0xae78736cd615f374d3085123a210448e74fc6393',
@@ -103,7 +106,7 @@ export const getContracts = (network = '0x1') => {
     },
     rEthPool: {
       address: '0x9775F32737f141AB1b661dD83F7afdf4ef749F3D',
-      abi: stETHPoolABi,
+      abi: AGIWETHContractAbi,
     },
     ankrETH: {
       address: '0xe95a203b1a91a908f9b9ce46459d101078c2c3cb',
@@ -111,11 +114,11 @@ export const getContracts = (network = '0x1') => {
     },
     ankrEthPool: {
       address: '0x5d5897797287a3c2552251A9D9185E09dd25b558',
-      abi: stETHPoolABi,
+      abi: AGIWETHContractAbi,
     },
     stafiRETHPool: {
       address: '0xF9FDb8eF7b8cd32c1Db753E525EBbc3089DE963b',
-      abi: stETHPoolABi,
+      abi: AGIWETHContractAbi,
     },
     'stafi-staked-eth': {
       address: '0x9559aaa82d9649c7a7b220e7c461d2e74c9a3593',
@@ -240,19 +243,29 @@ export const moduleConfigs: TokenConfigs = {
         explainText: 'Stafi staked ETH',
       },
     },
-    // {
-    //   icon: stafiStakedETHLogo,
-    //   name: 'AGI-WETH Locked LP',
-    //   stakingContract: getContracts().lockedAGIWETHLPPool,
-    //   tokenContract: { ...getContracts().AGI, address: '0xed39eb8b3c81381988baa71a2eafba2282edabc4' },
-    //   poolDailyEmission: (15750 * 2) / 3,
-    //   stakeSettings: {
-    //     isLocked: true,
-    //     minStakeTime: 1 * 60,
-    //     maxStakeTime: 30 * 60,
-    //     stakeFunctionName: 'stakeLocked',
-    //     totalSupplyFunctionName: 'totalLiquidityLocked',
-    //   },
-    // },
+    {
+      icon: AGILogo,
+      name: 'AGI',
+      stakingContract: getContracts().AGIPool,
+      tokenContract: getContracts().AGI,
+      poolDailyEmission: 450000 / 3,
+    },
   ],
 };
+
+export const lockedModuleConfigs = [
+  {
+    icon: stafiStakedETHLogo,
+    name: 'AGI-WETH LP Boost 🔥 🔥 🔥',
+    stakingContract: getContracts().lockedAGIWETHLPPool,
+    tokenContract: { ...getContracts().AGI, address: '0xed39eb8b3c81381988baa71a2eafba2282edabc4' },
+    poolDailyEmission: (15750 * 2) / 3,
+    stakeSettings: {
+      isLocked: true,
+      minStakeTime: 1 * 60,
+      maxStakeTime: 30 * 60,
+      stakeFunctionName: 'stakeLocked',
+      totalSupplyFunctionName: 'totalLiquidityLocked',
+    },
+  },
+];

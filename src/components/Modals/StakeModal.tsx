@@ -194,7 +194,7 @@ const StackingModal: React.FC<{
             {stakeSettings?.minStakeTime ? (
               <div>
                 <p>
-                  <b>Select Unlock Time: {stakingLockTime}</b>
+                  <b>Select Unlock Time: {stakingLockTime}, multipiler: </b>
                 </p>
                 <Slider
                   value={stakingLockTime}
