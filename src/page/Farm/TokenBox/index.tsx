@@ -18,7 +18,15 @@ import { Tooltip } from 'antd';
 import DoubleTokenLogo from '@components/TripleTokenLogo';
 import { InfoIcon } from '../../../icons';
 
-export const TokenBox = ({ token }: { token: IToken }) => {
+export const TokenBox = ({
+  token,
+}: {
+  token:
+    | IToken
+    | {
+        waiting: boolean;
+      };
+}) => {
   if (token.waiting) {
     return (
       <div
@@ -38,6 +46,10 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         </h1>
       </div>
     );
+  }
+
+  if ('waiting' in token) {
+    return null;
   }
 
   const { disabled } = token;
