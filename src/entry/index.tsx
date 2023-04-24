@@ -37,7 +37,6 @@ import { type BigNumber } from 'ethers';
 import { BigZero, bigNumberToDecimal } from '../utils/number';
 import { ToastContainer } from 'react-toastify';
 // import useGetTokenPriceFromLP from '@hooks/useGetTokenPriceFromLP';
-import { UniLpAbi } from '../page/Farm/abis';
 import useGetTokenPriceFromLP from '@hooks/useGetTokenPriceFromLP';
 import useReadContractNumber from '@hooks/useReadContractNumber';
 import { Button } from 'antd';

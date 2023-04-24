@@ -19,6 +19,27 @@ import DoubleTokenLogo from '@components/TripleTokenLogo';
 import { InfoIcon } from '../../../icons';
 
 export const TokenBox = ({ token }: { token: IToken }) => {
+  if (token.waiting) {
+    return (
+      <div
+        className={style.token_box}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <h1
+          style={{
+            fontSize: '4rem',
+          }}
+        >
+          ?
+        </h1>
+      </div>
+    );
+  }
+
   const { disabled } = token;
   const isHomepage = useLocation().pathname === '/';
 

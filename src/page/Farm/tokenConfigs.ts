@@ -174,16 +174,24 @@ export interface IToken {
     stakeFunctionName?: string;
     totalSupplyFunctionName?: string;
   };
+  waiting?: true;
 }
 
 export interface TokenConfigs {
-  tokenList: IToken[];
+  tokenList: Array<IToken | { waiting: true }>;
 }
 
 export const havlingTime = 1681045200001;
 
 export const moduleConfigs: TokenConfigs = {
   tokenList: [
+    {
+      icon: AGILogo,
+      name: 'AGI',
+      stakingContract: getContracts().AGIPool,
+      tokenContract: getContracts().AGI,
+      poolDailyEmission: 450000 / 3,
+    },
     {
       icon: ETHIcon,
       name: 'ETH',
@@ -243,12 +251,9 @@ export const moduleConfigs: TokenConfigs = {
         explainText: 'Stafi staked ETH',
       },
     },
+
     {
-      icon: AGILogo,
-      name: 'AGI',
-      stakingContract: getContracts().AGIPool,
-      tokenContract: getContracts().AGI,
-      poolDailyEmission: 450000 / 3,
+      waiting: true,
     },
   ],
 };
