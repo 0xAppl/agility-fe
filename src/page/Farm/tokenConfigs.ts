@@ -288,7 +288,7 @@ export const moduleConfigs: TokenConfigs = {
       name: 'rETH',
       stakingContract: getContracts().stafiRETHPool,
       tokenContract: getContracts()['stafi-staked-eth'],
-      poolDailyEmission: 15000 / 3,
+      poolDailyEmission: (15000 * 2) / 3,
       explainContent: {
         explainText: 'Stafi staked ETH',
       },
