@@ -130,10 +130,9 @@ export const BalancerBox = ({ token }: { token: IToken }) => {
     supressWarning: true,
   });
 
-  const pricePerToken = token.isLP
-    ? (bigNumberToDecimal(AGIReserve) * AGIPrice + bigNumberToDecimal(ETHReserve) * ethPrice) /
-      bigNumberToDecimal(LPTotalSupply)
-    : otherPrices[token.name]?.price ?? ethPrice;
+  const pricePerToken =
+    (bigNumberToDecimal(AGIReserve) * AGIPrice + bigNumberToDecimal(ETHReserve) * ethPrice) /
+    bigNumberToDecimal(LPTotalSupply);
 
   const TVL = pricePerToken * bigNumberToDecimal(totalStackedToken);
 
