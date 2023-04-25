@@ -218,8 +218,8 @@ export const moduleConfigs: TokenConfigs = {
       poolDailyEmission: 1200000 / 3,
       isLP: true,
       explainContent: {
-        byLPText: 'Mint AGI-WETH LP',
-        byLPLink: 'https://app.uniswap.org/#/swap?outputCurrency=0x5f18ea482ad5cc6bc65803817c99f477043dce85',
+        buyLPText: 'Mint AGI-WETH LP',
+        buyLPLink: 'https://app.uniswap.org/#/swap?outputCurrency=0x5f18ea482ad5cc6bc65803817c99f477043dce85',
       },
     },
 
