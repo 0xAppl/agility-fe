@@ -8,7 +8,7 @@ export const secondsToDHMS = (seconds: number) => {
     days,
     hours,
     minutes,
-    seconds: remainingSeconds,
+    seconds: `${remainingSeconds.toFixed(0).padStart(2, '0')}`,
   };
 };
 

@@ -10,10 +10,18 @@ import ConvertModal from '@components/Modals/convertModal';
 import { VestBox } from '@page/Farm/VestBox';
 import classNames from 'classnames';
 import { Tooltip } from 'antd';
+
+import useCountDown from '@hooks/useCountdown';
+import { secondsToDHMS } from '@utils/time';
+
 const TriceratopsRewards = () => {
   const { userAGIBalance, userEsAGIBalance } = useGlobalStatsContext();
   const [redeemModalOpen, setRedeemModalOpen] = React.useState(false);
   const [stakeModalOpen, setStakeModalOpen] = React.useState(false);
+
+  const countdown = useCountDown(1683520350000);
+
+  const { days, hours, minutes, seconds } = secondsToDHMS(countdown / 1000);
 
   return (
     <>
@@ -46,7 +54,13 @@ const TriceratopsRewards = () => {
         <FarmSectionWrapper extraClassName={style.bg_white}>
           <div className="title">Triceratops Rewards</div>
           <FarmSectionWrapper extraClassName={classNames(style.bg_purple, style.convert_inner)}>
-            <h4>Rewards Period Ends 14d: 00h: 00m: 00s esAGI Potential Hold APR: 40% </h4>
+            <h4>
+              <span>
+                Rewards Period Ends {days}d: {hours}h: {minutes}m: {seconds}s
+              </span>
+              &nbsp;
+              <span>esAGI Potential Hold APR: 60%</span>
+            </h4>
           </FarmSectionWrapper>
           <FarmSectionWrapper extraClassName={classNames(style.rewards_item_wrapper, style.bg_yellow)}>
             <FarmSectionWrapper extraClassName={style.rewards_item}>
@@ -62,7 +76,7 @@ const TriceratopsRewards = () => {
                 <FarmSectionWrapper extraClassName={classNames(style.rewards_item, style.bg_white)}>
                   <span>1</span>
                   <span>esAGI</span>
-                  <span>100,000</span>
+                  <span>150,000</span>
                   <span>esAGI</span>
                   <span>???</span>
                   <span>

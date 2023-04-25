@@ -39,7 +39,7 @@ const walletLogoMapping: Record<string, string> = {
 export const NavLine = () => {
   const { pathname } = useLocation();
 
-  const [activated, setActivated] = React.useState(false);
+  const [mobileMenuOpened, setMobileMenuOpened] = React.useState(false);
 
   const [connectModalOpen, setConnectModalOpen] = React.useState(false);
 
@@ -74,7 +74,18 @@ export const NavLine = () => {
         })}
         key={route.path}
       >
-        {route.disabled ? route.label : <Link to={`/${route.path}`}>{route.label}</Link>}
+        {route.disabled ? (
+          route.label
+        ) : (
+          <Link
+            to={`/${route.path}`}
+            onClick={() => {
+              setMobileMenuOpened(false);
+            }}
+          >
+            {route.label}
+          </Link>
+        )}
       </span>
     ),
   );
@@ -135,13 +146,13 @@ export const NavLine = () => {
               />
             </a>
           </Tooltip>
-          <Hamburger activated={activated} setActivated={setActivated} />
+          <Hamburger activated={mobileMenuOpened} setActivated={setMobileMenuOpened} />
         </div>
       </div>
       <div
         className={classNames({
           [style.mobileMenu]: true,
-          [style.active]: activated,
+          [style.active]: mobileMenuOpened,
         })}
       >
         {lists}
