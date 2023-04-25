@@ -109,8 +109,7 @@ export const BalancerBox = ({ token }: { token: IToken }) => {
 
   const LPTotalSupply = (publicData?.[1] as BigNumber) ?? BigZero;
 
-  const [AGIReserve, ETHReserve] = (publicData?.[2] as BigNumber[]) ?? [BigZero, BigZero];
-  console.log(publicData?.[2]);
+  const [AGIReserve, ETHReserve] = publicData?.[2]?.[1] ?? [BigZero, BigZero];
 
   const accountStakedBalance = (accountData?.[0] as unknown as BigNumber) ?? BigZero;
 
@@ -265,9 +264,9 @@ export const BalancerBox = ({ token }: { token: IToken }) => {
               </Tooltip>
             ) : null}
           </span>
-          {token.explainContent?.byLPLink ? (
+          {token.explainContent?.buyLPLink ? (
             <span>
-              <a href={token.explainContent.byLPLink}>{token.explainContent.byLPText}</a>
+              <a href={token.explainContent.buyLPLink}>{token.explainContent.buyLPText}</a>
             </span>
           ) : null}
         </span>

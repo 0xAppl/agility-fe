@@ -288,9 +288,9 @@ export const TokenBox = ({ token }: { token: IToken }) => {
               </Tooltip>
             ) : null}
           </span>
-          {token.explainContent?.byLPLink ? (
+          {token.explainContent?.buyLPLink ? (
             <span>
-              <a href={token.explainContent.byLPLink}>{token.explainContent.byLPText}</a>
+              <a href={token.explainContent.buyLPLink}>{token.explainContent.buyLPText}</a>
             </span>
           ) : null}
         </span>
