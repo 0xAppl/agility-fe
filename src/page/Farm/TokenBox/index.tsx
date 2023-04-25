@@ -290,7 +290,9 @@ export const TokenBox = ({ token }: { token: IToken }) => {
           </span>
           {token.explainContent?.buyLPLink ? (
             <span>
-              <a href={token.explainContent.buyLPLink}>{token.explainContent.buyLPText}</a>
+              <a href={token.explainContent.buyLPLink} target="_blank" rel="noreferrer">
+                {token.explainContent.buyLPText}
+              </a>
             </span>
           ) : null}
         </span>
