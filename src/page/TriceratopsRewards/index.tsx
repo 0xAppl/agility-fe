@@ -19,7 +19,7 @@ const TriceratopsRewards = () => {
   const [redeemModalOpen, setRedeemModalOpen] = React.useState(false);
   const [stakeModalOpen, setStakeModalOpen] = React.useState(false);
 
-  const countdown = useCountDown(1683520350000);
+  const countdown = useCountDown(1683622800000);
 
   const { days, hours, minutes, seconds } = secondsToDHMS(countdown / 1000);
 

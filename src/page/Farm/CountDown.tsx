@@ -1,10 +1,3 @@
-import React from 'react';
-
-import useCountDown from '../../hooks/useCountdown';
-import { secondsToDHMS } from '../../utils/time';
-import style from './index.module.less';
-import { havlingTime } from './tokenConfigs';
-
 const CountDown = () => {
   return null;
   // const countDown = useCountDown(havlingTime);
