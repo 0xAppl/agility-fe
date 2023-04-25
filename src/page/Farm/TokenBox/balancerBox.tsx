@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import React, { useState } from 'react';
 import { type BigNumber, ethers } from 'ethers';
-import { useAccount, useContractReads } from 'wagmi';
+import { type Address, useAccount, useContractReads } from 'wagmi';
 import { ClaimBtn, CommonButton, StakeBtn, WithdrawBtn } from '../../../components/Btns';
 import { useGlobalStatsContext } from '../../../contexts/globalStatsContext';
 import { BigZero, bigNumberToDecimal, commas, numberToPrecision } from '@utils/number';
 import { capitalize } from '@utils/string';
-import { type IToken } from '../tokenConfigs';
+import { getContracts, type IToken } from '../tokenConfigs';
 
 import style from './index.module.less';
 import StackingModal from '../../../components/Modals/StakeModal';
@@ -18,28 +18,7 @@ import { Tooltip } from 'antd';
 import DoubleTokenLogo from '@components/TripleTokenLogo';
 import { InfoIcon } from '../../../icons';
 
-export const TokenBox = ({ token }: { token: IToken }) => {
-  if (token.waiting) {
-    return (
-      <div
-        className={style.token_box}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <h1
-          style={{
-            fontSize: '4rem',
-          }}
-        >
-          ?
-        </h1>
-      </div>
-    );
-  }
-
+export const BalancerBox = ({ token }: { token: IToken }) => {
   const { disabled } = token;
   const isHomepage = useLocation().pathname === '/';
 
@@ -61,34 +40,35 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     AGI: { price: AGIPrice },
   };
 
-  const { data: publicData, isLoading: isLoadingPublic } = useContractReads({
+  const { data: publicData, isLoading: isLoadingPublic } = useContractReads<
+    any,
+    any,
+    any,
+    [BigNumber, BigNumber, [[Address, Address], [BigNumber, BigNumber], BigNumber]]
+  >({
     contracts: [
+      /**
+       * staked balance
+       */
       {
         ...token.stakingContract,
         functionName: token.stakeSettings?.totalSupplyFunctionName ?? 'totalSupply',
       },
-    ]
-      .concat(
-        token.tokenContract
-          ? [
-              {
-                ...token.tokenContract,
-                functionName: 'totalSupply',
-              },
-            ]
-          : [],
-      )
-      .concat(
-        token.isLP && token.tokenContract
-          ? [
-              {
-                address: token.tokenContract.address,
-                abi: token.tokenContract.abi,
-                functionName: 'getReserves',
-              },
-            ]
-          : [],
-      ),
+      /**
+       * LP token total supply
+       */
+      {
+        ...token.tokenContract,
+        functionName: 'totalSupply',
+      },
+      {
+        address: getContracts().balancerDeployer.address,
+        abi: getContracts().balancerDeployer.abi,
+        args: [token.balancerTokenId],
+        functionName: 'getPoolTokens',
+      },
+    ],
+
     enabled: !isHomepage && !disabled,
     watch: true,
   });
@@ -127,9 +107,10 @@ export const TokenBox = ({ token }: { token: IToken }) => {
 
   const totalStackedToken = (publicData?.[0] as BigNumber) ?? BigZero;
 
-  const [AGIReserve, ETHReserve] = (publicData?.[2] as BigNumber[]) ?? [BigZero, BigZero];
-
   const LPTotalSupply = (publicData?.[1] as BigNumber) ?? BigZero;
+
+  const [AGIReserve, ETHReserve] = (publicData?.[2] as BigNumber[]) ?? [BigZero, BigZero];
+  console.log(publicData?.[2]);
 
   const accountStakedBalance = (accountData?.[0] as unknown as BigNumber) ?? BigZero;
 
@@ -160,10 +141,6 @@ export const TokenBox = ({ token }: { token: IToken }) => {
   const APYAvailable = token.tokenContract
     ? AGIReserve && ETHReserve && ethPrice && AGIPrice && totalStackedToken && LPTotalSupply
     : AGIPrice && bigNumberToDecimal(totalStackedToken) && ethPrice;
-
-  // const unde = totalStackedToken.sub.undefi.sdd;
-
-  const LPValue = token.tokenContract ? TVL / bigNumberToDecimal(totalStackedToken) : 0;
 
   const APR = APYAvailable ? ((token.poolDailyEmission * AGIPrice) / TVL) * 365 * 100 : '???';
 

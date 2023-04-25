@@ -14,6 +14,8 @@ import {
   ankrETHAbi,
   stafiStakedETHAbi,
   lockedAGIWETHLPPoolAbi,
+  BalancerLPTokenAbi,
+  balancerAbi,
 } from './abis';
 import stETHLogo from '../../assets/stETH.svg';
 import rETHLogo from '../../assets/rETH.png';
@@ -129,6 +131,18 @@ export const getContracts = (network = '0x1') => {
       address: '0x87d4712b1291a5a3e30e2e31255e7b6f7cbabf81',
       abi: lockedAGIWETHLPPoolAbi,
     },
+    balancer20AGI80WETHPool: {
+      address: '0x2B34c261880533f897B245CB8B86cCa86bA83c8e',
+      abi: AGIWETHContractAbi,
+    },
+    balancerLPToken: {
+      address: '0x6987633f18Ca0B4a10831331FcC57211941B6bA0',
+      abi: BalancerLPTokenAbi,
+    },
+    balancerDeployer: {
+      address: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
+      abi: balancerAbi,
+    },
   } as const;
 };
 
@@ -176,93 +190,108 @@ export interface IToken {
     totalSupplyFunctionName?: string;
   };
   waiting?: true;
+  type?: 'balancer' | 'lockedLP';
+  balancerTokenId?: string;
 }
 
 export interface TokenConfigs {
-  tokenList: Array<IToken | { waiting: true }>;
+  tokenList: IToken[];
 }
 
 export const havlingTime = 1681045200001;
 
 export const moduleConfigs: TokenConfigs = {
   tokenList: [
-    {
-      icon: AGILogo,
-      name: 'AGI',
-      stakingContract: getContracts().AGIPool,
-      tokenContract: getContracts().AGI,
-      poolDailyEmission: 450000 / 3,
-    },
+    // {
+    //   icon: AGILogo,
+    //   name: 'AGI',
+    //   stakingContract: getContracts().AGIPool,
+    //   tokenContract: getContracts().AGI,
+    //   poolDailyEmission: 450000 / 3,
+    // },
+    // {
+    //   icon: ETHIcon,
+    //   name: 'ETH',
+    //   stakingContract: getContracts().ETHPool,
+    //   poolDailyEmission: 402_255 / 3,
+    // },
     {
       icon: ETHIcon,
-      name: 'ETH',
-      stakingContract: getContracts().ETHPool,
+      name: '20AGI-80WETH',
+      stakingContract: getContracts().balancer20AGI80WETHPool,
+      tokenContract: getContracts().balancerLPToken,
       poolDailyEmission: 402_255 / 3,
+      type: 'balancer',
+      balancerTokenId: '0x6987633f18ca0b4a10831331fcc57211941b6ba0000200000000000000000530',
     },
-    {
-      icon: binance,
-      name: 'Binance ETH',
-      stakingContract: getContracts().ETHPool,
-      poolDailyEmission: 402_255 / 3,
-      disabled: true,
-    },
-    {
-      icon: [AGILogo, wETHLogo],
-      name: 'AGI-WETH LP',
-      stakingContract: getContracts().AGIWETHContract,
-      tokenContract: getContracts().AGIWETHLP,
-      poolDailyEmission: 1177545.6 / 3,
-      isLP: true,
-      explainContent: {
-        byLPText: 'Mint AGI-WETH LP',
-        byLPLink: 'https://app.uniswap.org/#/swap?outputCurrency=0x5f18ea482ad5cc6bc65803817c99f477043dce85',
-      },
-    },
-    {
-      icon: stETHLogo,
-      name: 'stETH',
-      stakingContract: getContracts().stETHPool,
-      tokenContract: getContracts().stETH,
-      poolDailyEmission: 1039500 / 3,
-    },
-    {
-      icon: rETHLogo,
-      name: 'rETH',
-      explainContent: {
-        explainText: 'Rocket Pool ETH',
-      },
-      stakingContract: getContracts().rEthPool,
-      tokenContract: getContracts().rETH,
-      poolDailyEmission: 6615 / 3,
-    },
-    {
-      icon: fraxETHLogo,
-      name: 'frxETH',
-      stakingContract: getContracts().fraxETHPool,
-      tokenContract: getContracts().fraxETH,
-      poolDailyEmission: 12600 / 3,
-    },
-    {
-      icon: ankrETHLogo,
-      name: 'ankrETH',
-      stakingContract: getContracts().ankrEthPool,
-      tokenContract: getContracts().ankrETH,
-      poolDailyEmission: 15750 / 3,
-    },
-    {
-      icon: stafiStakedETHLogo,
-      name: 'rETH',
-      stakingContract: getContracts().stafiRETHPool,
-      tokenContract: getContracts()['stafi-staked-eth'],
-      poolDailyEmission: (15750 * 2) / 3,
-      explainContent: {
-        explainText: 'Stafi staked ETH',
-      },
-    },
-
-    {
-      waiting: true,
-    },
+    // {
+    //   icon: binance,
+    //   name: 'Binance ETH',
+    //   stakingContract: getContracts().ETHPool,
+    //   poolDailyEmission: 402_255 / 3,
+    //   disabled: true,
+    // },
+    // {
+    //   icon: [AGILogo, wETHLogo],
+    //   name: 'AGI-WETH LP',
+    //   stakingContract: getContracts().AGIWETHContract,
+    //   tokenContract: getContracts().AGIWETHLP,
+    //   poolDailyEmission: 1177545.6 / 3,
+    //   isLP: true,
+    //   explainContent: {
+    //     byLPText: 'Mint AGI-WETH LP',
+    //     byLPLink: 'https://app.uniswap.org/#/swap?outputCurrency=0x5f18ea482ad5cc6bc65803817c99f477043dce85',
+    //   },
+    // },
+    // {
+    //   icon: stETHLogo,
+    //   name: 'stETH',
+    //   stakingContract: getContracts().stETHPool,
+    //   tokenContract: getContracts().stETH,
+    //   poolDailyEmission: 1039500 / 3,
+    // },
+    // {
+    //   icon: rETHLogo,
+    //   name: 'rETH',
+    //   explainContent: {
+    //     explainText: 'Rocket Pool ETH',
+    //   },
+    //   stakingContract: getContracts().rEthPool,
+    //   tokenContract: getContracts().rETH,
+    //   poolDailyEmission: 6615 / 3,
+    // },
+    // {
+    //   icon: fraxETHLogo,
+    //   name: 'frxETH',
+    //   stakingContract: getContracts().fraxETHPool,
+    //   tokenContract: getContracts().fraxETH,
+    //   poolDailyEmission: 12600 / 3,
+    // },
+    // {
+    //   icon: ankrETHLogo,
+    //   name: 'ankrETH',
+    //   stakingContract: getContracts().ankrEthPool,
+    //   tokenContract: getContracts().ankrETH,
+    //   poolDailyEmission: 15750 / 3,
+    // },
+    // {
+    //   icon: stafiStakedETHLogo,
+    //   name: 'rETH',
+    //   stakingContract: getContracts().stafiRETHPool,
+    //   tokenContract: getContracts()['stafi-staked-eth'],
+    //   poolDailyEmission: (15750 * 2) / 3,
+    //   explainContent: {
+    //     explainText: 'Stafi staked ETH',
+    //   },
+    // },
+    // {
+    //   icon: stafiStakedETHLogo,
+    //   name: 'rETH',
+    //   stakingContract: getContracts().stafiRETHPool,
+    //   tokenContract: getContracts()['stafi-staked-eth'],
+    //   poolDailyEmission: (15750 * 2) / 3,
+    //   waiting: true,
+    // },
   ],
 };
 

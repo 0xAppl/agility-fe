@@ -5,7 +5,7 @@ import { BigZero } from '../utils/number';
 export const GlobalStatsContext = React.createContext<{
   TVL: number;
   AGIPrice: number;
-  AGITotalSupply: number;
+  AGITotalSupply: BigNumber;
   ethPrice: number;
   stETH: { price: number };
   rETH: { price: number };
@@ -22,7 +22,7 @@ export const GlobalStatsContext = React.createContext<{
   fraxETH: { price: 0 },
   TVL: 0,
   AGIPrice: 0,
-  AGITotalSupply: 0,
+  AGITotalSupply: BigZero,
   userAGIBalance: BigZero,
   userEsAGIBalance: BigZero,
   userAGIRedeemingCount: BigZero,

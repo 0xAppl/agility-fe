@@ -164,11 +164,15 @@ const Layout = ({ children }: any) => {
     'getReserves',
   );
 
-  const { data: AGITotalSupply } = useReadContractNumber({
-    address: getContracts().AGI.address,
-    abi: getContracts().AGI.abi,
-    functionName: 'totalSupply',
-    enabled: true,
+  const { data: publicData } = useContractReads({
+    contracts: [
+      {
+        address: getContracts().AGI.address,
+        abi: getContracts().AGI.abi,
+        functionName: 'totalSupply',
+      },
+    ],
+    watch: true,
   });
 
   return (
@@ -189,7 +193,7 @@ const Layout = ({ children }: any) => {
         },
         TVL,
         AGIPrice: tokenPrice,
-        AGITotalSupply,
+        AGITotalSupply: (publicData?.[0] as BigNumber) ?? BigZero,
         userAGIBalance: AGIBalance,
         userEsAGIBalance: esAGIBalance,
         userAGIRedeemingCount: AGIRedeemingCount,
