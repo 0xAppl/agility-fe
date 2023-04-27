@@ -88,6 +88,25 @@ const StackingModal: React.FC<{
     enabled: modalMode === 'withdraw' && isModalOpen,
   });
 
+  const { data: allowanceData } = useContractRead<any, any, BigNumber>(
+    stakingTokenContract
+      ? {
+          address: stakingTokenContract.address,
+          abi: stakingTokenContract.abi,
+          functionName: 'allowance',
+          args: [address, poolContract.address],
+          watch: true,
+          enabled: isModalOpen,
+        }
+      : {
+          enabled: false,
+        },
+  );
+
+  // console.log(allowanceData);
+
+  const hasEnoughAllance = (allowanceData ?? BigZero)?.gte(stakingValue);
+
   useEffect(() => {
     if (!isModalOpen || address === undefined) return;
     // read user's wallet balance
@@ -216,7 +235,7 @@ const StackingModal: React.FC<{
           }}
         >
           <StakeBtn
-            disabled={debouncedStakingValue.isZero() || isLoading}
+            disabled={debouncedStakingValue.isZero() || isLoading || !hasEnoughAllance}
             styles={{
               margin: 'auto',
               marginTop: '20px',
