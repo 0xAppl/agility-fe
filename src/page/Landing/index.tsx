@@ -6,6 +6,10 @@ import twitterSvg from '../../assets/twitter.svg';
 import inviteSvg from '../../assets/invite.svg';
 import { DocsButton, LaunchAppButton } from '../../components/Btns';
 import styles from './index.module.less';
+import partner1logo from '../../assets/partners/1.png';
+import partner2logo from '../../assets/partners/2.png';
+import partner3logo from '../../assets/partners/3.png';
+import partner4logo from '../../assets/partners/4.png';
 const { twitterHref, discordHref } = globalConfig;
 
 const LandingPage = () => {
@@ -36,6 +40,30 @@ const LandingPage = () => {
         </div>
         <div>
           <LaunchAppButton />
+        </div>
+        <div
+          className="title"
+          style={{
+            marginTop: '30px',
+            marginBottom: '12px',
+            fontSize: 24,
+          }}
+        >
+          Partnership
+        </div>
+        <div className="partners">
+          <a href={'https://twitter.com/StaFi_Protocol'} target="_blank" rel="noreferrer">
+            <img src={partner1logo} alt="" />
+          </a>
+          <a href={'https://twitter.com/ankrstaking'} target="_blank" rel="noreferrer">
+            <img src={partner2logo} alt="" />
+          </a>
+          <a href={'https://twitter.com/okx'} target="_blank" rel="noreferrer">
+            <img src={partner3logo} alt="" />
+          </a>
+          <a href={'https://twitter.com/Balancer'} target="_blank" rel="noreferrer">
+            <img src={partner4logo} alt="" />
+          </a>
         </div>
       </div>
       <div className={styles.footerLinks}>
