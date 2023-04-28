@@ -239,6 +239,13 @@ export const moduleConfigs: TokenConfigs = {
       isLP: true,
     },
     {
+      icon: stETHLogo,
+      name: 'stETH',
+      stakingContract: getContracts().stETHPool,
+      tokenContract: getContracts().stETH,
+      poolDailyEmission: 900000 / 3,
+    },
+    {
       icon: ETHIcon,
       name: 'ETH',
       stakingContract: getContracts().ETHPool,
@@ -252,13 +259,6 @@ export const moduleConfigs: TokenConfigs = {
       disabled: true,
     },
 
-    {
-      icon: stETHLogo,
-      name: 'stETH',
-      stakingContract: getContracts().stETHPool,
-      tokenContract: getContracts().stETH,
-      poolDailyEmission: 900000 / 3,
-    },
     {
       icon: rETHLogo,
       name: 'rETH',
