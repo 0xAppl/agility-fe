@@ -1,11 +1,26 @@
 import React from 'react';
-import style from './index.module.less';
-const Shimmer = ({ children }: { children: React.ReactNode }) => {
+import styles from './index.module.less';
+const Shimmer = ({
+  children,
+  isLoading,
+  style,
+}: {
+  children: React.ReactNode;
+  isLoading: boolean;
+  style?: React.CSSProperties;
+}) => {
+  if (!isLoading) return <>{children}</>;
   return (
-    <div className={style.shimmer_container}>
-      <div className={style.shimmer}></div>
-      {children}
-    </div>
+    <span className={styles.shimmer_container} style={style}>
+      <span className={styles.shimmer}></span>
+      <span
+        style={{
+          opacity: 0,
+        }}
+      >
+        {children}
+      </span>
+    </span>
   );
 };
 

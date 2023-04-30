@@ -6,9 +6,9 @@ import { ClaimBtn, CommonButton, StakeBtn, WithdrawBtn } from '../../../componen
 import { useGlobalStatsContext } from '../../../contexts/globalStatsContext';
 import { BigZero, bigNumberToDecimal, commas, numberToPrecision } from '@utils/number';
 import { capitalize } from '@utils/string';
-import { getContracts, type IToken } from '../tokenConfigs';
+import { getContracts, type FarmingBoxConfig } from '../tokenConfigs';
 
-import style from './index.module.less';
+import style from '../index.module.less';
 import StackingModal from '../../../components/Modals/StakeModal';
 import { useLocation } from 'react-router-dom';
 import useWriteContract from '@hooks/useWriteContract';
@@ -18,7 +18,7 @@ import { Tooltip } from 'antd';
 import DoubleTokenLogo from '@components/TripleTokenLogo';
 import { InfoIcon } from '../../../icons';
 
-export const BalancerBox = ({ token }: { token: IToken }) => {
+export const BalancerBox = ({ token }: { token: FarmingBoxConfig }) => {
   const { disabled } = token;
   const isHomepage = useLocation().pathname === '/';
 

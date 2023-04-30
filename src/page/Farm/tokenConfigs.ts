@@ -152,7 +152,7 @@ export interface IContract {
   abi: any[];
 }
 
-export interface IToken {
+export interface FarmingBoxConfig {
   icon?: string | [string, string];
   name: string;
   /**
@@ -183,25 +183,18 @@ export interface IToken {
     buyLPText?: string;
     buyLPLink?: string;
   };
-  stakeSettings?: {
-    isLocked?: boolean;
-    minStakeTime?: number;
-    maxStakeTime?: number;
-    stakeFunctionName?: string;
-    totalSupplyFunctionName?: string;
-  };
   waiting?: true;
   type?: 'balancer' | 'lockedLP';
   balancerTokenId?: string;
 }
 
-export interface TokenConfigs {
-  tokenList: IToken[];
-}
+// export interface TokenConfigs {
+//   tokenList: IToken[];
+// }
 
 export const havlingTime = 1681045200001;
 
-export const moduleConfigs: TokenConfigs = {
+export const moduleConfigs: { tokenList: FarmingBoxConfig[] } = {
   tokenList: [
     {
       icon: AGILogo,
@@ -304,19 +297,20 @@ export const moduleConfigs: TokenConfigs = {
   ],
 };
 
-export const lockedModuleConfigs = [
+export interface LockedFarmingConfig {
+  icon: string | [string, string];
+  name: string;
+  stakingContract: IContract;
+  tokenContract: IContract;
+  poolDailyEmission: number;
+}
+
+export const lockedModuleConfigs: LockedFarmingConfig[] = [
   {
     icon: stafiStakedETHLogo,
-    name: 'AGI-WETH LP Boost 🔥 🔥 🔥',
+    name: 'AGI-WETH LP',
     stakingContract: getContracts().lockedAGIWETHLPPool,
     tokenContract: { ...getContracts().AGI, address: '0xed39eb8b3c81381988baa71a2eafba2282edabc4' },
     poolDailyEmission: (15750 * 2) / 3,
-    stakeSettings: {
-      isLocked: true,
-      minStakeTime: 1 * 60,
-      maxStakeTime: 30 * 60,
-      stakeFunctionName: 'stakeLocked',
-      totalSupplyFunctionName: 'totalLiquidityLocked',
-    },
   },
 ];

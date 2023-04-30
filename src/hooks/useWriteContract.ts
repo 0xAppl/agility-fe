@@ -13,10 +13,12 @@ interface IUseWriteContract {
   enabled?: boolean;
   successCallback?: (data: any) => void;
   supressWarning?: boolean;
+  overrides?: any;
 }
 
 const useWriteContract = (config: IUseWriteContract) => {
-  const { address, abi, functionName, args, successMessage, enabled, successCallback, supressWarning } = config;
+  const { address, abi, functionName, args, successMessage, enabled, successCallback, supressWarning, overrides } =
+    config;
   const { config: writeConfig, error: prepareContractError } = usePrepareContractWrite({
     address,
     abi,
@@ -24,6 +26,7 @@ const useWriteContract = (config: IUseWriteContract) => {
     args,
     enabled,
     scopeKey: address + functionName,
+    overrides,
   });
 
   const {
@@ -53,7 +56,8 @@ const useWriteContract = (config: IUseWriteContract) => {
       toast.error(
         `prepare contract ${String(address)}, method ${functionName} ${
           args ? 'args: ' + JSON.stringify(args) : ''
-        }, error:${prepareContractError.message}`,
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        }, error:${(prepareContractError as any).reason ?? prepareContractError.message}`,
       );
     }
     if (contractWriteError) {

@@ -1,2 +1,3 @@
-questions:
-src/page/Farm/TokenBox/StackingModal.tsx:27,25 balance is not right
+- withdraw locked error(gas overrides: 1000000)
+- how to calculate LP value
+- UI: Lock time display

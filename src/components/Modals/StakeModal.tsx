@@ -19,7 +19,7 @@ import CustomSpin from '../spin';
 import useDebounce from '../../hooks/useDebounce';
 import { bigNumberToDecimal, BigZero, expandTo18Decimals } from '../../utils/number';
 // import { useContractContext } from '../../../contexts/contractContext';
-import { type IToken, type IContract } from '../../page/Farm/tokenConfigs';
+import { type FarmingBoxConfig, type IContract } from '../../page/Farm/tokenConfigs';
 import style from './index.module.less';
 
 import { toast, ToastContainer } from 'react-toastify';
@@ -32,28 +32,37 @@ const StackingModal: React.FC<{
   stakingTokenContract?: IContract;
   title?: React.ReactNode;
   modalMode: 'stake' | 'withdraw' | string;
-  stakeSettings?: IToken['stakeSettings'];
-}> = ({ isModalOpen, setIsModalOpen, poolContract, title, modalMode, stakingTokenContract, stakeSettings }) => {
+  extraParams?: any[];
+  stakeFuncName?: string;
+  multiplier?: BigNumber;
+  // stakeSettings?: IToken['stakeSettings'];
+}> = ({
+  isModalOpen,
+  setIsModalOpen,
+  poolContract,
+  title,
+  modalMode,
+  stakingTokenContract,
+  extraParams = [],
+  stakeFuncName,
+  multiplier,
+}) => {
   //   const contracts = useContractContext();
   const [loading, setLoading] = React.useState(false);
   const [stakingValue, setStakingValue] = useState<BigNumber>(BigZero);
   const [maxStakingValue, setMaxStakingValue] = useState<BigNumber>(BigZero);
 
-  const [stakingLockTime, setStakingLockTime] = useState<number>(stakeSettings?.minStakeTime ?? 0);
-
   const debouncedStakingValue = useDebounce(stakingValue);
 
-  const debouncedStakingLockTime = useDebounce(stakingLockTime);
+  // const debouncedStakingLockTime = useDebounce(stakingLockTime);
 
   const { address } = useAccount();
 
   const { config, error: prepareError } = usePrepareContractWrite({
     address: poolContract.address,
     abi: poolContract.abi,
-    functionName: stakeSettings?.stakeFunctionName ?? modalMode,
-    args: [debouncedStakingValue.toString()].concat(
-      stakeSettings?.isLocked ? [debouncedStakingLockTime.toString()] : [],
-    ),
+    functionName: stakeFuncName ?? modalMode,
+    args: [debouncedStakingValue.toString()].concat(extraParams),
     enabled: !debouncedStakingValue.isZero() && isModalOpen,
     /**
      * for staking ETH, we need to pass the value to the contract
@@ -157,7 +166,11 @@ const StackingModal: React.FC<{
           </>
         ) : (
           <>
-            <h4>Balance: {bigNumberToDecimal(maxStakingValue, 6)}</h4>
+            <h4>
+              Balance: {bigNumberToDecimal(maxStakingValue, 6)}
+              {multiplier !== undefined && <span>,&nbsp;Multiplier: {bigNumberToDecimal(multiplier, 2)}</span>}
+            </h4>
+
             <Slider
               value={bigNumberToDecimal(stakingValue)}
               max={bigNumberToDecimal(maxStakingValue)}
@@ -210,23 +223,6 @@ const StackingModal: React.FC<{
                 Max
               </Button>
             </div>
-            {stakeSettings?.minStakeTime ? (
-              <div>
-                <p>
-                  <b>Select Unlock Time: {stakingLockTime}, multipiler: </b>
-                </p>
-                <Slider
-                  value={stakingLockTime}
-                  min={stakeSettings.minStakeTime}
-                  max={stakeSettings.maxStakeTime}
-                  onChange={value => {
-                    setStakingLockTime(value);
-                  }}
-                  step={1}
-                  disabled={stakingValue.isZero()}
-                />
-              </div>
-            ) : null}
           </>
         )}
         <div
@@ -235,7 +231,7 @@ const StackingModal: React.FC<{
           }}
         >
           <StakeBtn
-            disabled={debouncedStakingValue.isZero() || isLoading || !hasEnoughAllance}
+            disabled={debouncedStakingValue.isZero() || isLoading || !hasEnoughAllance || !write}
             styles={{
               margin: 'auto',
               marginTop: '20px',

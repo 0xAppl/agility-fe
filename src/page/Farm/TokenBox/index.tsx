@@ -6,9 +6,9 @@ import { ClaimBtn, CommonButton, StakeBtn, WithdrawBtn } from '../../../componen
 import { useGlobalStatsContext } from '../../../contexts/globalStatsContext';
 import { BigZero, bigNumberToDecimal, commas, numberToPrecision } from '@utils/number';
 import { capitalize } from '@utils/string';
-import { type IToken } from '../tokenConfigs';
+import { type FarmingBoxConfig } from '../tokenConfigs';
 
-import style from './index.module.less';
+import style from '../index.module.less';
 import StackingModal from '../../../components/Modals/StakeModal';
 import { useLocation } from 'react-router-dom';
 import useWriteContract from '@hooks/useWriteContract';
@@ -18,7 +18,7 @@ import { Tooltip } from 'antd';
 import DoubleTokenLogo from '@components/TripleTokenLogo';
 import { InfoIcon } from '../../../icons';
 
-export const TokenBox = ({ token }: { token: IToken }) => {
+export const TokenBox = ({ token }: { token: FarmingBoxConfig }) => {
   if (token.waiting) {
     return (
       <div
@@ -65,7 +65,7 @@ export const TokenBox = ({ token }: { token: IToken }) => {
     contracts: [
       {
         ...token.stakingContract,
-        functionName: token.stakeSettings?.totalSupplyFunctionName ?? 'totalSupply',
+        functionName: 'totalSupply',
       },
     ]
       .concat(
@@ -369,7 +369,6 @@ export const TokenBox = ({ token }: { token: IToken }) => {
         stakingTokenContract={token.tokenContract}
         title={capitalize(modalMode)}
         modalMode={modalMode}
-        stakeSettings={token.stakeSettings}
       />
     </div>
   );

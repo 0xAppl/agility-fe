@@ -1,0 +1,19 @@
+.row_wrapper {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  margin-bottom: 8px;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 8px 12px;
+  border: 2px solid #000;
+  border-radius: 8px;
+  background-color: #fff;
+  column-gap: 8px;
+  &:first-of-type {
+    font-weight: 600;
+    margin-top: 24px;
+  }
+  > span:last-child {
+    justify-self: flex-end;
+  }
+}
