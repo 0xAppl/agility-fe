@@ -90,4 +90,4 @@ export const MerkleDistributorAbi = [
   { inputs: [], name: 'withdraw', outputs: [], stateMutability: 'nonpayable', type: 'function' },
 ] as const;
 
-export const MerkleDistributorAddress = '0x59637a3db618aa3a8f561847ee3fe291621c69ef';
+export const MerkleDistributorAddress = '0xceae33379009f8894b014aef7630599da847181a';
