@@ -57,6 +57,8 @@ const Airdrop = () => {
     enabled: canClaim,
   });
 
+  console.log('claimConfig', claimConfig);
+
   return (
     <FarmSectionWrapper extraClassName={style.bg_white}>
       <div className="title">Triceratops Rewards</div>
