@@ -13,15 +13,12 @@ import { Tooltip } from 'antd';
 
 import useCountDown from '@hooks/useCountdown';
 import { secondsToDHMS } from '@utils/time';
+import Airdrop from './Airdrop';
 
 const TriceratopsRewards = () => {
   const { userAGIBalance, userEsAGIBalance } = useGlobalStatsContext();
   const [redeemModalOpen, setRedeemModalOpen] = React.useState(false);
   const [stakeModalOpen, setStakeModalOpen] = React.useState(false);
-
-  const countdown = useCountDown(1683622800000);
-
-  const { days, hours, minutes, seconds } = secondsToDHMS(countdown / 1000);
 
   return (
     <>
@@ -51,57 +48,7 @@ const TriceratopsRewards = () => {
             ></RedeemBtn>
           </FarmSectionWrapper>
         </FarmSectionWrapper>
-        <FarmSectionWrapper extraClassName={style.bg_white}>
-          <div className="title">Triceratops Rewards</div>
-          <FarmSectionWrapper extraClassName={classNames(style.bg_purple, style.convert_inner)}>
-            <h4>
-              <span>
-                Rewards Period Ends {days}d: {hours}h: {minutes}m: {seconds}s
-              </span>
-              &nbsp;
-              <span>esAGI Potential Hold APR: 60%</span>
-            </h4>
-          </FarmSectionWrapper>
-          <FarmSectionWrapper extraClassName={classNames(style.rewards_item_wrapper, style.bg_yellow)}>
-            <FarmSectionWrapper extraClassName={style.rewards_item}>
-              <span>#</span>
-              <span>Rewards</span>
-              <span>Rewards Amount</span>
-              <span>Eligible Asset</span>
-              <span>My Rewards</span>
-              <span></span>
-            </FarmSectionWrapper>
-            <Tooltip title={'Rewards for esAGI Holders'} placement="bottom">
-              <div>
-                <FarmSectionWrapper extraClassName={classNames(style.rewards_item, style.bg_white)}>
-                  <span>1</span>
-                  <span>esAGI</span>
-                  <span>150,000</span>
-                  <span>esAGI</span>
-                  <span>???</span>
-                  <span>
-                    <ClaimBtn disabled>Claim</ClaimBtn>
-                  </span>
-                </FarmSectionWrapper>
-              </div>
-            </Tooltip>
-
-            <Tooltip title={'Rewards for Staking rETH(StaFi) on Farming'} placement="bottom">
-              <div>
-                <FarmSectionWrapper extraClassName={classNames(style.rewards_item, style.bg_white)}>
-                  <span>2</span>
-                  <span>FIS</span>
-                  <span>5,500</span>
-                  <span>rETH-StaFi</span>
-                  <span>???</span>
-                  <span>
-                    <ClaimBtn disabled>Claim</ClaimBtn>
-                  </span>
-                </FarmSectionWrapper>
-              </div>
-            </Tooltip>
-          </FarmSectionWrapper>
-        </FarmSectionWrapper>
+        <Airdrop />
         <VestBox
           disableRedeem
           redeemInfoFilter={redeemInfo => {

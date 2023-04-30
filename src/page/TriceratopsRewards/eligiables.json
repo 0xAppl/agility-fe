@@ -1,0 +1,16 @@
+{
+  "merkleRoot": "0x75e028ac0221a151d6dcb89bdac9a9fdbd7a8875be8fb9d4f6093740ee7435e4",
+  "tokenTotal": "0x05dc021ca030008380",
+  "claims": {
+    "0x045652456B35541B7e68E2D823432E4004711650": {
+      "index": 0,
+      "amount": "0x05D0447BF556F20000",
+      "proof": ["0x3548d97712ba99c49f85774e9c302e8b86b0dba35596e88f06f5635ae4416ec8"]
+    },
+    "0xEb57E42c3027d9717F3b34a90B0145Abe4FD2A32": {
+      "index": 1,
+      "amount": "0x0BBDA0AAD90E8380",
+      "proof": ["0x8a60b4d018021c76ca9f1ffb550c580e4da8f358942bff556c56f609b54216bb"]
+    }
+  }
+}
