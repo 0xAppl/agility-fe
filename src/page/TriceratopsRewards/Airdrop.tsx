@@ -46,8 +46,6 @@ const Airdrop = () => {
     enabled: claimConfig != null && isConnected,
   });
 
-  console.log(claimConfig);
-
   const canClaim = typeof isClaimed === 'boolean' && !isClaimed && claimConfig != null && isConnected;
 
   const { write, isLoading } = useWriteContract({
