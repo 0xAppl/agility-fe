@@ -7,7 +7,7 @@ import { useAccount, useContractRead, useContractReads } from 'wagmi';
 import { ClaimBtn, CommonButton, StakeBtn, WithdrawBtn } from '../../../components/Btns';
 import { useGlobalStatsContext } from '../../../contexts/globalStatsContext';
 import { BigZero, bigNumberToDecimal } from '@utils/number';
-import { type LockedFarmingConfig } from '../tokenConfigs';
+import { getContracts, type LockedFarmingConfig } from '../tokenConfigs';
 
 import style from '../index.module.less';
 import { useLocation } from 'react-router-dom';
@@ -25,6 +25,10 @@ import WithdrawLockedModal from './WithdrawLockedModal';
 
 export const LockedTokenBox = ({ token }: { token: LockedFarmingConfig }) => {
   const isHomepage = useLocation().pathname === '/';
+
+  const {
+    AGIWETHLP: { price, totalSupply },
+  } = useGlobalStatsContext();
 
   const [isStakeModalOpen, setIsStakeModalOpen] = useState(false);
 
@@ -153,8 +157,6 @@ export const LockedTokenBox = ({ token }: { token: LockedFarmingConfig }) => {
 
   const accountCanStake = accountAllowance.gt(accountTokenBalance);
 
-  useReportTVL(0, token.name);
-
   const { write: allowSpending, isLoading: isLoadingApproving } = useWriteContract({
     ...token.tokenContract,
     functionName: 'approve',
@@ -172,11 +174,13 @@ export const LockedTokenBox = ({ token }: { token: LockedFarmingConfig }) => {
     enabled: isConnected && !isHomepage && accountTotalEarned.gt(BigZero),
   });
 
-  const LPPrice = BigNumber.from(3);
+  const LPPrice = price;
 
-  const TVL = contractTotalStacked.mul(LPPrice);
+  const TVL = bigNumberToDecimal(contractTotalStacked) * LPPrice;
 
-  const APR = ((AGIPrice * token.poolDailyEmission) / bigNumberToDecimal(TVL)) * 365;
+  useReportTVL(TVL, token.name);
+
+  const APR = ((AGIPrice * token.poolDailyEmission) / TVL) * 365;
 
   return (
     <div className={style.token_box}>
@@ -224,7 +228,7 @@ export const LockedTokenBox = ({ token }: { token: LockedFarmingConfig }) => {
         </div>
         <div className={style.tvl}>
           <div className={style.text}>TVL</div>
-          <div className={style.number}>${bigNumberToDecimal(LPPrice.mul(contractTotalStacked))}</div>
+          <div className={style.number}>${(LPPrice * bigNumberToDecimal(contractTotalStacked)).toFixed(0)}</div>
         </div>
       </div>
       {/* stake */}

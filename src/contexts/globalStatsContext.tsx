@@ -14,6 +14,10 @@ export const GlobalStatsContext = React.createContext<{
   userAGIBalance: BigNumber;
   userEsAGIBalance: BigNumber;
   userAGIRedeemingCount: BigNumber;
+  AGIWETHLP: {
+    totalSupply: BigNumber;
+    price: number;
+  };
 }>({
   ethPrice: 0,
   stETH: { price: 0 },
@@ -26,6 +30,10 @@ export const GlobalStatsContext = React.createContext<{
   userAGIBalance: BigZero,
   userEsAGIBalance: BigZero,
   userAGIRedeemingCount: BigZero,
+  AGIWETHLP: {
+    totalSupply: BigZero,
+    price: 0,
+  },
 });
 
 export const useGlobalStatsContext = () => useContext(GlobalStatsContext);

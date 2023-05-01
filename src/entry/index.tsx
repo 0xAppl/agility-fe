@@ -33,7 +33,7 @@ import axios from 'axios';
 import useTVL from '../hooks/useTVL';
 import { formatEther, parseEther } from 'ethers/lib/utils.js';
 import { getContracts } from '../page/Farm/tokenConfigs';
-import { type BigNumber } from 'ethers';
+import { BigNumber } from 'ethers';
 import { BigZero, bigNumberToDecimal } from '../utils/number';
 import { ToastContainer } from 'react-toastify';
 // import useGetTokenPriceFromLP from '@hooks/useGetTokenPriceFromLP';
@@ -157,28 +157,42 @@ const Layout = ({ children }: any) => {
     AGIRedeemingCount = (userBalanceInfo[2] as any) ?? BigZero;
   }
 
-  const tokenPrice = useGetTokenPriceFromLP(
-    data?.data.ethereum.usd || 0,
-    getContracts().AGIETHTradingPool.address,
-    getContracts().AGIETHTradingPool.abi,
-    'getReserves',
-  );
-
-  const { data: publicData } = useContractReads({
+  const { data: publicData } = useContractReads<any, any, any, [BigNumber, [BigNumber, BigNumber, number], BigNumber]>({
     contracts: [
       {
         address: getContracts().AGI.address,
         abi: getContracts().AGI.abi,
         functionName: 'totalSupply',
+        chainId: 1,
+      },
+      {
+        ...getContracts().AGIWETHLP,
+        functionName: 'getReserves',
+        chainId: 1,
+      },
+      {
+        ...getContracts().AGIWETHLP,
+        functionName: 'totalSupply',
+        chainId: 1,
       },
     ],
     watch: true,
   });
 
+  const ethPrice = data?.data.ethereum.usd || 0;
+
+  const tokenPrice =
+    (bigNumberToDecimal(publicData?.[1]?.[1] ?? BigZero) / bigNumberToDecimal(publicData?.[1]?.[0] ?? BigZero)) *
+    ethPrice;
+
+  const LPPrice =
+    (bigNumberToDecimal(publicData?.[1]?.[1] ?? BigZero) * ethPrice * 2) /
+    bigNumberToDecimal(publicData?.[2] ?? BigNumber.from(1));
+
   return (
     <GlobalStatsContext.Provider
       value={{
-        ethPrice: data?.data.ethereum.usd || 0,
+        ethPrice,
         stETH: {
           price: data?.data['staked-ether']?.usd || 0,
         },
@@ -197,6 +211,10 @@ const Layout = ({ children }: any) => {
         userAGIBalance: AGIBalance,
         userEsAGIBalance: esAGIBalance,
         userAGIRedeemingCount: AGIRedeemingCount,
+        AGIWETHLP: {
+          totalSupply: (publicData?.[2] as BigNumber) ?? BigZero,
+          price: LPPrice,
+        },
       }}
     >
       <div className={style.container_body}>
