@@ -40,14 +40,14 @@ export const Farm = () => {
         <div className={style.title}>Farm</div>
         <CountDown />
         <div className={style.box_container}>
-          {/* {tokenList.map((token, idx) => {
+          {lockedModuleConfigs.map((token, idx) => {
+            return <LockedTokenBox token={token} key={idx} />;
+          })}
+          {tokenList.map((token, idx) => {
             if (token.type === 'balancer') {
               return <BalancerBox token={token} key={idx} />;
             }
             return <TokenBox token={token} key={idx} />;
-          })} */}
-          {lockedModuleConfigs.map((token, idx) => {
-            return <LockedTokenBox token={token} key={idx} />;
           })}
         </div>
       </div>
