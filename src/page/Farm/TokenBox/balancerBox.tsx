@@ -52,7 +52,7 @@ export const BalancerBox = ({ token }: { token: FarmingBoxConfig }) => {
        */
       {
         ...token.stakingContract,
-        functionName: token.stakeSettings?.totalSupplyFunctionName ?? 'totalSupply',
+        functionName: 'totalSupply',
       },
       /**
        * LP token total supply
@@ -344,7 +344,6 @@ export const BalancerBox = ({ token }: { token: FarmingBoxConfig }) => {
         stakingTokenContract={token.tokenContract}
         title={capitalize(modalMode)}
         modalMode={modalMode}
-        stakeSettings={token.stakeSettings}
       />
     </div>
   );

@@ -35,7 +35,6 @@ const StackingModal: React.FC<{
   extraParams?: any[];
   stakeFuncName?: string;
   multiplier?: BigNumber;
-  // stakeSettings?: IToken['stakeSettings'];
 }> = ({
   isModalOpen,
   setIsModalOpen,
