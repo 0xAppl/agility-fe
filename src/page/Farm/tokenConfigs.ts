@@ -201,14 +201,14 @@ export const moduleConfigs: { tokenList: FarmingBoxConfig[] } = {
       name: 'AGI',
       stakingContract: getContracts().AGIPool,
       tokenContract: getContracts().AGI,
-      poolDailyEmission: 270000 / 3,
+      poolDailyEmission: 45000 / 3,
     },
     {
       icon: [AGILogo, wETHLogo],
       name: 'AGI-WETH LP',
       stakingContract: getContracts().AGIWETHContract,
       tokenContract: getContracts().AGIWETHLP,
-      poolDailyEmission: 900000 / 3,
+      poolDailyEmission: 150000 / 3,
       isLP: true,
       explainContent: {
         buyLPText: 'Mint AGI-WETH LP',
@@ -221,7 +221,7 @@ export const moduleConfigs: { tokenList: FarmingBoxConfig[] } = {
       name: '20AGI-80WETH BPT',
       stakingContract: getContracts().balancer20AGI80WETHPool,
       tokenContract: getContracts().balancerLPToken,
-      poolDailyEmission: 90000 / 3,
+      poolDailyEmission: 15600 / 3,
       type: 'balancer',
       balancerTokenId: '0x6987633f18ca0b4a10831331fcc57211941b6ba0000200000000000000000530',
       explainContent: {
@@ -236,7 +236,7 @@ export const moduleConfigs: { tokenList: FarmingBoxConfig[] } = {
       name: 'stETH',
       stakingContract: getContracts().stETHPool,
       tokenContract: getContracts().stETH,
-      poolDailyEmission: 900000 / 3,
+      poolDailyEmission: 600000 / 3,
     },
     {
       icon: ETHIcon,
