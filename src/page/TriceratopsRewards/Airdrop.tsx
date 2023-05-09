@@ -16,9 +16,9 @@ import { BigZero } from '@utils/number';
 import { BigNumber } from 'ethers';
 
 const CountDown = () => {
-  const countdown = useCountDown(1683622800000);
+  // const countdown = useCountDown(new Date().getTime());
 
-  const { days, hours, minutes, seconds } = secondsToDHMS(countdown / 1000);
+  const { days, hours, minutes, seconds } = secondsToDHMS(0);
 
   return (
     <h4>

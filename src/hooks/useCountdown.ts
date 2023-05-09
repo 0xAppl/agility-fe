@@ -7,7 +7,7 @@ const useCountDown = (targetTime: number, start = true) => {
   useEffect(() => {
     if (second >= 0) {
       setTimeout(() => {
-        setSecond(second - 1000);
+        setSecond(second => (second > 0 ? second - 1 : second));
       }, 1000);
     }
   }, [start, second]);
