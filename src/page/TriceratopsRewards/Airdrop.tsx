@@ -98,7 +98,7 @@ const Airdrop = () => {
           <span>My Rewards</span>
           <span></span>
         </FarmSectionWrapper>
-        <Tooltip title={'Rewards for esAGI Holders'} placement="bottom">
+        {/* <Tooltip title={'Rewards for esAGI Holders'} placement="bottom">
           <div>
             <FarmSectionWrapper extraClassName={classNames(style.rewards_item, style.bg_white)}>
               <span>1</span>
@@ -111,15 +111,15 @@ const Airdrop = () => {
               </span>
             </FarmSectionWrapper>
           </div>
-        </Tooltip>
+        </Tooltip> */}
 
-        <Tooltip title={'Rewards for Staking rETH(StaFi) on Farming'} placement="bottom">
+        <Tooltip title={'Rewards for esAGI Holders'} placement="bottom">
           <div>
             <FarmSectionWrapper extraClassName={classNames(style.rewards_item, style.bg_white)}>
-              <span>2</span>
-              <span>FIS</span>
-              <span>5,500</span>
-              <span>rETH-StaFi</span>
+              <span>1</span>
+              <span>esAGI</span>
+              <span>150,000</span>
+              <span>esAGI</span>
               <span>
                 {!jsonLoaded
                   ? 'Loading...'
