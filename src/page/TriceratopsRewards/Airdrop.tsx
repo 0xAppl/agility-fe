@@ -1,5 +1,5 @@
 /* eslint-disable no-unreachable */
-import React from 'react';
+import React, { useEffect } from 'react';
 import FarmSectionWrapper from '@components/farmSectionWrapper';
 import style from './index.module.less';
 import { ClaimBtn } from '@components/Btns';
@@ -10,10 +10,12 @@ import { secondsToDHMS } from '@utils/time';
 import { useAccount, useConnect, useContractRead } from 'wagmi';
 import useWriteContract from '@hooks/useWriteContract';
 import { MerkleDistributorAbi, MerkleDistributorAddress } from './merkleDistributorAbi';
-import eligables from './eligiables.json';
+// import eligables from './eligiables.json';
 import { formatEther } from 'ethers/lib/utils.js';
 import { BigZero } from '@utils/number';
 import { BigNumber } from 'ethers';
+import { toast } from 'react-toastify';
+import { useHref, useLocation, useMatch } from 'react-router-dom';
 
 const CountDown = () => {
   // const countdown = useCountDown(new Date().getTime());
@@ -34,9 +36,31 @@ const CountDown = () => {
 const Airdrop = () => {
   const { address, isConnected } = useAccount();
 
-  const claimConfig = Object.entries(eligables.claims).find(([key, value]) => {
-    return key === address;
-  })?.[1];
+  const [claimConfig, setClaimConfig] = React.useState<any>(null);
+
+  const [jsonLoaded, setJsonLoaded] = React.useState(false);
+
+  // const { pathname } = useLocation();
+
+  // console.log(pathname);
+
+  useEffect(() => {
+    import('./eligiables.json')
+      .then(file => {
+        setJsonLoaded(true);
+        const claimConfig = Object.entries(file.claims).find(([key, value]) => {
+          return key === address;
+        })?.[1];
+        console.log(claimConfig);
+        if (claimConfig != null) {
+          setClaimConfig(claimConfig);
+        }
+      })
+      .catch(e => {
+        toast.error('Failed to load eligiables.json');
+        setJsonLoaded(true);
+      });
+  }, [address]);
 
   const { data: isClaimed } = useContractRead<typeof MerkleDistributorAbi, 'isClaimed'>({
     address: MerkleDistributorAddress,
@@ -57,7 +81,7 @@ const Airdrop = () => {
     enabled: canClaim,
   });
 
-  console.log('claimConfig', claimConfig);
+  // console.log('claimConfig', claimConfig);
 
   return (
     <FarmSectionWrapper extraClassName={style.bg_white}>
@@ -96,7 +120,13 @@ const Airdrop = () => {
               <span>FIS</span>
               <span>5,500</span>
               <span>rETH-StaFi</span>
-              <span>{claimConfig != null ? Number(formatEther(claimConfig.amount)).toFixed(4) : '???'}</span>
+              <span>
+                {!jsonLoaded
+                  ? 'Loading...'
+                  : claimConfig != null
+                  ? Number(formatEther(claimConfig.amount)).toFixed(4)
+                  : '???'}
+              </span>
               <span>
                 <ClaimBtn
                   disabled={!canClaim || isLoading}
